@@ -69,6 +69,39 @@
       ]
     },
     {
+      "name": "Calendar OAuth",
+      "item": [
+        {
+          "name": "Status (configured + accounts)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/calendar/status"
+          }
+        },
+        {
+          "name": "Connect Google (browser redirect)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/calendar/google/connect"
+          }
+        },
+        {
+          "name": "Connect Microsoft (browser redirect)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/calendar/microsoft/connect"
+          }
+        },
+        {
+          "name": "Disconnect account",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v1/calendar/accounts/:id"
+          }
+        }
+      ]
+    },
+    {
       "name": "Calendar feeds (ICS)",
       "item": [
         {

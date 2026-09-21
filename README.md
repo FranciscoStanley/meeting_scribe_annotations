@@ -90,6 +90,16 @@ Abra http://localhost:3000 → **Nova reunião manual** → **Iniciar transcriç
 
 Em **Calendários**, cole o **endereço secreto iCal (ICS)** do Google/Outlook. O sistema detecta reuniões e avisa antes de começar.
 
+### Google / Outlook automático (recomendado, gratuito)
+
+Igual aos apps do mercado: você cria **uma vez** um Client ID gratuito (Google Cloud / Azure) — ver [`docs/oauth-setup-gratis.md`](docs/oauth-setup-gratis.md) — coloca no `.env`, e depois só:
+
+1. **Calendários** → **Conectar Google** ou **Conectar Outlook / Teams**
+2. Aceitar permissões na tela oficial
+3. O sistema sincroniza Meet/Teams sozinho e alerta antes da reunião
+
+Não há mensalidade: as APIs de calendário têm cota gratuita suficiente para uso pessoal.
+
 ### Teams desktop
 
 ```powershell
