@@ -54,6 +54,7 @@ export const api = {
   createMeeting: (body: {
     title: string;
     scheduledStart: string;
+    scheduledEnd?: string;
     joinUrl?: string;
     platform?: string;
   }) =>

@@ -1,5 +1,7 @@
 import Link from 'next/link';
+import { Suspense } from 'react';
 import { api } from '@/lib/api';
+import { ScheduledBanner } from '@/components/scheduled-banner';
 
 function platformLabel(platform: string) {
   if (platform === 'TEAMS') return 'Microsoft Teams';
@@ -23,18 +25,22 @@ export default async function HomePage() {
         <div>
           <h1 className="text-3xl font-semibold text-white">Suas reuniões</h1>
           <p className="mt-2 max-w-2xl text-slate-400">
-            Cada sessão fica salva com falantes e texto. Quando uma reunião do
-            calendário estiver prestes a começar, você recebe um convite para
-            entrar com transcrição.
+            Agende com <strong>horário + link</strong>. Na hora, o app solicita
+            participar e transcrever. Transcrições ficam salvas com falantes e
+            texto.
           </p>
         </div>
         <Link
           href="/meetings/new"
           className="rounded-xl bg-accent px-4 py-2 text-sm font-medium text-white"
         >
-          Nova reunião manual
+          Agendar reunião
         </Link>
       </div>
+
+      <Suspense fallback={null}>
+        <ScheduledBanner />
+      </Suspense>
 
       {error ? (
         <p className="rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-200">
@@ -77,8 +83,8 @@ export default async function HomePage() {
             {!meetings.length && !error ? (
               <tr>
                 <td colSpan={6} className="px-4 py-8 text-center text-slate-500">
-                  Nenhuma reunião ainda. Conecte Google/Microsoft em Calendários
-                  ou crie uma reunião manual.
+                  Nenhuma reunião ainda. Use <strong>Agendar reunião</strong> com
+                  horário e link do Teams/Meet.
                 </td>
               </tr>
             ) : null}
