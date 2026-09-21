@@ -8,6 +8,33 @@ fs.mkdirSync(outDir, { recursive: true });
 const liveId = process.argv[2];
 const scheduledId = process.argv[3];
 
+async function ensureLogin(page) {
+  await page.goto('http://localhost:3000/login', {
+    waitUntil: 'networkidle',
+    timeout: 60_000,
+  });
+  await page.waitForTimeout(500);
+  await page.screenshot({
+    path: path.join(outDir, '00-login.png'),
+    fullPage: true,
+  });
+  console.log('saved login');
+
+  const email = page.locator('#login-email');
+  if (await email.count()) {
+    await email.fill('demo@empresa.com');
+  }
+  const password = page.locator('#login-password');
+  if (await password.count()) {
+    await password.fill('local');
+  }
+  await page.getByRole('button', { name: /Entrar/i }).click();
+  await page.waitForURL((url) => !url.pathname.includes('/login'), {
+    timeout: 60_000,
+  });
+  await page.waitForTimeout(800);
+}
+
 async function shot(page, name, url) {
   await page.goto(url, { waitUntil: 'networkidle', timeout: 60_000 });
   await page.waitForTimeout(900);
@@ -18,7 +45,9 @@ async function shot(page, name, url) {
 
 (async () => {
   if (!liveId) {
-    console.error('Uso: node scripts/capture-screenshots.cjs <meetingIdComTranscricao> [meetingIdAgendada]');
+    console.error(
+      'Uso: node scripts/capture-screenshots.cjs <meetingIdComTranscricao> [meetingIdAgendada]',
+    );
     process.exit(1);
   }
 
@@ -28,12 +57,12 @@ async function shot(page, name, url) {
     deviceScaleFactor: 1,
   });
 
+  await ensureLogin(page);
   await shot(page, '01-reunioes', 'http://localhost:3000/');
   await shot(page, '02-nova-reuniao', 'http://localhost:3000/meetings/new');
   await shot(page, '03-calendarios', 'http://localhost:3000/settings');
   await shot(page, '04-transcricao', `http://localhost:3000/meetings/${liveId}`);
 
-  // Captura: injeta trechos coloridos (headless não grava áudio real)
   await page.goto(`http://localhost:3000/sessions/${liveId}/capture`, {
     waitUntil: 'networkidle',
     timeout: 60_000,
@@ -42,8 +71,6 @@ async function shot(page, name, url) {
   await page.evaluate(() => {
     const section = document.querySelector('section');
     if (!section) return;
-    const empty = section.querySelector('p.text-sm, p');
-    // Monta cards no estilo da UI
     const wrap = document.createElement('div');
     wrap.className = 'space-y-3';
     wrap.innerHTML = `
@@ -64,7 +91,7 @@ async function shot(page, name, url) {
     if (heading) section.appendChild(heading);
     else {
       const h = document.createElement('h2');
-      h.className = 'text-lg font-medium text-white';
+      h.className = 'text-lg font-medium text-ink';
       h.textContent = 'Transcrição em tempo real';
       section.appendChild(h);
     }
@@ -77,7 +104,6 @@ async function shot(page, name, url) {
   });
   console.log('saved captura');
 
-  // Modal alerta (UI clara — alinhado ao MeetingAlertModal)
   await page.goto('http://localhost:3000/', { waitUntil: 'networkidle' });
   await page.evaluate(() => {
     const root = document.createElement('div');
