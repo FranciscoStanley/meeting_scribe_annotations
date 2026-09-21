@@ -1,9 +1,14 @@
 'use client';
 
+import { useMemo } from 'react';
 import { useParams } from 'next/navigation';
+import {
+  buildSpeakerColorMap,
+  normalizeSpeakerKey,
+  speakerColor,
+} from '@meeting-scribe/shared';
 import { useAudioCapture } from '@/hooks/use-audio-capture';
-import { SpeakerLabel } from '@/components/speaker-label';
-import { speakerColor } from '@/lib/speaker-color';
+import { TranscriptSegmentCard } from '@/components/transcript-segment-card';
 import { AlertBanner, EmptyState, PageHeader, Panel } from '@/components/ui';
 
 export default function CaptureSessionPage() {
@@ -11,6 +16,11 @@ export default function CaptureSessionPage() {
   const sessionId = params.id;
   const { active, error, status, chunksSent, segments, start, stop } =
     useAudioCapture(sessionId);
+
+  const colorMap = useMemo(
+    () => buildSpeakerColorMap(segments.map((s) => s.speakerLabel)),
+    [segments],
+  );
 
   return (
     <div className="space-y-8">
@@ -84,22 +94,15 @@ export default function CaptureSessionPage() {
           Transcrição em tempo real
         </h2>
         {segments.map((segment) => (
-          <article
+          <TranscriptSegmentCard
             key={segment.id}
-            className="rounded-2xl border border-hairline bg-panel p-5 shadow-soft"
-            style={{
-              borderLeftColor: speakerColor(segment.speakerLabel),
-              borderLeftWidth: 3,
-            }}
-          >
-            <SpeakerLabel
-              name={segment.speakerLabel}
-              className="text-sm font-semibold"
-            />
-            <p className="mt-1.5 text-[15px] leading-relaxed text-ink-soft">
-              {segment.text}
-            </p>
-          </article>
+            speakerLabel={segment.speakerLabel}
+            text={segment.text}
+            color={
+              colorMap.get(normalizeSpeakerKey(segment.speakerLabel)) ??
+              speakerColor(segment.speakerLabel)
+            }
+          />
         ))}
         {!segments.length ? (
           <Panel>

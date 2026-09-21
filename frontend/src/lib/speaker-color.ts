@@ -1,3 +1,3 @@
-import { speakerColor } from '@meeting-scribe/shared';
+import { speakerColor, buildSpeakerColorMap } from '@meeting-scribe/shared';
 
-export { speakerColor };
+export { speakerColor, buildSpeakerColorMap };

@@ -56,7 +56,7 @@ Ferramenta **corporativa** de transcrição (Teams/Meet): confiança, clareza, f
 3. **Listas:** tabela ou lista densa em `panel`, hover de linha, status com badge
 4. **Formulários:** largura `max-w-xl`, campos com `focus:ring-brand/30`
 5. **Captura:** instruções em lista numerada curta; status de gravação discreto (ponto + texto)
-6. **Transcrição:** nome do falante colorido (`speakerColor`) + borda esquerda; horário secundário
+6. **Transcrição:** cores por falante via `buildSpeakerColorMap` (ordem de aparição) + `TranscriptSegmentCard` (nome + borda esquerda). Não depender só do hash — colisões perto do brand teal confundem.
 
 ## Componentes canônicos
 

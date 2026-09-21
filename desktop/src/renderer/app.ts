@@ -1,4 +1,9 @@
 import { io, Socket } from 'socket.io-client';
+import {
+  buildSpeakerColorMap,
+  normalizeSpeakerKey,
+  speakerColor,
+} from '@meeting-scribe/shared';
 
 const api = window.meetingScribeDesktop;
 
@@ -6,6 +11,7 @@ let socket: Socket | null = null;
 let recorder: MediaRecorder | null = null;
 let stream: MediaStream | null = null;
 let currentAlertJoinUrl: string | undefined;
+const seenSpeakers: string[] = [];
 
 const sessionInput = document.getElementById('session-id') as HTMLInputElement;
 const teamsDetect = document.getElementById('teams-detect') as HTMLParagraphElement;
@@ -33,10 +39,26 @@ function setStatus(live: boolean) {
   (document.getElementById('btn-stop') as HTMLButtonElement).disabled = !live;
 }
 
+function colorForSpeaker(speakerLabel: string): string {
+  const key = normalizeSpeakerKey(speakerLabel);
+  if (!seenSpeakers.includes(key)) seenSpeakers.push(key);
+  const map = buildSpeakerColorMap(seenSpeakers);
+  return map.get(key) ?? speakerColor(speakerLabel);
+}
+
 function appendSegment(speakerLabel: string, text: string) {
+  const color = colorForSpeaker(speakerLabel);
   const div = document.createElement('div');
   div.className = 'segment';
-  div.innerHTML = `<div class="speaker">${speakerLabel}</div><div>${text}</div>`;
+  div.style.borderLeft = `3px solid ${color}`;
+  div.style.paddingLeft = '10px';
+  const name = document.createElement('div');
+  name.className = 'speaker';
+  name.style.color = color;
+  name.textContent = speakerLabel;
+  const body = document.createElement('div');
+  body.textContent = text;
+  div.append(name, body);
   segmentsEl.prepend(div);
 }
 

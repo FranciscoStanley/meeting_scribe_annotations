@@ -1,8 +1,13 @@
 import Link from 'next/link';
-import { meetingCanModify, MeetingSessionStatus } from '@meeting-scribe/shared';
+import {
+  buildSpeakerColorMap,
+  meetingCanModify,
+  MeetingSessionStatus,
+  normalizeSpeakerKey,
+  speakerColor,
+} from '@meeting-scribe/shared';
 import { api } from '@/lib/api';
-import { SpeakerLabel } from '@/components/speaker-label';
-import { speakerColor } from '@/lib/speaker-color';
+import { TranscriptSegmentCard } from '@/components/transcript-segment-card';
 import { AlertBanner, EmptyState, PageHeader, Panel } from '@/components/ui';
 
 export default async function MeetingDetailPage({
@@ -28,6 +33,9 @@ export default async function MeetingDetailPage({
 
   const status = String(data.session.status ?? 'SCHEDULED') as MeetingSessionStatus;
   const canModify = meetingCanModify(status);
+  const colorMap = buildSpeakerColorMap(
+    data.segments.map((s) => s.speakerLabel),
+  );
 
   return (
     <div className="space-y-8">
@@ -50,27 +58,16 @@ export default async function MeetingDetailPage({
 
       <div className="space-y-3">
         {data.segments.map((segment) => (
-          <article
+          <TranscriptSegmentCard
             key={segment.id}
-            className="rounded-2xl border border-hairline bg-panel p-5 shadow-soft"
-            style={{
-              borderLeftColor: speakerColor(segment.speakerLabel),
-              borderLeftWidth: 3,
-            }}
-          >
-            <header className="mb-2 flex items-center justify-between gap-3 text-xs text-muted">
-              <SpeakerLabel
-                name={segment.speakerLabel}
-                className="text-sm font-semibold"
-              />
-              <time className="tabular-nums" dateTime={segment.startedAt}>
-                {new Date(segment.startedAt).toLocaleTimeString('pt-BR')}
-              </time>
-            </header>
-            <p className="text-[15px] leading-relaxed text-ink-soft">
-              {segment.text}
-            </p>
-          </article>
+            speakerLabel={segment.speakerLabel}
+            text={segment.text}
+            startedAt={segment.startedAt}
+            color={
+              colorMap.get(normalizeSpeakerKey(segment.speakerLabel)) ??
+              speakerColor(segment.speakerLabel)
+            }
+          />
         ))}
         {!data.segments.length ? (
           <Panel>
