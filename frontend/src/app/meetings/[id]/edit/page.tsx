@@ -50,6 +50,13 @@ export default function EditMeetingPage() {
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
+    if (
+      scheduledEnd &&
+      new Date(scheduledEnd).getTime() <= new Date(scheduledStart).getTime()
+    ) {
+      setError('A data/hora de fim deve ser posterior ao início.');
+      return;
+    }
     try {
       await api.updateMeeting(id, {
         title,

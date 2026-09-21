@@ -15,6 +15,10 @@ export default function NewMeetingPage() {
     const form = new FormData(event.currentTarget);
     const startLocal = String(form.get('scheduledStart'));
     const endLocal = String(form.get('scheduledEnd') || '');
+    if (endLocal && new Date(endLocal).getTime() <= new Date(startLocal).getTime()) {
+      setError('A data/hora de fim deve ser posterior ao início.');
+      return;
+    }
     try {
       await api.createMeeting({
         title: String(form.get('title')),
