@@ -51,18 +51,21 @@ Ferramenta **corporativa** de transcrição (Teams/Meet): confiança, clareza, f
 
 ## Padrões de layout
 
-1. **Shell:** header fino com marca à esquerda, nav textual à direita, `max-w-6xl`
-2. **Page header:** `h1` (Outfit) + 1 linha de apoio + no máximo 1 CTA primária
-3. **Listas:** tabela ou lista densa em `panel`, hover de linha, status com badge
-4. **Formulários:** largura `max-w-xl`, campos com `focus:ring-brand/30`; datas com `DateTimeField` (react-day-picker + date-fns pt-BR), nunca `datetime-local` nativo
-5. **Captura:** instruções em lista numerada curta; status de gravação discreto (ponto + texto)
-6. **Transcrição:** cores por falante via `buildSpeakerColorMap` (ordem de aparição) + `TranscriptSegmentCard` (nome + borda esquerda). Não depender só do hash — colisões perto do brand teal confundem.
+1. **Shell:** sidebar esquerda (Home, Agenda, Calendário, API) + conteúdo; no mobile, top bar com menu
+2. **Voltar:** `BackLink` em editar, visualizar, agendar, captura e calendários
+3. **Page header:** `h1` (Outfit) + 1 linha de apoio + no máximo 1 CTA primária
+4. **Listas:** tabela ou lista densa em `panel`, hover de linha, status com badge
+5. **Formulários:** largura `max-w-xl`, campos com `focus:ring-brand/30`; datas com `DateTimeField` (react-day-picker + date-fns pt-BR), nunca `datetime-local` nativo
+6. **Captura:** instruções em lista numerada curta; status de gravação discreto (ponto + texto)
+7. **Transcrição:** cores por falante via `buildSpeakerColorMap` (ordem de aparição) + `TranscriptSegmentCard` (nome + borda esquerda). Não depender só do hash — colisões perto do brand teal confundem.
 
 ## Componentes canônicos
 
 | Componente | Onde |
 |------------|------|
 | `AppShell` | chrome global |
+| `Sidebar` | navegação Home / Agenda / Calendário / API |
+| `BackLink` | voltar em editar / visualizar / captura |
 | `StatusBadge` | status de sessão |
 | `PageHeader` | título + ação |
 | `Panel` | superfície branca com borda |
