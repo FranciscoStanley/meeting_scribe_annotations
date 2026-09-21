@@ -10,7 +10,8 @@ Cada **regra** em `.cursor/rules/` tem **skill** correspondente quando aplicáve
 | `frontend-design-system.mdc` | [frontend-design-system](frontend-design-system/SKILL.md) | UI corporativa |
 | `security-hardening.mdc` | [security-hardening](security-hardening/SKILL.md) | Segurança API/UI |
 | `keep-docs-in-sync.mdc` | [keep-docs-in-sync](keep-docs-in-sync/SKILL.md) | **Sempre** após mudanças |
-| `organize-commits.mdc` | skill global `organize-commits` | Commits atômicos |
+| `organize-commits.mdc` | [organize-commits](organize-commits/SKILL.md) | **Sempre** ao commitar — 1 alteração = 1 commit |
+
 | `clean-architecture.mdc` | skill global `clean-architecture` | Use cases, ports |
 | `nestjs-services.mdc` | skill global `nestjs-services` | Backend |
 | `nextjs-frontend.mdc` | skill global `nextjs-frontend` | Frontend |

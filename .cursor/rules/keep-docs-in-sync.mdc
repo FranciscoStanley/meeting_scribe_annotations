@@ -26,6 +26,6 @@ Nenhuma feature está pronta sem:
 1. Código + testes relevantes  
 2. Swagger/collection se houver HTTP  
 3. README(s) afetados  
-4. Commits semânticos atômicos (`feat` / `fix` / `refactor` / `docs` / `test` / `chore` / `ci` / `build` / `perf`)
+4. Commits semânticos atômicos — **1 alteração = 1 commit** (`feat` / `fix` / `refactor` / `docs` / `test` / `chore` / `ci` / `build` / `perf`)
 
-Push permanece **manual** (usuário decide).
+Ver rule/skill `organize-commits`. Push permanece **manual**.

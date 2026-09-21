@@ -40,7 +40,9 @@ description: >-
 
 ### Commits (após docs/testes)
 
-Seguir skill **organize-commits** + rule `.cursor/rules/organize-commits.mdc`:
+Seguir skill **[organize-commits](../organize-commits/SKILL.md)** + rule `.cursor/rules/organize-commits.mdc` (**alwaysApply**):
+
+**Uma alteração lógica = um commit.** Separar código, testes, docs, deps e Cursor.
 
 | Tipo | Use quando |
 |------|------------|
@@ -49,10 +51,12 @@ Seguir skill **organize-commits** + rule `.cursor/rules/organize-commits.mdc`:
 | `refactor` | Reorganiza sem mudar comportamento externo |
 | `perf` | Melhoria de performance (em vez de “improvement”) |
 | `docs` | Só documentação |
-| `test` | Só testes |
+| `test` | Só testes / specs |
 | `build` | Docker, bundler, deps de build |
 | `ci` | Pipelines / hooks |
-| `chore` | Manutenção (bootstrap, ignore, tooling) |
+| `chore` | Manutenção (bootstrap, ignore, tooling, rules/skills) |
+
+Ordem: deps → refactor → feat/fix → **test** → docs → chore/cursor.
 
 Evite o tipo inventado `improvement` — prefira `feat`, `refactor` ou `perf`.
 

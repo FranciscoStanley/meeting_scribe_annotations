@@ -20,7 +20,7 @@ description: >-
 | [clean-architecture](../../../../.cursor/skills/clean-architecture/SKILL.md) | Use cases, ports |
 | [nestjs-services](../../../../.cursor/skills/nestjs-services/SKILL.md) | Backend NestJS |
 | [nextjs-frontend](../../../../.cursor/skills/nextjs-frontend/SKILL.md) | Frontend Next.js |
-| [organize-commits](../../../../.cursor/skills/organize-commits/SKILL.md) | Commits atômicos |
+| [organize-commits](../organize-commits/SKILL.md) | **Commits** — 1 alteração = 1 commit |
 | [review-code](../../../../.cursor/skills/review-code/SKILL.md) | Review antes de push |
 
 ## Mapa do monorepo
