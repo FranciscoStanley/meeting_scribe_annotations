@@ -1,0 +1,27 @@
+name: Feature request
+description: Propor melhoria ou nova capacidade
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problema / motivação
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposta
+      description: Comportamento desejado e escopo
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Área
+      options:
+        - Frontend
+        - Backend
+        - Desktop
+        - Shared / docs
+        - DevOps / segurança
