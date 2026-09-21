@@ -72,6 +72,20 @@ export const api = {
     }),
   removeCalendarFeed: (id: string) =>
     request(`/api/v1/calendar/feeds/${id}`, { method: 'DELETE' }),
+  calendarStatus: () =>
+    request<{
+      googleConfigured: boolean;
+      microsoftConfigured: boolean;
+      accounts: Array<{
+        id: string;
+        provider: 'GOOGLE' | 'MICROSOFT' | 'ICS';
+        email: string;
+        connectedAt: string;
+        updatedAt: string;
+      }>;
+    }>('/api/v1/calendar/status'),
+  disconnectCalendarAccount: (id: string) =>
+    request(`/api/v1/calendar/accounts/${id}`, { method: 'DELETE' }),
 };
 
 export function calendarConnectUrl(provider: 'google' | 'microsoft') {
