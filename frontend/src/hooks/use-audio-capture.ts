@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { transcriptionSocketUrl } from '@/lib/api';
+import { transcriptionSocketAuth, transcriptionSocketUrl } from '@/lib/api';
 
 export type CaptureSource = 'tab' | 'mic';
 
@@ -66,6 +66,7 @@ export function useAudioCapture(sessionId: string) {
     const socket = io(transcriptionSocketUrl(), {
       transports: ['websocket'],
       autoConnect: true,
+      auth: transcriptionSocketAuth(),
     });
     socketRef.current = socket;
     socket.on('transcript:segment', (segment: LiveSegment) => {

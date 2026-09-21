@@ -15,11 +15,29 @@ function publicApiBaseUrl(): string {
   return process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 }
 
+/** Token de API: server-only preferencial; NEXT_PUBLIC só em LAN confiável. */
+export function resolveApiAccessToken(): string | undefined {
+  const token =
+    process.env.API_ACCESS_TOKEN?.trim() ||
+    process.env.NEXT_PUBLIC_API_ACCESS_TOKEN?.trim();
+  return token || undefined;
+}
+
+function authHeaders(): Record<string, string> {
+  const token = resolveApiAccessToken();
+  if (!token) return {};
+  return {
+    Authorization: `Bearer ${token}`,
+    'X-API-Key': token,
+  };
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${resolveApiBaseUrl()}${path}`, {
     ...init,
     headers: {
       'Content-Type': 'application/json',
+      ...authHeaders(),
       ...(init?.headers ?? {}),
     },
     cache: 'no-store',
@@ -121,10 +139,22 @@ export function calendarConnectUrl(provider: 'google' | 'microsoft') {
 }
 
 export function eventsStreamUrl() {
-  return `${publicApiBaseUrl()}/api/v1/events/stream`;
+  const base = `${publicApiBaseUrl()}/api/v1/events/stream`;
+  const token = resolveApiAccessToken();
+  if (!token) return base;
+  const url = new URL(base);
+  url.searchParams.set('apiKey', token);
+  return url.toString();
 }
 
 export function transcriptionSocketUrl() {
   const base = process.env.NEXT_PUBLIC_WS_URL ?? publicApiBaseUrl();
   return `${base}/transcription`;
+}
+
+export function transcriptionSocketAuth():
+  | { token: string }
+  | Record<string, never> {
+  const token = resolveApiAccessToken();
+  return token ? { token } : {};
 }
