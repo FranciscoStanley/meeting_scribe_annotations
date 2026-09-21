@@ -104,3 +104,14 @@ body {
   border: 1px solid var(--ms-hairline) !important;
   box-shadow: 0 12px 40px rgba(14, 22, 37, 0.1) !important;
 }
+
+@keyframes msFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

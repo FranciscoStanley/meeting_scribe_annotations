@@ -72,7 +72,10 @@ export function DateTimeField({
     }
   }
 
-  const display = formatDateTimeDisplay(value) || 'Selecionar data e hora';
+  const display = formatDateTimeDisplay(value);
+  const [datePart, timePart] = display
+    ? display.split(' · ')
+    : ['Selecionar data', '—'];
 
   return (
     <div ref={rootRef} className="relative">
@@ -89,31 +92,39 @@ export function DateTimeField({
         aria-expanded={open}
         aria-haspopup="dialog"
         onClick={() => setOpen((v) => !v)}
-        className="ms-input flex w-full items-center justify-between text-left font-normal"
+        className={`ms-input flex w-full items-center gap-3 text-left transition ${
+          open ? 'border-brand ring-2 ring-brand/20' : ''
+        }`}
       >
-        <span className={value ? 'text-ink' : 'text-muted-soft'}>{display}</span>
-        <svg
-          className="h-4 w-4 shrink-0 text-muted"
-          viewBox="0 0 24 24"
-          fill="none"
-          aria-hidden
-        >
-          <rect
-            x="3"
-            y="5"
-            width="18"
-            height="16"
-            rx="2"
-            stroke="currentColor"
-            strokeWidth="1.75"
-          />
-          <path
-            d="M3 9h18M8 3v4M16 3v4"
-            stroke="currentColor"
-            strokeWidth="1.75"
-            strokeLinecap="round"
-          />
-        </svg>
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-mist text-brand">
+          <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden>
+            <rect
+              x="3"
+              y="5"
+              width="18"
+              height="16"
+              rx="2"
+              stroke="currentColor"
+              strokeWidth="1.75"
+            />
+            <path
+              d="M3 9h18M8 3v4M16 3v4"
+              stroke="currentColor"
+              strokeWidth="1.75"
+              strokeLinecap="round"
+            />
+          </svg>
+        </span>
+        <span className="min-w-0 flex-1">
+          <span
+            className={`block truncate text-sm font-semibold ${
+              value ? 'text-ink' : 'text-muted-soft'
+            }`}
+          >
+            {datePart}
+          </span>
+          <span className="block text-xs text-muted">{timePart}</span>
+        </span>
       </button>
       {required ? (
         <input
@@ -130,7 +141,7 @@ export function DateTimeField({
         <div
           role="dialog"
           aria-label={label}
-          className="absolute z-30 mt-2 w-[min(100%,20rem)] rounded-2xl border border-hairline bg-panel p-3 shadow-lift"
+          className="absolute z-30 mt-2 w-[min(100%,22rem)] origin-top animate-[msFadeIn_160ms_ease-out] rounded-2xl border border-hairline bg-panel p-3 shadow-lift"
         >
           <DayPicker
             mode="single"
@@ -142,7 +153,10 @@ export function DateTimeField({
             className="ms-daypicker"
           />
           <div className="mt-3 flex items-center gap-2 border-t border-hairline pt-3">
-            <label className="text-xs font-medium text-muted" htmlFor={`${id}-time`}>
+            <label
+              className="text-xs font-medium text-muted"
+              htmlFor={`${id}-time`}
+            >
               Horário
             </label>
             <input
