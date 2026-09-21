@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { meetingCanModify, meetingRowActions } from './index';
+import {
+  meetingCanCapture,
+  meetingCanModify,
+  meetingRowActions,
+} from './index';
 
 describe('meetingCanModify', () => {
   it('true para agendas não iniciadas', () => {
@@ -11,6 +15,19 @@ describe('meetingCanModify', () => {
     expect(meetingCanModify('LIVE')).toBe(false);
     expect(meetingCanModify('COMPLETED')).toBe(false);
     expect(meetingCanModify('CANCELLED')).toBe(false);
+  });
+});
+
+describe('meetingCanCapture', () => {
+  it('true enquanto a sessão ainda pode gravar', () => {
+    expect(meetingCanCapture('SCHEDULED')).toBe(true);
+    expect(meetingCanCapture('AWAITING_JOIN')).toBe(true);
+    expect(meetingCanCapture('LIVE')).toBe(true);
+  });
+
+  it('false para concluídas ou canceladas', () => {
+    expect(meetingCanCapture('COMPLETED')).toBe(false);
+    expect(meetingCanCapture('CANCELLED')).toBe(false);
   });
 });
 
