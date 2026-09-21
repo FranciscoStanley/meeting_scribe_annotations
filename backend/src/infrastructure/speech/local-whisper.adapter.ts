@@ -32,7 +32,10 @@ export class LocalWhisperAdapter implements SpeechToTextPort, OnModuleInit {
     audio: Buffer,
     mimeType: string,
   ): Promise<SpeechToTextResult | null> {
-    if (audio.length < 1200) return null;
+    if (audio.length < 800) {
+      this.logger.debug(`Chunk muito pequeno ignorado (${audio.length} bytes)`);
+      return null;
+    }
 
     try {
       await this.ensureReady();
@@ -70,7 +73,10 @@ export class LocalWhisperAdapter implements SpeechToTextPort, OnModuleInit {
         await fs.unlink(wavPath).catch(() => undefined);
       }
     } catch (error) {
-      this.logger.error('Falha na transcrição local', error);
+      this.logger.error(
+        `Falha na transcrição local (${audio.length} bytes, ${mimeType})`,
+        error instanceof Error ? error.message : error,
+      );
       return null;
     }
   }

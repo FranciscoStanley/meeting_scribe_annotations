@@ -27,9 +27,27 @@ export class TranscriptionGateway {
     private readonly completeSession: CompleteTranscriptionSessionUseCase,
   ) {}
 
+  private room(sessionId: string) {
+    return `session:${sessionId}`;
+  }
+
   @SubscribeMessage('session:start')
-  async onStart(@MessageBody() body: { sessionId: string }) {
+  async onStart(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: { sessionId: string },
+  ) {
+    await client.join(this.room(body.sessionId));
     await this.startSession.execute(body.sessionId);
+    this.logger.log(`Cliente ${client.id} entrou em ${this.room(body.sessionId)}`);
+    return { ok: true };
+  }
+
+  @SubscribeMessage('session:subscribe')
+  async onSubscribe(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: { sessionId: string },
+  ) {
+    await client.join(this.room(body.sessionId));
     return { ok: true };
   }
 
@@ -47,21 +65,27 @@ export class TranscriptionGateway {
   ) {
     try {
       const buffer = Buffer.from(body.data, 'base64');
+      this.logger.debug(
+        `Chunk ${buffer.length} bytes (${body.mimeType}) sessão ${body.sessionId}`,
+      );
       const segment = await this.transcribeChunk.execute(
         body.sessionId,
         buffer,
         body.mimeType ?? 'audio/webm',
       );
       if (segment) {
-        client.emit('transcript:segment', {
+        const payload = {
           id: segment.id,
           speakerLabel: segment.speakerLabel,
           text: segment.text,
           startedAt: segment.startedAt.toISOString(),
           confidence: segment.confidence,
-        });
+        };
+        // Room: UI e capturador (mesmo ou sockets distintos) recebem o trecho
+        this.server.to(this.room(body.sessionId)).emit('transcript:segment', payload);
+        client.emit('transcript:segment', payload);
       }
-      return { ok: true };
+      return { ok: true, transcribed: Boolean(segment) };
     } catch (error) {
       this.logger.error('Falha ao processar chunk de áudio', error);
       return { ok: false };
