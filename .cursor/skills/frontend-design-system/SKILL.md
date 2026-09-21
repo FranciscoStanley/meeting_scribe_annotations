@@ -37,7 +37,9 @@ Ferramenta **corporativa** de transcrição (Teams/Meet): confiança, clareza, f
 
 ### Atmosfera
 
-- Fundo `surface` com leve gradiente radial teal muito diluído (não flat morto, sem “glow”)
+- Fundo `surface` com gradiente radial teal diluído + leve vertical (`bg-atmosphere`)
+- Sidebar com marca **MS**, item ativo com barra teal e ícone em chip
+- Page headers com `eyebrow` opcional (categoria da tela)
 - Sem ilustrações decorativas genéricas; o conteúdo da reunião é o âncora
 
 ## Anti-padrões (proibido neste projeto)
