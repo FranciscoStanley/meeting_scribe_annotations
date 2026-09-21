@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meeting Scribe — Teams Desktop</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family: system-ui, sans-serif;
+        background: #0b1020;
+        color: #e2e8f0;
+      }
+      body {
+        margin: 0;
+        padding: 20px;
+      }
+      h1 {
+        font-size: 1.25rem;
+        margin: 0 0 8px;
+      }
+      p {
+        color: #94a3b8;
+        line-height: 1.5;
+        font-size: 0.92rem;
+      }
+      .card {
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 14px;
+        padding: 14px;
+        margin: 14px 0;
+        background: #121a2f;
+      }
+      button {
+        border: 0;
+        border-radius: 10px;
+        padding: 10px 14px;
+        margin: 4px 6px 4px 0;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .primary {
+        background: #5b8cff;
+        color: white;
+      }
+      .secondary {
+        background: transparent;
+        color: #cbd5e1;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      .danger {
+        background: rgba(239, 68, 68, 0.15);
+        color: #fecaca;
+        border: 1px solid rgba(239, 68, 68, 0.35);
+      }
+      .status {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        background: rgba(255, 255, 255, 0.08);
+      }
+      .status.live {
+        background: rgba(16, 185, 129, 0.2);
+        color: #a7f3d0;
+      }
+      #segments {
+        max-height: 280px;
+        overflow: auto;
+      }
+      .segment {
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        padding: 10px 0;
+      }
+      .speaker {
+        color: #8fb4ff;
+        font-size: 0.78rem;
+      }
+      #alert-box {
+        display: none;
+        border-color: rgba(91, 140, 255, 0.45);
+      }
+      label {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        font-size: 0.85rem;
+        color: #cbd5e1;
+        margin: 8px 0;
+      }
+      input,
+      select {
+        width: 100%;
+        margin-top: 6px;
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        background: #0b1020;
+        color: #e2e8f0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Meeting Scribe — Teams (app desktop)</h1>
+    <p>
+      Capture o áudio da janela do Microsoft Teams instalado no Windows, sem usar o
+      navegador. Entre na reunião pelo app Teams e inicie a transcrição aqui.
+    </p>
+
+    <div id="alert-box" class="card">
+      <strong>Reunião detectada</strong>
+      <p id="alert-text"></p>
+      <button class="primary" id="btn-alert-join">Abrir no Teams (desktop)</button>
+      <button class="secondary" id="btn-alert-transcribe">Transcrever reunião</button>
+    </div>
+
+    <div class="card">
+      <label>Sessão (ID da reunião na API)</label>
+      <input id="session-id" placeholder="cole o ID ou use o alerta do calendário" />
+      <label>
+        <input type="checkbox" id="prefer-desktop" checked />
+        Abrir links Teams no app desktop (msteams://)
+      </label>
+    </div>
+
+    <div class="card">
+      <p id="teams-detect">Procurando janela do Teams…</p>
+      <label>Modo de captura</label>
+      <select id="capture-mode">
+        <option value="auto">Automático — janela da reunião Teams</option>
+        <option value="loopback">Áudio do sistema (loopback) — fallback</option>
+      </select>
+      <div style="margin-top: 12px">
+        <button class="primary" id="btn-start">Iniciar transcrição (Teams desktop)</button>
+        <button class="danger" id="btn-stop" disabled>Encerrar</button>
+        <span class="status" id="status">Inativo</span>
+      </div>
+      <p id="error" style="color: #fecaca; display: none"></p>
+    </div>
+
+    <div class="card">
+      <strong>Transcrição ao vivo</strong>
+      <div id="segments"></div>
+    </div>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

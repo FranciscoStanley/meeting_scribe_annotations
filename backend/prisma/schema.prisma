@@ -1,0 +1,95 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum MeetingPlatform {
+  TEAMS
+  MEET
+  ZOOM
+  OTHER
+}
+
+enum MeetingSessionStatus {
+  SCHEDULED
+  AWAITING_JOIN
+  LIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum CalendarProvider {
+  GOOGLE
+  MICROSOFT
+}
+
+model CalendarAccount {
+  id           String           @id @default(cuid())
+  provider     CalendarProvider
+  email        String
+  accessToken  String
+  refreshToken String?
+  expiresAt    DateTime?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  @@unique([provider, email])
+  @@index([provider])
+}
+
+model MeetingSession {
+  id             String               @id @default(cuid())
+  externalId     String?
+  title          String
+  platform       MeetingPlatform
+  status         MeetingSessionStatus @default(SCHEDULED)
+  joinUrl        String?
+  scheduledStart DateTime
+  scheduledEnd   DateTime?
+  startedAt      DateTime?
+  endedAt        DateTime?
+  alertSentAt    DateTime?
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+  segments       TranscriptSegment[]
+  speakers       SpeakerProfile[]
+
+  @@index([status])
+  @@index([scheduledStart])
+  @@index([externalId])
+}
+
+model SpeakerProfile {
+  id        String   @id @default(cuid())
+  sessionId String
+  label     String
+  displayName String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  session   MeetingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  segments  TranscriptSegment[]
+
+  @@unique([sessionId, label])
+  @@index([sessionId])
+}
+
+model TranscriptSegment {
+  id         String   @id @default(cuid())
+  sessionId  String
+  speakerId  String?
+  speakerLabel String
+  text       String
+  confidence Float?
+  startedAt  DateTime
+  endedAt    DateTime?
+  createdAt  DateTime @default(now())
+  session    MeetingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  speaker    SpeakerProfile? @relation(fields: [speakerId], references: [id], onDelete: SetNull)
+
+  @@index([sessionId, startedAt])
+  @@index([speakerId])
+}

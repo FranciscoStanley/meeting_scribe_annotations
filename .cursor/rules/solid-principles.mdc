@@ -1,0 +1,26 @@
+---
+description: Princípios SOLID e Clean Code
+globs: "**/*.{ts,tsx,js,jsx,py}"
+alwaysApply: false
+---
+
+# SOLID & Clean Code
+
+> Skill: `.cursor/skills/solid-principles/SKILL.md`
+
+## Regras
+
+- **S** — Controller/rota só roteia; lógica em use cases/services
+- **O** — Estender via interfaces + DI, não modificando núcleo
+- **L** — Implementações de ports intercambiáveis (mocks em testes)
+- **I** — Interfaces pequenas e específicas
+- **D** — Depender de abstrações, não de concretos
+
+## Clean Code
+
+- Funções focadas (≤30 linhas quando possível)
+- Nomes descritivos; sem magic numbers
+- Erros com contexto; logs estruturados
+- Comentários só para lógica não óbvia
+
+**Autor das convenções:** Francisco Stanley Rodrigues Albuquerque

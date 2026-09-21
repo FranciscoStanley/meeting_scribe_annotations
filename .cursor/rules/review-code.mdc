@@ -1,0 +1,26 @@
+---
+description: Code review e CI antes de push
+globs: "**/*.{ts,tsx,yml,yaml,json}"
+alwaysApply: false
+---
+
+# Review Code & CI
+
+> Skill: `.cursor/skills/review-code/SKILL.md`
+
+## Regra de ouro
+
+Nenhum push sem validação local equivalente ao CI.
+
+Pipeline do projeto: `npm run lint`
+
+## Antes de commit/push
+
+- Rodar pipeline ou scripts de test/lint/build
+- Checklist em `.cursor/skills/review-code/checklist.md`
+- Findings 🔴 Critical bloqueiam merge
+
+## Enforcement (se existir)
+
+- Hook: `.husky/pre-push`
+- CI remoto: `.github/workflows/`

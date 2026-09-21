@@ -1,0 +1,23 @@
+{
+  "name": "@meeting-scribe/desktop",
+  "version": "0.1.0",
+  "private": true,
+  "author": "Francisco Stanley Rodrigues Albuquerque",
+  "description": "Companion Windows — captura áudio do Microsoft Teams (app desktop)",
+  "main": "dist/main/index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig.renderer.json && node ./scripts/copy-renderer.mjs",
+    "dev": "npm run build && electron .",
+    "start": "electron .",
+    "lint": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@meeting-scribe/shared": "*",
+    "socket.io-client": "^4.8.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.7",
+    "electron": "^34.0.0",
+    "typescript": "^5.7.3"
+  }
+}

@@ -1,0 +1,64 @@
+import { MeetingSummaryDto } from '@meeting-scribe/shared';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
+
+async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const response = await fetch(`${API_URL}${path}`, {
+    ...init,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(init?.headers ?? {}),
+    },
+    cache: 'no-store',
+  });
+  if (!response.ok) {
+    throw new Error(`API ${response.status}: ${await response.text()}`);
+  }
+  return response.json() as Promise<T>;
+}
+
+export const api = {
+  listMeetings: () => request<MeetingSummaryDto[]>('/api/v1/meetings'),
+  getTranscript: (id: string) =>
+    request<{
+      session: Record<string, unknown>;
+      segments: Array<{
+        id: string;
+        speakerLabel: string;
+        text: string;
+        startedAt: string;
+        confidence?: number;
+      }>;
+    }>(`/api/v1/meetings/${id}/transcript`),
+  startMeeting: (id: string) =>
+    request(`/api/v1/meetings/${id}/start`, { method: 'POST' }),
+  completeMeeting: (id: string) =>
+    request(`/api/v1/meetings/${id}/complete`, { method: 'POST' }),
+  syncCalendar: () =>
+    request<{ synced: number }>('/api/v1/meetings/sync-calendar', {
+      method: 'POST',
+    }),
+  createMeeting: (body: {
+    title: string;
+    scheduledStart: string;
+    joinUrl?: string;
+    platform?: string;
+  }) =>
+    request('/api/v1/meetings', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
+};
+
+export function calendarConnectUrl(provider: 'google' | 'microsoft') {
+  return `${API_URL}/api/v1/calendar/${provider}/connect`;
+}
+
+export function eventsStreamUrl() {
+  return `${API_URL}/api/v1/events/stream`;
+}
+
+export function transcriptionSocketUrl() {
+  const base = process.env.NEXT_PUBLIC_WS_URL ?? API_URL;
+  return `${base}/transcription`;
+}

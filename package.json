@@ -1,0 +1,32 @@
+{
+  "name": "meeting-scribe",
+  "version": "0.1.0",
+  "private": true,
+  "author": "Francisco Stanley Rodrigues Albuquerque",
+  "description": "Transcrição em tempo real de reuniões Teams/Meet com detecção por calendário",
+  "scripts": {
+    "dev": "concurrently -n backend,frontend -c blue,green \"npm run dev -w @meeting-scribe/backend\" \"npm run dev -w @meeting-scribe/frontend\"",
+    "dev:backend": "npm run dev -w @meeting-scribe/backend",
+    "dev:frontend": "npm run dev -w @meeting-scribe/frontend",
+    "dev:desktop": "npm run dev -w @meeting-scribe/desktop",
+    "build": "npm run build -w @meeting-scribe/shared && npm run build -w @meeting-scribe/backend && npm run build -w @meeting-scribe/frontend && npm run build -w @meeting-scribe/desktop",
+    "build:backend": "npm run build -w @meeting-scribe/shared && npm run build -w @meeting-scribe/backend",
+    "build:frontend": "npm run build -w @meeting-scribe/shared && npm run build -w @meeting-scribe/frontend",
+    "lint": "npm run lint -w @meeting-scribe/backend && npm run lint -w @meeting-scribe/frontend && npm run lint -w @meeting-scribe/desktop",
+    "db:generate": "npm run prisma:generate -w @meeting-scribe/backend",
+    "db:migrate": "npm run prisma:migrate -w @meeting-scribe/backend",
+    "db:studio": "npm run prisma:studio -w @meeting-scribe/backend"
+  },
+  "workspaces": [
+    "backend",
+    "frontend",
+    "desktop",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

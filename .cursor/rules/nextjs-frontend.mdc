@@ -1,0 +1,24 @@
+---
+description: Padrões Next.js App Router — frontend Meeting Scribe
+globs: "frontend/**/*.{ts,tsx}"
+alwaysApply: false
+---
+
+# Next.js Frontend
+
+> Skill: `.cursor/skills/nextjs-frontend/SKILL.md`
+
+## Stack
+
+- App Router + TypeScript strict
+- Tailwind CSS
+- Cliente em `frontend/src/lib/api.ts`
+- `NEXT_PUBLIC_API_URL` / `NEXT_PUBLIC_WS_URL`
+
+## Regras
+
+- `'use client'` apenas onde necessário
+- Captura de áudio: hooks dedicados (`use-audio-capture`, `use-meeting-alerts`)
+- Acessibilidade: labels, contraste, ARIA
+
+**Projeto:** Meeting Scribe

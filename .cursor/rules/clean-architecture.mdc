@@ -1,0 +1,28 @@
+---
+description: Clean Architecture — camadas do backend Meeting Scribe
+globs: "backend/**/*.{ts,js}"
+alwaysApply: false
+---
+
+# Clean Architecture
+
+> Skill: `.cursor/skills/clean-architecture/SKILL.md`
+
+## Camadas (`backend/src`)
+
+- **domain/** — entidades, ports, constantes (sem deps externas)
+- **application/** — use cases (depende só de domain)
+- **infrastructure/** — adapters, repos (implementa ports)
+- **presentation/** — controllers, DTOs, gateways
+
+## Regra de ouro
+
+Domain **nunca** importa application, infrastructure ou presentation.
+
+## Nomenclatura
+
+- Use cases: `{Verbo}{Entidade}UseCase`
+- Ports: `{Entidade}Port` ou `{Entidade}Repository`
+- DTOs: `{Ação}{Entidade}Dto`
+
+**Projeto:** Meeting Scribe — Francisco Stanley Rodrigues Albuquerque

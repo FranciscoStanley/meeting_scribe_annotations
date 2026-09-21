@@ -1,0 +1,28 @@
+---
+description: Arquitetura Meeting Scribe — monorepo backend/frontend/desktop
+alwaysApply: true
+---
+
+# Meeting Scribe — Arquitetura
+
+> Skill: `.cursor/skills/meeting-scribe-development/SKILL.md`
+
+**Autor:** Francisco Stanley Rodrigues Albuquerque
+
+## Princípios
+
+- Frontend e backend em diretórios **separados na raiz** (`frontend/`, `backend/`)
+- Tipos compartilhados só em `packages/shared`
+- Config sensível em `.env` — nunca commitar secrets
+- Ao alterar APIs: atualizar Swagger, testes e README
+
+## Estrutura
+
+```
+backend/     NestJS — domain / application / infrastructure / presentation
+frontend/    Next.js — app / components / hooks / lib
+desktop/     Electron companion (Teams Windows)
+packages/shared/
+```
+
+Portas: frontend `3000` · backend `3001`

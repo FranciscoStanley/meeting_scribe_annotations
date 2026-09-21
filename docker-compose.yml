@@ -1,0 +1,9 @@
+services:
+  whisper:
+    image: fedirz/faster-whisper-server:latest
+    ports:
+      - '8080:8000'
+    environment:
+      WHISPER__MODEL: base
+      WHISPER__INFERENCE_DEVICE: cpu
+    restart unless-stopped

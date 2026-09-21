@@ -1,0 +1,23 @@
+---
+description: Commits atômicos com Conventional Commits
+globs: "**/*"
+alwaysApply: false
+---
+
+# Organize Commits
+
+> Skill: `.cursor/skills/organize-commits/SKILL.md`
+
+## Regra
+
+- **Um commit = uma intenção** (`feat`, `fix`, `test`, `docs`, `ci`, `chore`)
+- Formato: `tipo(escopo): descrição imperativa`
+- **Nunca** `git add .` com mudanças misturadas
+- Ordem: deps → refactor → feat/fix → test → docs → ci
+
+## Fluxo
+
+1. `git status` + `git diff`
+2. Plano de commits (tabela por grupo)
+3. Um `git commit` por grupo
+4. Antes de push → skill `review-code`

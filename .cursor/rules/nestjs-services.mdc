@@ -1,0 +1,29 @@
+---
+description: Padrões NestJS para a API Meeting Scribe
+globs: "backend/**/*.{ts,js}"
+alwaysApply: false
+---
+
+# NestJS
+
+> Skill: `.cursor/skills/nestjs-services/SKILL.md`
+
+## Estrutura
+
+- Controllers finos → use cases
+- Ports + adapters via DI
+- DTOs com class-validator + Swagger
+
+## Obrigatório
+
+- `@ApiTags`, `@ApiOperation` nos controllers
+- `GET /health`
+- Testes: unit (use cases) + vitest
+
+## Ao modificar APIs
+
+1. DTOs + Swagger
+2. Testes
+3. README do `backend/`
+
+**Projeto:** Meeting Scribe
