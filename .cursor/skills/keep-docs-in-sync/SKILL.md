@@ -30,7 +30,9 @@ description: >-
 
 - [ ] `frontend/README.md` ou `desktop/README.md` se o fluxo de uso mudou
 - [ ] Variáveis `NEXT_PUBLIC_*` / desktop documentadas no `.env.template`
-- [ ] Prints em `docs/screenshots/` se a UI mudou de forma relevante (script `scripts/capture-screenshots.cjs`)
+- [ ] Prints em `docs/screenshots/` se a UI mudou de forma relevante
+- [ ] Componentes canônicos (Sidebar, DateTimeField portal, ConfirmDialog, MeetingScheduleForm) alinhados à skill de design
+- [ ] `docs/architecture.md` § Frontend se o shell ou fluxos de UI mudaram
 
 ### Infra / Env / Docker
 
@@ -75,6 +77,8 @@ flowchart LR
 
 ## Referências no repo
 
+- Arquitetura: `docs/architecture.md`
 - Swagger UI: `http://localhost:3001/api/docs`
 - Postman: `docs/postman/`
 - Env: `.env.template` → `copy .env.template .env`
+- Shared: `packages/shared/README.md`

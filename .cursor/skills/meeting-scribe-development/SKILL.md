@@ -30,8 +30,8 @@ description: >-
 | `backend/` | `@meeting-scribe/backend` | NestJS + Prisma |
 | `frontend/` | `@meeting-scribe/frontend` | Next.js |
 | `desktop/` | `@meeting-scribe/desktop` | Electron |
-| `packages/shared/` | `@meeting-scribe/shared` | Tipos TS |
-| `docs/postman/` | — | Collections HTTP |
+| `packages/shared/` | `@meeting-scribe/shared` | Tipos, schedule, permissões, cores |
+| `docs/` | — | architecture, security, realtime, postman |
 
 ## Fluxo ao implementar
 
@@ -67,4 +67,4 @@ npm run db:migrate
 npm run build
 ```
 
-Docs: `docs/dev-local.md` · `docs/deploy-linux.md`
+Docs: `docs/architecture.md` · `docs/dev-local.md` · `docs/deploy-linux.md` · `docs/security.md`

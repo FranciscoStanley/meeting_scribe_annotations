@@ -24,12 +24,11 @@ Não parecer template genérico de IA.
 ## UI
 
 - Shell: **sidebar** (Home, Agenda, Calendário, API); `BackLink` em editar/visualizar
-- Hierarquia clara: título de página → subtítulo curto → ação primária única
-- Cards só para interação ou agrupamento necessário
-- Status via `StatusBadge` semântico (não texto cru)
-- Formulários: labels acima, bordas suaves, foco teal; datas com `DateTimeField`
-- Modal de alerta: uma CTA primária (**Participar e transcrever**)
+- Headers com `eyebrow` opcional; StatusBadge com ponto colorido
+- Formulários: `MeetingScheduleForm` + `DateTimeField` (portal, sem corte)
 - Exclusão: `ConfirmDialog` + toast (sem `window.confirm`)
+- Cards só para interação ou agrupamento necessário
+- Modal de alerta: CTA primária (**Participar e transcrever**)
 
 ## Ao mudar UI
 

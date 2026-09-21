@@ -11,10 +11,9 @@ Cada **regra** em `.cursor/rules/` tem **skill** correspondente quando aplicáve
 | `security-hardening.mdc` | [security-hardening](security-hardening/SKILL.md) | Segurança API/UI |
 | `keep-docs-in-sync.mdc` | [keep-docs-in-sync](keep-docs-in-sync/SKILL.md) | **Sempre** após mudanças |
 | `organize-commits.mdc` | [organize-commits](organize-commits/SKILL.md) | **Sempre** ao commitar — 1 alteração = 1 commit |
-
 | `clean-architecture.mdc` | skill global `clean-architecture` | Use cases, ports |
 | `nestjs-services.mdc` | skill global `nestjs-services` | Backend |
 | `nextjs-frontend.mdc` | skill global `nextjs-frontend` | Frontend |
 | `review-code.mdc` | skill global `review-code` | Antes de push |
 
-Comece por **`meeting-scribe-development`**. Antes de commitar, rode o checklist de **`keep-docs-in-sync`**.
+Comece por **`meeting-scribe-development`**. Antes de commitar, rode o checklist de **`keep-docs-in-sync`**. Arquitetura: `docs/architecture.md`.

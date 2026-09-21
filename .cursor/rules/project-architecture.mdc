@@ -22,11 +22,13 @@ alwaysApply: true
 
 ```
 backend/     NestJS — domain / application / infrastructure / presentation
-frontend/    Next.js — app / components / hooks / lib
+frontend/    Next.js — sidebar, app / components / hooks / lib
 desktop/     Electron companion (Teams Windows)
-packages/shared/
-docs/postman/  Collections HTTP
+packages/shared/  Tipos, schedule, permissões, cores
+docs/        architecture.md, postman/, realtime, security, screenshots
 .env.template  Única fonte de env (copy → .env)
 ```
 
 Portas: frontend `3000` · backend `3001` · whisper `8080` (Docker)
+
+Arquitetura detalhada: `docs/architecture.md`
