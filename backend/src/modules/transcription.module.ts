@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { SPEECH_TO_TEXT_PORT } from '../domain/ports/speech-to-text.port';
 import { REALTIME_EVENTS_PORT } from '../domain/ports/realtime-events.port';
 import { OpenAiCompatibleWhisperAdapter } from '../infrastructure/speech/openai-compatible-whisper.adapter';
+import { LocalWhisperAdapter } from '../infrastructure/speech/local-whisper.adapter';
 import { DevMockSpeechAdapter } from '../infrastructure/speech/dev-mock-speech.adapter';
 import { InMemoryRealtimeEventsAdapter } from '../infrastructure/realtime/in-memory-realtime-events.adapter';
 import { AppendTranscriptSegmentUseCase } from '../application/use-cases/append-transcript-segment.use-case';
@@ -17,15 +18,26 @@ import { MeetingsModule } from './meetings.module';
     TranscribeAudioChunkUseCase,
     TranscriptionGateway,
     OpenAiCompatibleWhisperAdapter,
+    LocalWhisperAdapter,
     DevMockSpeechAdapter,
     {
       provide: SPEECH_TO_TEXT_PORT,
       useFactory: (
         config: ConfigService,
-        whisper: OpenAiCompatibleWhisperAdapter,
+        remote: OpenAiCompatibleWhisperAdapter,
+        local: LocalWhisperAdapter,
         mock: DevMockSpeechAdapter,
-      ) => (config.get('STT_BASE_URL') ? whisper : mock),
-      inject: [ConfigService, OpenAiCompatibleWhisperAdapter, DevMockSpeechAdapter],
+      ) => {
+        if (config.get('STT_BASE_URL')) return remote;
+        if (config.get('STT_PROVIDER') === 'mock') return mock;
+        return local;
+      },
+      inject: [
+        ConfigService,
+        OpenAiCompatibleWhisperAdapter,
+        LocalWhisperAdapter,
+        DevMockSpeechAdapter,
+      ],
     },
     InMemoryRealtimeEventsAdapter,
     {
