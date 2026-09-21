@@ -1,9 +1,11 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import {
+  ApiBearerAuth,
   ApiOkResponse,
   ApiOperation,
   ApiProperty,
   ApiPropertyOptional,
+  ApiSecurity,
   ApiTags,
 } from '@nestjs/swagger';
 import { IsOptional, IsString, IsUrl } from 'class-validator';
@@ -24,6 +26,8 @@ class CreateCalendarFeedDto {
 }
 
 @ApiTags('calendar')
+@ApiBearerAuth('bearer')
+@ApiSecurity('api-key')
 @Controller('api/v1/calendar/feeds')
 export class CalendarFeedsController {
   constructor(private readonly prisma: PrismaService) {}

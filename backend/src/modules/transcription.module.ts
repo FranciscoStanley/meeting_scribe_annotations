@@ -10,9 +10,10 @@ import { AppendTranscriptSegmentUseCase } from '../application/use-cases/append-
 import { TranscribeAudioChunkUseCase } from '../application/use-cases/transcribe-audio-chunk.use-case';
 import { TranscriptionGateway } from '../presentation/websocket/transcription.gateway';
 import { MeetingsModule } from './meetings.module';
+import { SecurityModule } from './security.module';
 
 @Module({
-  imports: [MeetingsModule],
+  imports: [MeetingsModule, SecurityModule],
   providers: [
     AppendTranscriptSegmentUseCase,
     TranscribeAudioChunkUseCase,

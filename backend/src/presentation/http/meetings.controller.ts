@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { CreateManualMeetingUseCase } from '../../application/use-cases/create-manual-meeting.use-case';
 import { ListMeetingsUseCase } from '../../application/use-cases/list-meetings.use-case';
 import { GetMeetingTranscriptUseCase } from '../../application/use-cases/get-meeting-transcript.use-case';
@@ -12,6 +12,8 @@ import { CreateMeetingDto } from './dto/create-meeting.dto';
 import { UpdateMeetingDto } from './dto/update-meeting.dto';
 
 @ApiTags('meetings')
+@ApiBearerAuth('bearer')
+@ApiSecurity('api-key')
 @Controller('api/v1/meetings')
 export class MeetingsController {
   constructor(

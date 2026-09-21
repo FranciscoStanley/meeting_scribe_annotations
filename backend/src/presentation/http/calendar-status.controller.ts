@@ -6,10 +6,18 @@ import {
   Param,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiOperation,
+  ApiSecurity,
+  ApiTags,
+} from '@nestjs/swagger';
 import { PrismaService } from '../../infrastructure/persistence/prisma.service';
 
 @ApiTags('calendar')
+@ApiBearerAuth('bearer')
+@ApiSecurity('api-key')
 @Controller('api/v1/calendar')
 export class CalendarStatusController {
   constructor(

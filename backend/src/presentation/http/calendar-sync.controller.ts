@@ -1,8 +1,16 @@
 import { Controller, Post } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiOperation,
+  ApiSecurity,
+  ApiTags,
+} from '@nestjs/swagger';
 import { SyncCalendarMeetingsUseCase } from '../../application/use-cases/sync-calendar-meetings.use-case';
 
 @ApiTags('meetings')
+@ApiBearerAuth('bearer')
+@ApiSecurity('api-key')
 @Controller('api/v1/meetings')
 export class CalendarSyncController {
   constructor(private readonly syncCalendar: SyncCalendarMeetingsUseCase) {}

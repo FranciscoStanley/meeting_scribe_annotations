@@ -4,6 +4,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { PrismaService } from '../../infrastructure/persistence/prisma.service';
 import { SyncCalendarMeetingsUseCase } from '../../application/use-cases/sync-calendar-meetings.use-case';
+import { Public } from '../../infrastructure/security/api-access.guard';
 
 @ApiTags('calendar')
 @Controller('api/v1/calendar')
@@ -14,6 +15,7 @@ export class CalendarOAuthController {
     private readonly syncCalendar: SyncCalendarMeetingsUseCase,
   ) {}
 
+  @Public()
   @Get('google/connect')
   @ApiOperation({
     summary: 'Inicia OAuth Google Calendar (tela de permissões do Google)',
@@ -40,6 +42,7 @@ export class CalendarOAuthController {
     return res.redirect(url.toString());
   }
 
+  @Public()
   @Get('google/callback')
   async googleCallback(@Query('code') code: string, @Res() res: Response) {
     const webOrigin = this.config.get('CORS_ORIGIN') ?? 'http://localhost:3000';
@@ -106,6 +109,7 @@ export class CalendarOAuthController {
     );
   }
 
+  @Public()
   @Get('microsoft/connect')
   @ApiOperation({
     summary: 'Inicia OAuth Microsoft (Outlook / Teams) — tela de permissões',
@@ -135,6 +139,7 @@ export class CalendarOAuthController {
     return res.redirect(url.toString());
   }
 
+  @Public()
   @Get('microsoft/callback')
   async microsoftCallback(@Query('code') code: string, @Res() res: Response) {
     const webOrigin = this.config.get('CORS_ORIGIN') ?? 'http://localhost:3000';

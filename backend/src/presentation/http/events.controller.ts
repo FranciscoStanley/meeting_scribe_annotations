@@ -1,5 +1,5 @@
 import { Controller, Inject, MessageEvent, Sse } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import {
   REALTIME_EVENTS_PORT,
@@ -8,6 +8,8 @@ import {
 import { ServerSentEvent } from '@meeting-scribe/shared';
 
 @ApiTags('events')
+@ApiBearerAuth('bearer')
+@ApiSecurity('api-key')
 @Controller('api/v1/events')
 export class EventsController {
   constructor(
