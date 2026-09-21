@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Outfit, Source_Sans_3 } from 'next/font/google';
 import { AppShell } from '@/components/app-shell';
+import { AppToaster } from '@/components/app-toaster';
 import './globals.css';
 
 const display = Outfit({
@@ -30,6 +31,7 @@ export default function RootLayout({
     <html lang="pt-BR" className={`${display.variable} ${sans.variable}`} suppressHydrationWarning>
       <body suppressHydrationWarning>
         <AppShell>{children}</AppShell>
+        <AppToaster />
       </body>
     </html>
   );

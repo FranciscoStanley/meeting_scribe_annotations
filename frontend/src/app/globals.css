@@ -96,3 +96,11 @@ body {
   background-color: #0f766e;
   color: #fff;
 }
+
+/* react-toastify — tokens Meeting Scribe */
+.ms-toast {
+  font-family: var(--font-sans), system-ui, sans-serif !important;
+  border-radius: 0.75rem !important;
+  border: 1px solid var(--ms-hairline) !important;
+  box-shadow: 0 12px 40px rgba(14, 22, 37, 0.1) !important;
+}
