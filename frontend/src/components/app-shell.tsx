@@ -11,7 +11,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen bg-surface bg-atmosphere text-ink lg:flex">
       <Sidebar />
       <div className="min-w-0 flex-1">
-        <main className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-8 lg:py-10">
+        <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-9 lg:px-8 lg:py-10">
           {children}
         </main>
       </div>

@@ -43,8 +43,10 @@ export function MeetingAlertModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby="meeting-alert-title"
-        className="w-full max-w-lg rounded-2xl border border-hairline bg-panel p-6 shadow-lift sm:p-8"
+        className="w-full max-w-lg overflow-hidden rounded-2xl border border-hairline bg-panel shadow-lift"
       >
+        <div className="h-1 w-full bg-brand" aria-hidden />
+        <div className="p-6 sm:p-8">
         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand">
           Reunião detectada · {platform}
         </p>
@@ -85,6 +87,7 @@ export function MeetingAlertModal({
           <button type="button" onClick={onDismiss} className="ms-btn-ghost">
             Agora não
           </button>
+        </div>
         </div>
       </div>
     </div>

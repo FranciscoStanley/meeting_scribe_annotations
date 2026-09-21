@@ -152,11 +152,28 @@ function NavLink({
   onNavigate?: () => void;
 }) {
   const active = item.match(pathname);
-  const className = `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition ${
-    active
-      ? 'bg-brand-mist text-brand-ink'
-      : 'text-muted hover:bg-surface hover:text-ink'
+  const className = `ms-nav-item ${
+    active ? 'ms-nav-item-active' : 'ms-nav-item-idle'
   }`;
+
+  const content = (
+    <>
+      {active ? (
+        <span
+          className="absolute left-0 top-1/2 h-6 w-1 -translate-y-1/2 rounded-r-full bg-brand"
+          aria-hidden
+        />
+      ) : null}
+      <span
+        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
+          active ? 'bg-brand-soft text-brand-ink' : 'bg-surface text-muted'
+        }`}
+      >
+        {item.icon}
+      </span>
+      {item.label}
+    </>
+  );
 
   if (item.external) {
     return (
@@ -168,16 +185,14 @@ function NavLink({
         title="Documentação OpenAPI (Swagger)"
         onClick={onNavigate}
       >
-        {item.icon}
-        {item.label}
+        {content}
       </a>
     );
   }
 
   return (
     <Link href={item.href} className={className} onClick={onNavigate}>
-      {item.icon}
-      {item.label}
+      {content}
     </Link>
   );
 }
@@ -187,18 +202,30 @@ export function Sidebar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const brand = (
-    <Link href="/" className="group block px-1" onClick={() => setMobileOpen(false)}>
-      <p className="font-display text-lg font-semibold tracking-tight text-ink transition group-hover:text-brand">
-        Meeting Scribe
-      </p>
-      <p className="mt-0.5 text-xs leading-snug text-muted">
-        Transcrição corporativa
-      </p>
+    <Link
+      href="/"
+      className="group flex items-start gap-3"
+      onClick={() => setMobileOpen(false)}
+    >
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand text-sm font-bold tracking-tight text-white shadow-soft transition group-hover:bg-brand-ink">
+        MS
+      </span>
+      <span className="min-w-0 pt-0.5">
+        <span className="block font-display text-base font-semibold tracking-tight text-ink transition group-hover:text-brand">
+          Meeting Scribe
+        </span>
+        <span className="mt-0.5 block text-xs leading-snug text-muted">
+          Transcrição corporativa
+        </span>
+      </span>
     </Link>
   );
 
   const nav = (
     <nav className="flex flex-col gap-1" aria-label="Principal">
+      <p className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-soft">
+        Menu
+      </p>
       {navItems.map((item) => (
         <NavLink
           key={item.label}
@@ -212,7 +239,6 @@ export function Sidebar() {
 
   return (
     <>
-      {/* Mobile top bar */}
       <div className="sticky top-0 z-40 flex items-center justify-between gap-3 border-b border-hairline/80 bg-panel/95 px-4 py-3 backdrop-blur-md lg:hidden">
         {brand}
         <button
@@ -229,7 +255,7 @@ export function Sidebar() {
 
       {mobileOpen ? (
         <div
-          className="fixed inset-0 z-40 bg-ink/40 lg:hidden"
+          className="fixed inset-0 z-40 bg-ink/40 backdrop-blur-[1px] lg:hidden"
           role="presentation"
           onClick={() => setMobileOpen(false)}
         />
@@ -237,16 +263,18 @@ export function Sidebar() {
 
       <aside
         id="app-sidebar"
-        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-hairline bg-panel px-4 py-5 shadow-lift transition-transform lg:static lg:z-auto lg:w-60 lg:shrink-0 lg:translate-x-0 lg:shadow-none ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-[17rem] flex-col border-r border-hairline bg-panel/98 px-4 py-6 shadow-lift backdrop-blur-sm transition-transform duration-200 lg:static lg:z-auto lg:w-64 lg:shrink-0 lg:translate-x-0 lg:bg-panel lg:shadow-none lg:backdrop-blur-none ${
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        <div className="mb-8 hidden lg:block">{brand}</div>
-        <div className="mb-6 lg:hidden">{brand}</div>
+        <div className="mb-10 hidden lg:block">{brand}</div>
+        <div className="mb-8 lg:hidden">{brand}</div>
         {nav}
-        <p className="mt-auto pt-8 text-[11px] leading-relaxed text-muted-soft">
-          Teams & Meet · captura e transcrição
-        </p>
+        <div className="mt-auto space-y-3 border-t border-hairline pt-5">
+          <p className="px-1 text-[11px] leading-relaxed text-muted-soft">
+            Teams & Meet · captura e transcrição em tempo real
+          </p>
+        </div>
       </aside>
     </>
   );
