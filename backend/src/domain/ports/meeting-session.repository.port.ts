@@ -7,6 +7,8 @@ export interface MeetingSessionRepositoryPort {
   findById(id: string): Promise<MeetingSessionEntity | null>;
   findUpcoming(from: Date, to: Date): Promise<MeetingSessionEntity[]>;
   findAwaitingOrLive(): Promise<MeetingSessionEntity[]>;
+  /** Sessões ainda abertas (podem expirar por horário). */
+  findOpen(): Promise<MeetingSessionEntity[]>;
   listRecent(limit: number): Promise<MeetingSessionEntity[]>;
   findByExternalId(externalId: string): Promise<MeetingSessionEntity | null>;
   deleteById(id: string): Promise<void>;

@@ -69,6 +69,16 @@ export class PrismaMeetingSessionRepository
     return rows.map((row) => this.map(row));
   }
 
+  async findOpen(): Promise<MeetingSessionEntity[]> {
+    const rows = await this.prisma.meetingSession.findMany({
+      where: {
+        status: { in: ['SCHEDULED', 'AWAITING_JOIN', 'LIVE'] },
+      },
+      orderBy: { scheduledStart: 'asc' },
+    });
+    return rows.map((row) => this.map(row));
+  }
+
   async listRecent(limit: number): Promise<MeetingSessionEntity[]> {
     const rows = await this.prisma.meetingSession.findMany({
       orderBy: { scheduledStart: 'desc' },
