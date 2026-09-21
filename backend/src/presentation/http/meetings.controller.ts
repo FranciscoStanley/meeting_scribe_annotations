@@ -28,7 +28,11 @@ export class MeetingsController {
   ) {}
 
   @Get()
-  @ApiOperation({ summary: 'Lista reuniões e quantidade de trechos' })
+  @ApiOperation({
+    summary: 'Lista reuniões e quantidade de trechos',
+    description:
+      'Antes de listar, encerra (COMPLETED) agendas cujo início e fim efetivo já passaram.',
+  })
   @ApiOkResponse({ description: 'Array de MeetingSummaryDto' })
   list() {
     return this.listMeetings.execute();
@@ -57,7 +61,7 @@ export class MeetingsController {
   @ApiOperation({
     summary: 'Agenda reunião (horário + link)',
     description:
-      'Cria sessão SCHEDULED. Perto do horário o cron emite SSE meeting:starting (MEETING_ALERT_MINUTES / MEETING_ALERT_GRACE_MINUTES).',
+      'Cria sessão SCHEDULED. scheduledEnd deve ser posterior a scheduledStart. Se o horário já passou, a sessão nasce COMPLETED. Perto do horário o cron emite SSE meeting:starting.',
   })
   @ApiOkResponse({ description: 'MeetingSessionProps da sessão criada' })
   async create(@Body() dto: CreateMeetingDto) {

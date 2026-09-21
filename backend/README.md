@@ -56,8 +56,8 @@ Guia local: [docs/dev-local.md](../docs/dev-local.md) · Realtime: [docs/realtim
 
 | Método | Rota | Descrição |
 |--------|------|-----------|
-| GET | `/api/v1/meetings` | Lista reuniões |
-| POST | `/api/v1/meetings` | Agenda (horário + **joinUrl** obrigatório) |
+| GET | `/api/v1/meetings` | Lista (encerra agendas vencidas antes) |
+| POST | `/api/v1/meetings` | Agenda (horário + **joinUrl**; fim > início) |
 | POST | `/api/v1/meetings/sync-calendar` | Sync ICS/OAuth |
 | GET | `/api/v1/meetings/:id/transcript` | Transcrição |
 | GET | `/api/v1/meetings/:id` | Detalhe + `canModify` |
@@ -70,10 +70,12 @@ Guia local: [docs/dev-local.md](../docs/dev-local.md) · Realtime: [docs/realtim
 | GET | `/api/v1/events/stream` | SSE `meeting:starting` |
 | WS | `/transcription` | Socket.IO áudio → STT |
 
-## Alertas
+## Alertas e encerramento
 
 - `MEETING_ALERT_MINUTES` (lead antes do início)
 - `MEETING_ALERT_GRACE_MINUTES` (atraso do cron após o início)
+- `MEETING_DEFAULT_DURATION_MINUTES` (se não houver `scheduledEnd`, encerra N min após o início)
+- Cron a cada minuto + listagem/detalhe: agendas com início e fim efetivo passados → `COMPLETED`
 
 ## Testes
 

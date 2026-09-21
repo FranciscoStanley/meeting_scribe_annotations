@@ -36,7 +36,7 @@
           "request": {
             "method": "GET",
             "url": "{{baseUrl}}/api/v1/meetings",
-            "description": "Lista sessões com segmentCount."
+            "description": "Lista sessões com segmentCount. Antes da lista, agendas com início e fim efetivo já passados viram COMPLETED (fim = scheduledEnd ou início + MEETING_DEFAULT_DURATION_MINUTES)."
           }
         },
         {
