@@ -11,10 +11,10 @@ frontend/
 ├── Dockerfile
 ├── public/
 └── src/
-    ├── app/
-    ├── components/   # shell, DateTimeField, MeetingRowActions, ui
-    ├── hooks/
-    └── lib/          # api, datetime (date-fns)
+    ├── app/            # rotas (home, meetings, sessions, settings)
+    ├── components/     # Sidebar, forms, modal, toast, UI
+    ├── hooks/          # alerts SSE, captura áudio
+    └── lib/            # api, datetime (date-fns)
 ```
 
 ## Subir
@@ -25,27 +25,40 @@ npm run dev:frontend
 ```
 
 - Porta: **3000**
-- Swagger: **http://localhost:3001/api/docs** (redirect também em `/api/docs`)
+- Swagger: **http://localhost:3001/api/docs** (redirect em `/api/docs`)
 
-### Formulários de agenda
+## Shell e navegação
 
-- Shell: **sidebar** (`Sidebar`) — Home, Agenda, Calendário, API
-- Formulários de agenda: `MeetingScheduleForm` (seções + preview de duração + detecção Teams/Meet)
-- `BackLink` em visualizar, editar, agendar, captura e calendários
-- Calendário **react-day-picker** + horário (`DateTimeField`)
-- Validação: `validateMeetingSchedule` em `@meeting-scribe/shared` (fim > início; sem início no passado)
-- Excluir agenda: `ConfirmDialog` (modal) + toasts (`react-toastify`) — sem `window.confirm`
+| Item | Rota / ação |
+|------|-------------|
+| Home | `/` — lista de reuniões |
+| Agenda | `/meetings/new` — agendar |
+| Calendário | `/settings` — ICS / OAuth |
+| API | Swagger externo (`NEXT_PUBLIC_API_URL/api/docs`) |
+| Voltar | `BackLink` em visualizar, editar, agendar, captura, calendários |
 
-### Captura / STT
+## Formulários de agenda
+
+- `MeetingScheduleForm` — seções Identidade / Horário / Link, preview de duração, detecção Teams/Meet
+- `DateTimeField` — **react-day-picker** + horário; popover via **portal** no `body` (não corta no card)
+- Validação: `validateMeetingSchedule` (`@meeting-scribe/shared`) — fim > início; sem início no passado
+
+## Exclusão e feedback
+
+- `ConfirmDialog` — confirmar exclusão (sem `window.confirm`)
+- `AppToaster` — **react-toastify** (sucesso / erro)
+
+## Captura / STT
 
 1. Microfone (teste) ou áudio da aba Meet/Teams no Chrome  
 2. WebM ~5s → Socket.IO `/transcription`  
-3. Falantes com cor por ordem de aparição (`buildSpeakerColorMap`)
+3. Falantes com cor por ordem de aparição (`buildSpeakerColorMap`)  
+4. Detalhe: sem botão de captura se `COMPLETED` / `CANCELLED`
 
-### Testes
+## Testes
 
 ```bash
 npm run test -w @meeting-scribe/frontend
 ```
 
-Ao mudar UI: seguir design system + regenerar `docs/screenshots/`. Arquitetura: [docs/architecture.md](../docs/architecture.md).
+Ao mudar UI: design system + `docs/screenshots/` se relevante. Arquitetura: [docs/architecture.md](../docs/architecture.md).
