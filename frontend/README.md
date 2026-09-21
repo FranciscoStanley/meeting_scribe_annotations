@@ -31,6 +31,7 @@ npm run dev:frontend
 
 - Calendário **react-day-picker** + horário (`DateTimeField`)
 - Validação: `validateMeetingSchedule` em `@meeting-scribe/shared` (fim > início; sem início no passado)
+- Excluir agenda: `ConfirmDialog` (modal) + toasts (`react-toastify`) — sem `window.confirm`
 
 ### Captura / STT
 

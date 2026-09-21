@@ -69,6 +69,8 @@ Ferramenta **corporativa** de transcrição (Teams/Meet): confiança, clareza, f
 | `MeetingAlertModal` | alerta SSE |
 | `SpeakerLabel` | nomes na transcrição |
 | `DateTimeField` | início/fim com calendário + horário |
+| `ConfirmDialog` | confirmação destrutiva (ex.: excluir agenda) |
+| `AppToaster` | feedback via react-toastify |
 | `TranscriptSegmentCard` | trecho com cor do falante |
 
 Botões:
