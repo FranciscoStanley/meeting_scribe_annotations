@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { api } from '@/lib/api';
+import { SpeakerLabel } from '@/components/speaker-label';
+import { speakerColor } from '@/lib/speaker-color';
 
 export default async function MeetingDetailPage({
   params,
@@ -44,11 +46,13 @@ export default async function MeetingDetailPage({
           <article
             key={segment.id}
             className="rounded-xl border border-white/10 bg-ink-900 p-4"
+            style={{
+              borderLeftColor: speakerColor(segment.speakerLabel),
+              borderLeftWidth: 3,
+            }}
           >
             <header className="mb-2 flex items-center justify-between text-xs text-slate-400">
-              <span className="font-medium text-accent-soft">
-                {segment.speakerLabel}
-              </span>
+              <SpeakerLabel name={segment.speakerLabel} />
               <time dateTime={segment.startedAt}>
                 {new Date(segment.startedAt).toLocaleTimeString('pt-BR')}
               </time>
