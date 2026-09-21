@@ -17,8 +17,10 @@ Pipeline do projeto: `npm run lint`
 ## Antes de commit/push
 
 - Rodar pipeline ou scripts de test/lint/build
-- Checklist em `.cursor/skills/review-code/checklist.md`
+- Checklist docs: skill `keep-docs-in-sync` (Swagger, Postman, READMEs, testes)
+- Checklist em skill global `review-code`
 - Findings 🔴 Critical bloqueiam merge
+- **Push só se o usuário pedir** (manual)
 
 ## Enforcement (se existir)
 

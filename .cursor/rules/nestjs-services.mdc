@@ -22,8 +22,11 @@ alwaysApply: false
 
 ## Ao modificar APIs
 
-1. DTOs + Swagger
-2. Testes
-3. README do `backend/`
+1. DTOs + Swagger (`@ApiTags`, `@ApiOperation`, `@ApiProperty`)
+2. Collection Postman em `docs/postman/`
+3. Testes Vitest
+4. README do `backend/` + `.env.template` se houver env novo
+
+> Rule sempre ativa: `keep-docs-in-sync.mdc`
 
 **Projeto:** Meeting Scribe

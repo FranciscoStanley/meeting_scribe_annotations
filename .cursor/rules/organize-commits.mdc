@@ -1,23 +1,29 @@
 ---
-description: Commits atômicos com Conventional Commits
+description: Commits atômicos com Conventional Commits (feat/fix/refactor/docs/…)
 globs: "**/*"
 alwaysApply: false
 ---
 
 # Organize Commits
 
-> Skill: `.cursor/skills/organize-commits/SKILL.md`
+> Skill: `~/.cursor/skills/organize-commits/SKILL.md`  
+> Também: `.cursor/skills/keep-docs-in-sync/SKILL.md` (DoD antes de commit)
 
-## Regra
+## Tipos permitidos
 
-- **Um commit = uma intenção** (`feat`, `fix`, `test`, `docs`, `ci`, `chore`)
+`feat` · `fix` · `refactor` · `perf` · `docs` · `test` · `build` · `ci` · `chore` · `style`
+
+- Preferir `perf` / `refactor` / `feat` em vez de “improvement”
+- Um commit = uma intenção
 - Formato: `tipo(escopo): descrição imperativa`
 - **Nunca** `git add .` com mudanças misturadas
-- Ordem: deps → refactor → feat/fix → test → docs → ci
+- Ordem: deps → refactor → feat/fix → test → docs → build/ci → chore
+- **Push manual** (não executar `git push` sem pedido explícito)
 
 ## Fluxo
 
-1. `git status` + `git diff`
-2. Plano de commits (tabela por grupo)
-3. Um `git commit` por grupo
-4. Antes de push → skill `review-code`
+1. Inventariar (`status` / `diff` / `log`)
+2. Garantir docs/testes/Swagger atualizados (keep-docs-in-sync)
+3. Plano de commits
+4. Um `git commit` por grupo
+5. Antes de push → skill `review-code`

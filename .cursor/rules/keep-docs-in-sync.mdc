@@ -1,0 +1,31 @@
+---
+description: >-
+  Sempre manter Swagger, collections, testes e READMEs sincronizados com o código.
+  Aplica-se a qualquer mudança de feature/API/comportamento.
+alwaysApply: true
+---
+
+# Keep Docs In Sync
+
+> Skill: `.cursor/skills/keep-docs-in-sync/SKILL.md`
+
+**Obrigatório** ao concluir qualquer mudança (não só APIs):
+
+| Mudança | Atualizar |
+|---------|-----------|
+| Endpoint / DTO / contrato | Swagger (`@Api*`), `docs/postman/`, testes |
+| Comportamento de domínio | Testes unitários + README do pacote |
+| Env / Docker / scripts | `.env.template`, `README.md` raiz, README do pacote |
+| UI / fluxo | README frontend/desktop se afetar uso |
+| Arquitetura / pastas | `.cursor/rules/project-architecture.mdc` + skill orquestradora |
+
+## Definition of Done (DoD)
+
+Nenhuma feature está pronta sem:
+
+1. Código + testes relevantes  
+2. Swagger/collection se houver HTTP  
+3. README(s) afetados  
+4. Commits semânticos atômicos (`feat` / `fix` / `refactor` / `docs` / `test` / `chore` / `ci` / `build` / `perf`)
+
+Push permanece **manual** (usuário decide).

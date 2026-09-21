@@ -13,8 +13,10 @@ alwaysApply: true
 
 - Frontend e backend em diretórios **separados na raiz** (`frontend/`, `backend/`)
 - Tipos compartilhados só em `packages/shared`
-- Config sensível em `.env` — nunca commitar secrets
-- Ao alterar APIs: atualizar Swagger, testes e README
+- Config sensível em `.env` — nunca commitar secrets; fonte = `.env.template`
+- Ao alterar qualquer comportamento: atualizar Swagger, Postman, testes e READMEs
+  (rule `keep-docs-in-sync` + skill `.cursor/skills/keep-docs-in-sync/SKILL.md`)
+- Commits semânticos atômicos; **push manual**
 
 ## Estrutura
 
@@ -23,6 +25,8 @@ backend/     NestJS — domain / application / infrastructure / presentation
 frontend/    Next.js — app / components / hooks / lib
 desktop/     Electron companion (Teams Windows)
 packages/shared/
+docs/postman/  Collections HTTP
+.env.template  Única fonte de env (copy → .env)
 ```
 
-Portas: frontend `3000` · backend `3001`
+Portas: frontend `3000` · backend `3001` · whisper `8080` (Docker)

@@ -14,6 +14,7 @@ description: >-
 | Skill | Quando carregar |
 |-------|-----------------|
 | `project-architecture` (rule) | Estrutura monorepo, pastas, portas |
+| [keep-docs-in-sync](../keep-docs-in-sync/SKILL.md) | **Sempre** ao fechar mudança (Swagger, Postman, testes, READMEs) |
 | [clean-architecture](../../../../.cursor/skills/clean-architecture/SKILL.md) | Use cases, ports |
 | [nestjs-services](../../../../.cursor/skills/nestjs-services/SKILL.md) | Backend NestJS |
 | [nextjs-frontend](../../../../.cursor/skills/nextjs-frontend/SKILL.md) | Frontend Next.js |
@@ -28,6 +29,7 @@ description: >-
 | `frontend/` | `@meeting-scribe/frontend` | Next.js |
 | `desktop/` | `@meeting-scribe/desktop` | Electron |
 | `packages/shared/` | `@meeting-scribe/shared` | Tipos TS |
+| `docs/postman/` | — | Collections HTTP |
 
 ## Fluxo ao implementar
 
@@ -37,17 +39,24 @@ flowchart TD
     B -->|API| C[clean-architecture + nestjs]
     B -->|UI| D[nextjs-frontend]
     B -->|Teams Windows| E[desktop Electron]
-    C --> F[Testes + Swagger + README]
+    C --> F[keep-docs-in-sync]
     D --> F
     E --> F
+    F --> G[Testes + Swagger + Postman + READMEs]
+    G --> H[organize-commits]
+    H --> I[Push manual pelo usuário]
 ```
+
+## Definition of Done
+
+Ver skill [keep-docs-in-sync](../keep-docs-in-sync/SKILL.md). Sem docs/testes/Swagger atualizados, a feature **não** está pronta para commit final.
 
 ## Comandos
 
 ```bash
+copy .env.template .env
 npm run dev                 # backend + frontend
-npm run dev:backend
-npm run dev:frontend
+npm run docker:up           # compose completo
 npm run dev:desktop
 npm run db:migrate
 npm run build
