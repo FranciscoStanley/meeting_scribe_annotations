@@ -18,6 +18,14 @@ function platformLabel(platform: string) {
   return platform;
 }
 
+function PlatformChip({ platform }: { platform: string }) {
+  return (
+    <span className="inline-flex max-w-[11rem] truncate rounded-md border border-hairline bg-surface px-2 py-0.5 text-xs font-medium text-ink-soft">
+      {platformLabel(platform)}
+    </span>
+  );
+}
+
 export default async function HomePage() {
   let meetings: Awaited<ReturnType<typeof api.listMeetings>> = [];
   let error: string | null = null;
@@ -28,11 +36,18 @@ export default async function HomePage() {
       'Não foi possível carregar reuniões. Verifique se a API está em execução.';
   }
 
+  const countLabel =
+    meetings.length === 0
+      ? 'Nenhuma agenda ainda'
+      : meetings.length === 1
+        ? '1 reunião'
+        : `${meetings.length} reuniões`;
+
   return (
     <div className="space-y-8">
       <PageHeader
         title="Reuniões"
-        description="Agende com horário e link. Agendas que ainda não iniciaram podem ser editadas ou excluídas; as que já ocorreram ficam só para visualizar."
+        description={`${countLabel}. Edite ou exclua só o que ainda não começou; depois disso, só visualizar e capturar.`}
         action={
           <Link href="/meetings/new" className="ms-btn-primary">
             Agendar reunião
@@ -50,12 +65,16 @@ export default async function HomePage() {
         <div className="overflow-x-auto">
           <table className="min-w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-hairline bg-surface/80 text-xs font-semibold uppercase tracking-wide text-muted">
+              <tr className="border-b border-hairline bg-surface/90 text-xs font-semibold uppercase tracking-wide text-muted">
                 <th className="px-5 py-3.5 font-semibold">Título</th>
-                <th className="px-5 py-3.5 font-semibold">Plataforma</th>
+                <th className="hidden px-5 py-3.5 font-semibold sm:table-cell">
+                  Plataforma
+                </th>
                 <th className="px-5 py-3.5 font-semibold">Início</th>
                 <th className="px-5 py-3.5 font-semibold">Status</th>
-                <th className="px-5 py-3.5 font-semibold">Trechos</th>
+                <th className="hidden px-5 py-3.5 font-semibold md:table-cell">
+                  Trechos
+                </th>
                 <th className="px-5 py-3.5 font-semibold text-right">Ações</th>
               </tr>
             </thead>
@@ -63,22 +82,40 @@ export default async function HomePage() {
               {meetings.map((meeting) => (
                 <tr
                   key={meeting.id}
-                  className="border-b border-hairline/70 last:border-0 transition hover:bg-brand-mist/40"
+                  className="border-b border-hairline/70 last:border-0 transition hover:bg-brand-mist/35"
                 >
-                  <td className="px-5 py-4 font-medium text-ink">{meeting.title}</td>
-                  <td className="px-5 py-4 text-muted">
-                    {platformLabel(meeting.platform)}
+                  <td className="px-5 py-3.5">
+                    <Link
+                      href={`/meetings/${meeting.id}`}
+                      className="font-semibold text-ink hover:text-brand"
+                    >
+                      {meeting.title}
+                    </Link>
+                    <p className="mt-1 text-xs text-muted sm:hidden">
+                      {platformLabel(meeting.platform)}
+                    </p>
                   </td>
-                  <td className="px-5 py-4 tabular-nums text-muted">
-                    {new Date(meeting.scheduledStart).toLocaleString('pt-BR')}
+                  <td className="hidden px-5 py-3.5 sm:table-cell">
+                    <PlatformChip platform={meeting.platform} />
                   </td>
-                  <td className="px-5 py-4">
+                  <td className="px-5 py-3.5 tabular-nums text-muted">
+                    <time dateTime={meeting.scheduledStart}>
+                      {new Date(meeting.scheduledStart).toLocaleString('pt-BR', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </time>
+                  </td>
+                  <td className="px-5 py-3.5">
                     <StatusBadge status={meeting.status} />
                   </td>
-                  <td className="px-5 py-4 tabular-nums text-muted">
+                  <td className="hidden px-5 py-3.5 tabular-nums text-muted md:table-cell">
                     {meeting.segmentCount}
                   </td>
-                  <td className="px-5 py-4 text-right">
+                  <td className="px-5 py-3.5 text-right align-middle">
                     <MeetingRowActions id={meeting.id} status={meeting.status} />
                   </td>
                 </tr>
@@ -87,7 +124,8 @@ export default async function HomePage() {
                 <tr>
                   <td colSpan={6}>
                     <EmptyState title="Nenhuma reunião ainda">
-                      Use <TextLink href="/meetings/new">Agendar reunião</TextLink>{' '}
+                      Use{' '}
+                      <TextLink href="/meetings/new">Agendar reunião</TextLink>{' '}
                       com horário e link do Teams ou Meet.
                     </EmptyState>
                   </td>

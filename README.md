@@ -6,7 +6,7 @@ Transcrição em tempo real de reuniões (Meet / Teams) — **só rode o projeto
 
 ### Lista de reuniões
 
-Dashboard com status, plataforma e trechos. **Agendas não iniciadas** (`SCHEDULED` / `Aguardando`): Editar e Excluir. **Ao vivo ou concluídas**: só Visualizar.
+Dashboard com status, plataforma e trechos. **Agendas não iniciadas** (`SCHEDULED` / `Aguardando`): botões Editar, Excluir e Abrir. **Ao vivo ou concluídas**: Abrir (primário).
 
 ![Lista de reuniões](docs/screenshots/01-reunioes.png)
 

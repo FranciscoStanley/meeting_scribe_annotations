@@ -71,9 +71,11 @@ Ferramenta **corporativa** de transcrição (Teams/Meet): confiança, clareza, f
 
 Botões:
 
-- Primário: `bg-brand text-white hover:bg-brand-ink`
-- Secundário: `border border-line bg-panel text-ink hover:bg-surface`
-- Perigo: borda/texto `danger`
+- Primário: `ms-btn-primary`
+- Secundário: `ms-btn-secondary`
+- Perigo: `ms-btn-danger` / linha: `ms-btn-danger-ghost`
+- Compacto (tabelas): `ms-btn-sm`
+- Ações de linha: `MeetingRowActions` — Editar / Excluir / Abrir (rótulo único)
 
 ## Acessibilidade
 

@@ -66,4 +66,12 @@ body {
   .ms-btn-ghost {
     @apply ms-btn text-muted hover:bg-surface hover:text-ink;
   }
+
+  .ms-btn-sm {
+    @apply rounded-lg px-3 py-1.5 text-xs;
+  }
+
+  .ms-btn-danger-ghost {
+    @apply ms-btn text-danger hover:bg-danger-soft;
+  }
 }
