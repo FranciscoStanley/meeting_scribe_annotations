@@ -25,6 +25,7 @@ enum MeetingSessionStatus {
 enum CalendarProvider {
   GOOGLE
   MICROSOFT
+  ICS
 }
 
 model CalendarAccount {
@@ -39,6 +40,15 @@ model CalendarAccount {
 
   @@unique([provider, email])
   @@index([provider])
+}
+
+model CalendarFeed {
+  id        String   @id @default(cuid())
+  url       String   @unique
+  label     String?
+  enabled   Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model MeetingSession {
