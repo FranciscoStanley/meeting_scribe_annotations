@@ -12,6 +12,7 @@ import { SyncCalendarMeetingsUseCase } from '../application/use-cases/sync-calen
 import { CalendarOAuthController } from '../presentation/http/calendar-oauth.controller';
 import { CalendarFeedsController } from '../presentation/http/calendar-feeds.controller';
 import { CalendarSyncController } from '../presentation/http/calendar-sync.controller';
+import { CalendarStatusController } from '../presentation/http/calendar-status.controller';
 import { MeetingsModule } from './meetings.module';
 
 @Module({
@@ -20,6 +21,7 @@ import { MeetingsModule } from './meetings.module';
     CalendarOAuthController,
     CalendarFeedsController,
     CalendarSyncController,
+    CalendarStatusController,
   ],
   providers: [
     PlatformDetectorService,
