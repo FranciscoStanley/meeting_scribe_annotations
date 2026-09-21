@@ -6,16 +6,26 @@
   },
   "variable": [
     { "key": "baseUrl", "value": "http://localhost:3001" },
-    { "key": "meetingId", "value": "" }
+    { "key": "meetingId", "value": "" },
+    { "key": "apiKey", "value": "", "description": "Igual a API_ACCESS_TOKEN do .env (vazio = API aberta em local)" }
   ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      { "key": "key", "value": "X-API-Key", "type": "string" },
+      { "key": "value", "value": "{{apiKey}}", "type": "string" },
+      { "key": "in", "value": "header", "type": "string" }
+    ]
+  },
   "item": [
     {
       "name": "Health",
       "request": {
+        "auth": { "type": "noauth" },
         "method": "GET",
         "header": [],
         "url": "{{baseUrl}}/health",
-        "description": "Healthcheck do NestJS."
+        "description": "Healthcheck público (sem API token)."
       }
     },
     {
@@ -184,8 +194,19 @@
       "name": "Events SSE",
       "request": {
         "method": "GET",
-        "url": "{{baseUrl}}/api/v1/events/stream",
-        "description": "Server-Sent Events.\n\nTipos:\n- meeting:starting — { sessionId, title, platform, joinUrl, startsInMinutes }\n- heartbeat — { at }\n\nEnv: MEETING_ALERT_MINUTES (lead), MEETING_ALERT_GRACE_MINUTES (atraso do cron)."
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/events/stream?apiKey={{apiKey}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "events", "stream"],
+          "query": [
+            {
+              "key": "apiKey",
+              "value": "{{apiKey}}",
+              "description": "EventSource não envia headers — use query quando API_ACCESS_TOKEN estiver setado"
+            }
+          ]
+        },
+        "description": "Server-Sent Events.\n\nAuth: ?apiKey= quando API_ACCESS_TOKEN estiver definido (ou header X-API-Key nesta collection).\n\nTipos:\n- meeting:starting — { sessionId, title, platform, joinUrl, startsInMinutes }\n- heartbeat — { at }\n\nEnv: MEETING_ALERT_MINUTES (lead), MEETING_ALERT_GRACE_MINUTES (atraso do cron)."
       }
     },
     {
@@ -196,7 +217,7 @@
           "request": {
             "method": "GET",
             "url": "{{baseUrl}}/api/docs",
-            "description": "Não é HTTP — use Socket.IO no namespace /transcription (NEXT_PUBLIC_WS_URL).\n\nClient → Server:\n- session:start | session:subscribe { sessionId }\n- audio:chunk { sessionId, mimeType, data base64 }\n- session:complete { sessionId }\n\nServer → Client:\n- transcript:segment { id, speakerLabel, text, startedAt, confidence }\n\nRoom: session:{sessionId}. Ver docs/realtime.md."
+            "description": "Não é HTTP — use Socket.IO no namespace /transcription (NEXT_PUBLIC_WS_URL).\n\nAuth: io(url, { auth: { token: API_ACCESS_TOKEN } }) se token estiver setado.\nChunks > MAX_AUDIO_CHUNK_BYTES são rejeitados.\n\nClient → Server:\n- session:start | session:subscribe { sessionId }\n- audio:chunk { sessionId, mimeType, data base64 }\n- session:complete { sessionId }\n\nServer → Client:\n- transcript:segment { id, speakerLabel, text, startedAt, confidence }\n\nRoom: session:{sessionId}. Ver docs/realtime.md e docs/security.md."
           }
         }
       ]

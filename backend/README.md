@@ -29,12 +29,21 @@ npm run dev:backend
 docker compose up --build backend
 ```
 
-Guia local: [docs/dev-local.md](../docs/dev-local.md) · Realtime: [docs/realtime.md](../docs/realtime.md)
+Guia local: [docs/dev-local.md](../docs/dev-local.md) · Realtime: [docs/realtime.md](../docs/realtime.md) · Segurança: [docs/security.md](../docs/security.md)
 
 - Porta: **3001**
-- Health: `GET /health`
-- Swagger: http://localhost:3001/api/docs
+- Health: `GET /health` (público)
+- Swagger: http://localhost:3001/api/docs (Authorize com Bearer / X-API-Key se token ativo)
 - Postman: `docs/postman/meeting-scribe.postman_collection.json`
+
+## Segurança (resumo)
+
+| Recurso | Config |
+|---------|--------|
+| API token | `API_ACCESS_TOKEN` + header Bearer / X-API-Key |
+| Produção | `SECURITY_REQUIRE_TOKEN=true` ou `NODE_ENV=production` |
+| Rate limit | `THROTTLE_LIMIT` / `THROTTLE_TTL_MS` |
+| Áudio WS | `MAX_AUDIO_CHUNK_BYTES` |
 
 ## STT
 

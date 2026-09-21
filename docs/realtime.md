@@ -37,7 +37,7 @@ Ack de `audio:chunk`: `{ ok: boolean, transcribed?: boolean }`.
 |--------|------|
 | `transcript:segment` | `{ id, speakerLabel, text, startedAt, confidence? }` |
 
-Emitido na room `session:{sessionId}` (e também no socket do remetente).
+**Auth Socket.IO:** se `API_ACCESS_TOKEN` estiver setado, passe `auth: { token }` no `io()`. Chunks maiores que `MAX_AUDIO_CHUNK_BYTES` são rejeitados.
 
 ## Captura (frontend)
 

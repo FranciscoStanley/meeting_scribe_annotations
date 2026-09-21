@@ -140,6 +140,10 @@ Ao mudar código, a rule **`keep-docs-in-sync`** exige atualizar Swagger, Postma
 Se a UI mudar de forma relevante, atualize também `docs/screenshots/` (`node scripts/capture-screenshots.cjs`).  
 Commits semânticos atômicos; **push é manual**.
 
+## Segurança
+
+Ver [docs/security.md](docs/security.md). Em produção defina `API_ACCESS_TOKEN` e `SECURITY_REQUIRE_TOKEN=true`. Local pode ficar vazio.
+
 ## Opcional
 
 | Recurso | Como |

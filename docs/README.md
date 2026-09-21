@@ -3,6 +3,7 @@
 | Artefato | Caminho | Quando atualizar |
 |----------|---------|------------------|
 | Postman | [postman/meeting-scribe.postman_collection.json](postman/meeting-scribe.postman_collection.json) | Novo/alterado endpoint |
+| Segurança | [security.md](security.md) | Token, headers, rate limit, WS auth |
 | Realtime (SSE/WS) | [realtime.md](realtime.md) | Mudança em eventos Socket.IO ou SSE |
 | Dev local (sem Docker) | [dev-local.md](dev-local.md) | Mudança em scripts/bootstrap/STT local |
 | Deploy Linux | [deploy-linux.md](deploy-linux.md) | Mudança em Docker / portas / env pública |
