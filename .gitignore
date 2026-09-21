@@ -3,7 +3,11 @@ dist
 .next
 .env
 .env.local
+!.env.template
 *.db
 *.db-journal
 backend/prisma/dev.db
 backend/prisma/dev.db-journal
+backend/.env
+frontend/.env.local
+desktop/.env

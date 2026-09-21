@@ -4,36 +4,36 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const templatePath = path.join(root, '.env.template');
+const rootEnvPath = path.join(root, '.env');
 
-function ensureFile(exampleRel, targetRel, extraLines = []) {
-  const example = path.join(root, exampleRel);
+function parseEnv(content) {
+  /** @type {Record<string, string>} */
+  const map = {};
+  for (const line of content.split(/\r?\n/)) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('#')) continue;
+    const eq = trimmed.indexOf('=');
+    if (eq === -1) continue;
+    const key = trimmed.slice(0, eq).trim();
+    let value = trimmed.slice(eq + 1).trim();
+    if (
+      (value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'"))
+    ) {
+      value = value.slice(1, -1);
+    }
+    map[key] = value;
+  }
+  return map;
+}
+
+function writeEnvFile(targetRel, keys, env) {
   const target = path.join(root, targetRel);
-  if (fs.existsSync(target)) {
-    if (extraLines.length) {
-      let content = fs.readFileSync(target, 'utf8');
-      let changed = false;
-      for (const line of extraLines) {
-        const key = line.split('=')[0];
-        if (key && !content.includes(`${key}=`)) {
-          content += `\n${line}`;
-          changed = true;
-        }
-      }
-      if (changed) fs.writeFileSync(target, content.trimEnd() + '\n');
-    }
-    return;
-  }
-  if (fs.existsSync(example)) {
-    let content = fs.readFileSync(example, 'utf8');
-    if (extraLines.length) {
-      content = content.trimEnd() + '\n' + extraLines.join('\n') + '\n';
-    }
-    fs.writeFileSync(target, content);
-    console.log(`[bootstrap] Criado ${targetRel}`);
-  } else {
-    fs.writeFileSync(target, extraLines.join('\n') + '\n');
-    console.log(`[bootstrap] Criado ${targetRel} (mínimo)`);
-  }
+  const lines = keys.map((key) => `${key}=${env[key] ?? ''}`);
+  fs.mkdirSync(path.dirname(target), { recursive: true });
+  fs.writeFileSync(target, lines.join('\n') + '\n');
+  console.log(`[bootstrap] Atualizado ${targetRel}`);
 }
 
 function run(cmd, args, cwd = root) {
@@ -50,8 +50,6 @@ function run(cmd, args, cwd = root) {
 }
 
 function tryDockerWhisper() {
-  const compose = path.join(root, 'docker-compose.yml');
-  if (!fs.existsSync(compose)) return false;
   const docker = spawnSync('docker', ['info'], {
     shell: true,
     stdio: 'ignore',
@@ -62,7 +60,7 @@ function tryDockerWhisper() {
     );
     return false;
   }
-  console.log('[bootstrap] Subindo Whisper via Docker (opcional, mais rápido)…');
+  console.log('[bootstrap] Subindo Whisper via Docker (opcional)…');
   const up = spawnSync('docker', ['compose', 'up', '-d', 'whisper'], {
     cwd: root,
     shell: true,
@@ -71,43 +69,85 @@ function tryDockerWhisper() {
   return up.status === 0;
 }
 
-ensureFile('backend/.env.example', 'backend/.env', [
-  'STT_PROVIDER=local',
-  'STT_LOCAL_MODEL=Xenova/whisper-tiny',
-]);
-ensureFile('frontend/.env.example', 'frontend/.env.local', [
-  'NEXT_PUBLIC_API_URL=http://localhost:3001',
-  'NEXT_PUBLIC_WS_URL=http://localhost:3001',
-]);
-ensureFile('desktop/.env.example', 'desktop/.env', [
-  'MEETING_SCRIBE_API_URL=http://localhost:3001',
-]);
-
-// Preferir Whisper local zero-config; Docker só se o usuário quiser STT_BASE_URL
-const envPath = path.join(root, 'backend', '.env');
-let envContent = fs.readFileSync(envPath, 'utf8');
-if (!envContent.includes('STT_PROVIDER=')) {
-  envContent += '\nSTT_PROVIDER=local\nSTT_LOCAL_MODEL=Xenova/whisper-tiny\n';
-  fs.writeFileSync(envPath, envContent);
+if (!fs.existsSync(templatePath)) {
+  throw new Error('Arquivo .env.template não encontrado na raiz do projeto.');
 }
+
+if (!fs.existsSync(rootEnvPath)) {
+  fs.copyFileSync(templatePath, rootEnvPath);
+  console.log('[bootstrap] Criado .env a partir de .env.template');
+  console.log('[bootstrap] Ajuste segredos em .env se precisar (OAuth, etc.).');
+} else {
+  console.log('[bootstrap] .env já existe — mantido.');
+}
+
+const env = parseEnv(fs.readFileSync(rootEnvPath, 'utf8'));
+
+writeEnvFile('backend/.env', [
+  'DATABASE_URL',
+  'PORT',
+  'CORS_ORIGIN',
+  'STT_PROVIDER',
+  'STT_LOCAL_MODEL',
+  'STT_BASE_URL',
+  'STT_API_KEY',
+  'STT_MODEL',
+  'MEETING_ALERT_MINUTES',
+  'CALENDAR_ICS_URLS',
+  'GOOGLE_CLIENT_ID',
+  'GOOGLE_CLIENT_SECRET',
+  'GOOGLE_REDIRECT_URI',
+  'MICROSOFT_CLIENT_ID',
+  'MICROSOFT_CLIENT_SECRET',
+  'MICROSOFT_REDIRECT_URI',
+  'MICROSOFT_TENANT',
+], env);
+
+writeEnvFile('frontend/.env.local', [
+  'NEXT_PUBLIC_API_URL',
+  'NEXT_PUBLIC_WS_URL',
+  'API_INTERNAL_URL',
+], env);
+
+writeEnvFile('desktop/.env', ['MEETING_SCRIBE_API_URL'], env);
 
 const skipDocker =
   process.argv.includes('--skip-docker') ||
   process.env.npm_lifecycle_event === 'postinstall';
 
 const dockerOk = skipDocker ? false : tryDockerWhisper();
-if (dockerOk && !/^STT_BASE_URL=.+/m.test(envContent.replace(/^#.*STT_BASE_URL.*/gm, ''))) {
-  // Só ativa remoto se Docker subiu e ainda não há URL (comentado não conta)
-  if (!envContent.match(/^STT_BASE_URL=http/m)) {
-    envContent = envContent.replace(
-      /^#?\s*STT_BASE_URL=.*$/m,
+if (dockerOk && !env.STT_BASE_URL) {
+  let content = fs.readFileSync(rootEnvPath, 'utf8');
+  if (!/^STT_BASE_URL=http/m.test(content)) {
+    content = content.replace(
+      /^STT_BASE_URL=.*$/m,
       'STT_BASE_URL=http://localhost:8080/v1',
     );
-    if (!envContent.includes('STT_BASE_URL=http://localhost:8080/v1')) {
-      envContent += '\nSTT_BASE_URL=http://localhost:8080/v1\n';
-    }
-    fs.writeFileSync(envPath, envContent);
-    console.log('[bootstrap] STT_BASE_URL apontando para Docker Whisper.');
+    fs.writeFileSync(rootEnvPath, content);
+    writeEnvFile(
+      'backend/.env',
+      [
+        'DATABASE_URL',
+        'PORT',
+        'CORS_ORIGIN',
+        'STT_PROVIDER',
+        'STT_LOCAL_MODEL',
+        'STT_BASE_URL',
+        'STT_API_KEY',
+        'STT_MODEL',
+        'MEETING_ALERT_MINUTES',
+        'CALENDAR_ICS_URLS',
+        'GOOGLE_CLIENT_ID',
+        'GOOGLE_CLIENT_SECRET',
+        'GOOGLE_REDIRECT_URI',
+        'MICROSOFT_CLIENT_ID',
+        'MICROSOFT_CLIENT_SECRET',
+        'MICROSOFT_REDIRECT_URI',
+        'MICROSOFT_TENANT',
+      ],
+      parseEnv(content),
+    );
+    console.log('[bootstrap] STT_BASE_URL → Whisper Docker (localhost:8080).');
   }
 }
 
@@ -115,4 +155,4 @@ run('npm', ['run', 'build', '-w', '@meeting-scribe/shared']);
 run('npm', ['run', 'prisma:generate', '-w', '@meeting-scribe/backend']);
 run('npm', ['run', 'prisma:migrate:deploy', '-w', '@meeting-scribe/backend']);
 
-console.log('[bootstrap] Pronto. Use: npm run dev');
+console.log('[bootstrap] Pronto. Use: npm run dev  |  docker compose up --build');
