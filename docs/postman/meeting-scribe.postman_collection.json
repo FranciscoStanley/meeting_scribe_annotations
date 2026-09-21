@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "Meeting Scribe API",
-    "description": "Collection HTTP do backend NestJS — manter sincronizada com Swagger (/api/docs) e docs/realtime.md (WebSocket).",
+    "description": "Collection HTTP do backend NestJS — sincronizar com Swagger (/api/docs), docs/realtime.md (WebSocket) e docs/architecture.md (expire + autenticação).",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -49,7 +49,7 @@
               "raw": "{\n  \"title\": \"Teste Google Meet\",\n  \"scheduledStart\": \"2026-09-22T18:00:00.000Z\",\n  \"scheduledEnd\": \"2026-09-22T18:30:00.000Z\",\n  \"joinUrl\": \"https://meet.google.com/rdg-sxjm-eux\",\n  \"platform\": \"MEET\"\n}"
             },
             "url": "{{baseUrl}}/api/v1/meetings",
-            "description": "Agenda reunião. joinUrl é obrigatório. Alerta SSE na janela MEETING_ALERT_MINUTES / MEETING_ALERT_GRACE_MINUTES."
+            "description": "Agenda reunião. joinUrl obrigatório. scheduledEnd (se enviado) deve ser posterior a scheduledStart. Alerta SSE na janela MEETING_ALERT_MINUTES / MEETING_ALERT_GRACE_MINUTES. Se o horário já passou, a sessão pode nascer COMPLETED."
           }
         },
         {
@@ -61,7 +61,8 @@
               "mode": "raw",
               "raw": "{\n  \"title\": \"Daily Teams\",\n  \"scheduledStart\": \"2026-09-22T18:00:00.000Z\",\n  \"joinUrl\": \"https://teams.microsoft.com/meet/237776367551390?p=xxx\",\n  \"platform\": \"TEAMS\"\n}"
             },
-            "url": "{{baseUrl}}/api/v1/meetings"
+            "url": "{{baseUrl}}/api/v1/meetings",
+            "description": "Agenda Teams. Mesmas regras de horário que Meet (fim > início). Preferir deep link / meet URL; desktop companion usa toTeamsDesktopJoinUrl no client."
           }
         },
         {
