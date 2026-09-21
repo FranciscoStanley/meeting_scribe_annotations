@@ -6,37 +6,37 @@ Transcrição em tempo real de reuniões (Meet / Teams) — **só rode o projeto
 
 ### Lista de reuniões
 
-Dashboard com status (SCHEDULED / LIVE / COMPLETED), plataforma (Teams ou Meet) e quantidade de trechos. Cada sessão pode ser aberta para ver a transcrição completa.
+Dashboard com status (`SCHEDULED` / `AWAITING_JOIN` / `LIVE` / `COMPLETED`), plataforma (Teams ou Meet) e quantidade de trechos. Cada sessão abre a transcrição completa.
 
 ![Lista de reuniões](docs/screenshots/01-reunioes.png)
 
-### Alerta ao detectar reunião
+### Alerta ao iniciar
 
-Quando o calendário indica que uma reunião está para começar, o app pede para participar com transcrição — incluindo abrir no **Teams desktop** (`msteams://`).
+Perto do horário agendado (calendário ou manual), o app pede **Participar e transcrever** — abre o link Meet/Teams e a tela de captura.
 
 ![Alerta de reunião detectada](docs/screenshots/06-alerta-reuniao.png)
 
-### Nova reunião manual
+### Agendar reunião (horário + link)
 
-Crie uma sessão na hora (sem calendário): título, horário e link Meet/Teams opcional.
+Informe título, início e **link obrigatório** Meet/Teams. Na hora o Meeting Scribe avisa — deixe a aba aberta.
 
-![Nova reunião manual](docs/screenshots/02-nova-reuniao.png)
+![Agendar reunião](docs/screenshots/02-nova-reuniao.png)
 
-### Calendários (ICS sem OAuth)
+### Calendários (ICS e OAuth)
 
-Cole o endereço secreto iCal do Google/Outlook. OAuth Google/Microsoft continua disponível se você preencher o `.env`.
+Cole o endereço secreto iCal do Google/Outlook, ou conecte Google/Microsoft (Client ID gratuito). Ver [`docs/oauth-setup-gratis.md`](docs/oauth-setup-gratis.md).
 
-![Configuração de calendários ICS](docs/screenshots/03-calendarios.png)
+![Configuração de calendários](docs/screenshots/03-calendarios.png)
 
 ### Transcrição por falante
 
-Trechos salvos com **nome do falante** (cada um com cor distinta), horário e texto — organizados por reunião.
+Trechos com **nome colorido por participante**, horário e texto.
 
 ![Transcrição com falantes](docs/screenshots/04-transcricao.png)
 
 ### Captura ao vivo
 
-Compartilhe a **aba** do Meet/Teams com áudio; o sistema envia chunks ao backend e exibe a transcrição em tempo real.
+**Áudio da aba** (Meet/Teams no Chrome com “Compartilhar áudio”) ou **Testar com microfone**. Whisper local processa a cada ~5s.
 
 ![Captura ao vivo](docs/screenshots/05-captura-ao-vivo.png)
 

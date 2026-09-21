@@ -14,10 +14,14 @@
 
 ### Regenerar prints
 
+Com `npm run dev` no ar:
+
 ```powershell
-npm run dev:backend
-npm run dev:frontend
-node scripts/capture-screenshots.cjs <meetingIdLive> <meetingIdScheduled>
+# 1) Crie/use uma reunião LIVE e rode o seed de trechos demo
+node scripts/seed-demo-transcript.cjs <meetingIdLive>
+
+# 2) Capture (Playwright)
+node scripts/capture-screenshots.cjs <meetingIdLive> <meetingIdScheduled?>
 ```
 
-Processo obrigatório: skill `.cursor/skills/keep-docs-in-sync/SKILL.md`.
+Gera `01`…`06` em [screenshots/](screenshots/). Atualize também o texto de “Interface e funcionalidades” no README raiz.
