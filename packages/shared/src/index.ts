@@ -36,6 +36,11 @@ export function meetingCanModify(status: MeetingSessionStatus): boolean {
   return status === 'SCHEDULED' || status === 'AWAITING_JOIN';
 }
 
+/** Pode iniciar/continuar captura (não concluída nem cancelada). */
+export function meetingCanCapture(status: MeetingSessionStatus): boolean {
+  return status !== 'COMPLETED' && status !== 'CANCELLED';
+}
+
 export type MeetingRowAction = 'edit' | 'delete' | 'open';
 
 export type MeetingOpenVariant = 'primary' | 'secondary';
