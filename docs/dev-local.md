@@ -49,7 +49,9 @@ Isso:
 2. Informe título, horário e link Meet/Teams
 3. Deixe a aba aberta
 4. Perto do horário → modal **Participar e transcrever**
-5. Compartilhe a aba da reunião **com áudio**
+5. Na captura: **Testar com microfone** (validar STT) ou **áudio da aba** (Meet no Chrome com “Compartilhar áudio”)
+
+Detalhes do protocolo: [realtime.md](realtime.md).
 
 ## Scripts úteis
 
@@ -79,3 +81,5 @@ Não rode `npm run bootstrap:with-docker-stt` se quiser ficar sem Docker — ele
 - **Porta em uso**: encerre outro processo em `3000`/`3001` ou altere `PORT` / porta do Next.
 - **1ª transcrição lenta**: o modelo Whisper está baixando; depois fica em cache.
 - **SSR do frontend não acha a API**: `API_INTERNAL_URL=http://localhost:3001` no `.env`.
+- **Meet sem trechos**: use aba do Chrome + checkbox de áudio; app desktop Meet não funciona com `getDisplayMedia`.
+- **`npm run start` EADDRINUSE**: a porta 3000 já está com `npm run dev` — use http://localhost:3000.

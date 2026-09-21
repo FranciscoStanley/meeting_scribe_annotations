@@ -29,7 +29,7 @@ npm run dev:backend
 docker compose up --build backend
 ```
 
-Guia local: [docs/dev-local.md](../docs/dev-local.md)
+Guia local: [docs/dev-local.md](../docs/dev-local.md) · Realtime: [docs/realtime.md](../docs/realtime.md)
 
 - Porta: **3001**
 - Health: `GET /health`
@@ -48,11 +48,27 @@ Guia local: [docs/dev-local.md](../docs/dev-local.md)
 | Método | Rota | Descrição |
 |--------|------|-----------|
 | GET | `/api/v1/meetings` | Lista reuniões |
-| POST | `/api/v1/meetings` | Cria reunião manual |
+| POST | `/api/v1/meetings` | Agenda (horário + **joinUrl** obrigatório) |
 | POST | `/api/v1/meetings/sync-calendar` | Sync ICS/OAuth |
 | GET | `/api/v1/meetings/:id/transcript` | Transcrição |
+| POST | `/api/v1/meetings/:id/start` | Marca LIVE |
+| POST | `/api/v1/meetings/:id/complete` | Marca COMPLETED |
 | GET/POST/DELETE | `/api/v1/calendar/feeds` | Feeds ICS |
-| GET | `/api/v1/events/stream` | SSE alertas |
-| WS | `/transcription` | Chunks de áudio |
+| GET | `/api/v1/calendar/status` | OAuth + contas |
+| GET | `/api/v1/events/stream` | SSE `meeting:starting` |
+| WS | `/transcription` | Socket.IO áudio → STT |
+
+## Alertas
+
+- `MEETING_ALERT_MINUTES` (lead antes do início)
+- `MEETING_ALERT_GRACE_MINUTES` (atraso do cron após o início)
+
+## Testes
+
+```bash
+npm run test -w @meeting-scribe/backend
+```
+
+Cobre domínio (`shouldAlert`), use case de alertas e detector de plataforma.
 
 Ao alterar APIs: atualizar Swagger, Postman, testes e este README (`keep-docs-in-sync`).

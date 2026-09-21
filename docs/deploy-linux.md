@@ -51,7 +51,9 @@ docker compose up --build -d
 2. **Agendar reunião** → título, início/fim, link Teams/Meet
 3. Deixe a aba aberta no horário
 4. Modal **Participar e transcrever** → abre a reunião + tela de captura
-5. Compartilhe o **áudio da aba** do Meet/Teams
+5. Compartilhe o **áudio da aba** do Meet/Teams (Chrome) ou use **Testar com microfone**
+
+Protocolo WS/SSE: [realtime.md](realtime.md) · Postman: [postman/meeting-scribe.postman_collection.json](postman/meeting-scribe.postman_collection.json)
 
 ## HTTPS (recomendado)
 

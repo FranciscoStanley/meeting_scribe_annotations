@@ -80,6 +80,8 @@ Isso automaticamente:
 
 Abra http://localhost:3000 → **Agendar reunião** (horário + link) → deixe a aba aberta → na hora **Participar e transcrever**.
 
+Na captura: **Testar com microfone** ou áudio da aba Meet/Teams no Chrome. Protocolo: [docs/realtime.md](docs/realtime.md).
+
 ### Calendário (sem OAuth)
 
 Em **Calendários**, cole o **endereço secreto iCal (ICS)** do Google/Outlook. O sistema detecta reuniões e avisa antes de começar.
@@ -127,9 +129,8 @@ Dockerfiles multi-stage: `backend/Dockerfile` e `frontend/Dockerfile`.
 backend/           NestJS + Whisper + Prisma
 frontend/          Next.js
 desktop/           Electron (Teams Windows)
-packages/shared/   Tipos compartilhados
-docs/postman/      Collection HTTP
-docs/screenshots/  Prints da UI (README)
+packages/shared/   Tipos + speakerColor + Teams links
+docs/              Postman, realtime, deploy, OAuth, screenshots
 .env.template      Fonte única de env
 ```
 
