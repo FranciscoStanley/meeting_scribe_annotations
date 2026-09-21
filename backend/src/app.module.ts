@@ -7,6 +7,7 @@ import { CalendarModule } from './modules/calendar.module';
 import { TranscriptionModule } from './modules/transcription.module';
 import { RealtimeModule } from './modules/realtime.module';
 import { SecurityModule } from './modules/security.module';
+import { AuthModule } from './modules/auth.module';
 import { HealthController } from './presentation/http/health.controller';
 
 @Module({
@@ -14,6 +15,7 @@ import { HealthController } from './presentation/http/health.controller';
     ConfigModule.forRoot({ isGlobal: true }),
     ScheduleModule.forRoot(),
     SecurityModule,
+    AuthModule,
     PersistenceModule,
     MeetingsModule,
     CalendarModule,
