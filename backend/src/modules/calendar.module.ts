@@ -6,25 +6,33 @@ import {
 } from '../infrastructure/calendar/composite-calendar.adapter';
 import { GoogleCalendarAdapter } from '../infrastructure/calendar/google-calendar.adapter';
 import { MicrosoftCalendarAdapter } from '../infrastructure/calendar/microsoft-calendar.adapter';
+import { IcsCalendarAdapter } from '../infrastructure/calendar/ics-calendar.adapter';
 import { PlatformDetectorService } from '../domain/services/platform-detector.service';
 import { SyncCalendarMeetingsUseCase } from '../application/use-cases/sync-calendar-meetings.use-case';
 import { CalendarOAuthController } from '../presentation/http/calendar-oauth.controller';
+import { CalendarFeedsController } from '../presentation/http/calendar-feeds.controller';
 import { MeetingsModule } from './meetings.module';
 
 @Module({
   imports: [MeetingsModule],
-  controllers: [CalendarOAuthController],
+  controllers: [CalendarOAuthController, CalendarFeedsController],
   providers: [
     PlatformDetectorService,
     GoogleCalendarAdapter,
     MicrosoftCalendarAdapter,
+    IcsCalendarAdapter,
     {
       provide: CALENDAR_ADAPTERS,
       useFactory: (
         google: GoogleCalendarAdapter,
         microsoft: MicrosoftCalendarAdapter,
-      ) => [google, microsoft],
-      inject: [GoogleCalendarAdapter, MicrosoftCalendarAdapter],
+        ics: IcsCalendarAdapter,
+      ) => [ics, google, microsoft],
+      inject: [
+        GoogleCalendarAdapter,
+        MicrosoftCalendarAdapter,
+        IcsCalendarAdapter,
+      ],
     },
     CompositeCalendarAdapter,
     {
