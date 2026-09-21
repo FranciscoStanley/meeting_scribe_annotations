@@ -12,12 +12,13 @@ alwaysApply: false
 
 ## Princípios
 
-- Sem `API_ACCESS_TOKEN` → modo aberto **só** para dev local
+- Sem `API_ACCESS_TOKEN` → modo aberto **só** para API em local; UI ainda usa `/login`
 - Com token / `NODE_ENV=production` → Bearer ou `X-API-Key` obrigatório
-- Health + OAuth callbacks: `@Public()`
+- Login UI: `APP_AUTH_EMAIL` + `APP_AUTH_PASSWORD` (ou senha = token)
+- Health + OAuth + auth status/login: `@Public()`
 - Helmet + throttle + ValidationPipe `forbidNonWhitelisted`
 - Chunks WS limitados (`MAX_AUDIO_CHUNK_BYTES`)
-- Frontend: CSP / frame-deny / nosniff; nunca commitar secrets
+- Frontend: CSP / frame-deny / nosniff; nunca commitar secrets; preferir cookie de sessão a `NEXT_PUBLIC_*`
 
 ## Ao mudar auth ou headers
 

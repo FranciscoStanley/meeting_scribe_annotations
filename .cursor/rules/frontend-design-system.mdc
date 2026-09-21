@@ -23,7 +23,8 @@ Não parecer template genérico de IA.
 
 ## UI
 
-- Shell: **sidebar** (Home, Agenda, Calendário, API); `BackLink` em editar/visualizar
+- Shell: **sidebar** (Home, Agenda, Calendário, API, Sair); `BackLink` em editar/visualizar
+- **Login** `/login`: marca hero + formulário (sem sidebar)
 - Headers com `eyebrow` opcional; StatusBadge com ponto colorido
 - Formulários: `MeetingScheduleForm` + `DateTimeField` (portal, sem corte)
 - Exclusão: `ConfirmDialog` + toast (sem `window.confirm`)

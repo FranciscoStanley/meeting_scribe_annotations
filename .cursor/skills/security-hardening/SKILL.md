@@ -14,9 +14,11 @@ description: >-
 
 | Ambiente | `API_ACCESS_TOKEN` | Comportamento |
 |----------|--------------------|---------------|
-| Dev local | vazio | API/WS abertos |
+| Dev local | vazio | API/WS abertos; UI ainda passa por `/login` (sessão) |
 | LAN / servidor | valor forte | Exige Bearer / X-API-Key / `auth.token` no Socket.IO |
 | Produção | obrigatório | `SECURITY_REQUIRE_TOKEN=true` ou `NODE_ENV=production` falha o boot sem token |
+
+Login UI opcional: `APP_AUTH_EMAIL` + `APP_AUTH_PASSWORD`. Sem isso, com token: senha = token. Sem ambos: modo aberto.
 
 ## Backend (NestJS)
 
@@ -31,7 +33,8 @@ description: >-
 ## Frontend (Next.js)
 
 - Headers: `X-Frame-Options`, `nosniff`, `Referrer-Policy`, `Permissions-Policy`, CSP
-- `resolveApiAccessToken()` em `lib/api.ts` (server `API_ACCESS_TOKEN` ou `NEXT_PUBLIC_*` em LAN)
+- `/login` + middleware de sessão (`ms_session`); token em cookie (não preferir `NEXT_PUBLIC_*`)
+- `resolveApiAccessToken()` lê cookie → env
 - Socket.IO: `auth: { token }`
 - EventSource: `?apiKey=` (limitação do browser)
 
