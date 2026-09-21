@@ -1,0 +1,24 @@
+---
+description: Segurança Meeting Scribe — API token, headers, rate limit, WS
+globs: "{backend,frontend,desktop}/**/*.{ts,tsx}"
+alwaysApply: false
+---
+
+# Security — Meeting Scribe
+
+> Skill: `.cursor/skills/security-hardening/SKILL.md`
+
+**Autor:** Francisco Stanley Rodrigues Albuquerque
+
+## Princípios
+
+- Sem `API_ACCESS_TOKEN` → modo aberto **só** para dev local
+- Com token / `NODE_ENV=production` → Bearer ou `X-API-Key` obrigatório
+- Health + OAuth callbacks: `@Public()`
+- Helmet + throttle + ValidationPipe `forbidNonWhitelisted`
+- Chunks WS limitados (`MAX_AUDIO_CHUNK_BYTES`)
+- Frontend: CSP / frame-deny / nosniff; nunca commitar secrets
+
+## Ao mudar auth ou headers
+
+Atualizar `docs/security.md`, Swagger, Postman, `.env.template` e testes do guard.

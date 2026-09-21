@@ -7,6 +7,8 @@ Cada **regra** em `.cursor/rules/` tem **skill** correspondente quando aplicáve
 | Regra | Skill | Quando usar |
 |-------|-------|-------------|
 | `project-architecture.mdc` | [meeting-scribe-development](meeting-scribe-development/SKILL.md) | Fluxo geral |
+| `frontend-design-system.mdc` | [frontend-design-system](frontend-design-system/SKILL.md) | UI corporativa |
+| `security-hardening.mdc` | [security-hardening](security-hardening/SKILL.md) | Segurança API/UI |
 | `keep-docs-in-sync.mdc` | [keep-docs-in-sync](keep-docs-in-sync/SKILL.md) | **Sempre** após mudanças |
 | `organize-commits.mdc` | skill global `organize-commits` | Commits atômicos |
 | `clean-architecture.mdc` | skill global `clean-architecture` | Use cases, ports |
