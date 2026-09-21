@@ -53,3 +53,4 @@ export type ServerSentEvent =
   | { type: 'heartbeat'; payload: { at: string } };
 
 export { toTeamsDesktopJoinUrl, isTeamsJoinUrl } from './teams-links';
+export { speakerColor, SPEAKER_PALETTE } from './speaker-color';
