@@ -3,11 +3,13 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 import {
   MeetingSessionStatus,
   meetingRowActions,
 } from '@meeting-scribe/shared';
 import { api } from '@/lib/api';
+import { ConfirmDialog } from '@/components/confirm-dialog';
 
 function IconEdit({ className = 'h-3.5 w-3.5' }: { className?: string }) {
   return (
@@ -71,22 +73,18 @@ export function MeetingRowActions({
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const { actions, openVariant } = meetingRowActions(status);
 
-  async function onDelete() {
-    if (
-      !window.confirm(
-        'Excluir esta agenda? Esta ação não pode ser desfeita.',
-      )
-    ) {
-      return;
-    }
+  async function confirmDelete() {
     setBusy(true);
     try {
       await api.deleteMeeting(id);
+      setConfirmOpen(false);
+      toast.success('Agenda excluída.');
       router.refresh();
     } catch {
-      window.alert(
+      toast.error(
         'Não foi possível excluir. Apenas agendas que ainda não iniciaram podem ser removidas.',
       );
     } finally {
@@ -95,45 +93,63 @@ export function MeetingRowActions({
   }
 
   return (
-    <div
-      className="inline-flex flex-wrap items-center justify-end gap-1.5"
-      role="group"
-      aria-label="Ações da reunião"
-    >
-      {actions.includes('edit') ? (
-        <Link
-          href={`/meetings/${id}/edit`}
-          className="ms-btn ms-btn-sm ms-btn-secondary"
-        >
-          <IconEdit />
-          Editar
-        </Link>
-      ) : null}
-      {actions.includes('delete') ? (
-        <button
-          type="button"
-          disabled={busy}
-          onClick={onDelete}
-          className="ms-btn ms-btn-sm ms-btn-danger-ghost"
-          aria-label="Excluir agenda"
-        >
-          <IconTrash />
-          Excluir
-        </button>
-      ) : null}
-      {actions.includes('open') ? (
-        <Link
-          href={`/meetings/${id}`}
-          className={
-            openVariant === 'primary'
-              ? 'ms-btn ms-btn-sm ms-btn-primary'
-              : 'ms-btn ms-btn-sm ms-btn-secondary'
-          }
-        >
-          <IconOpen />
-          Abrir
-        </Link>
-      ) : null}
-    </div>
+    <>
+      <div
+        className="inline-flex flex-wrap items-center justify-end gap-1.5"
+        role="group"
+        aria-label="Ações da reunião"
+      >
+        {actions.includes('edit') ? (
+          <Link
+            href={`/meetings/${id}/edit`}
+            className="ms-btn ms-btn-sm ms-btn-secondary"
+          >
+            <IconEdit />
+            Editar
+          </Link>
+        ) : null}
+        {actions.includes('delete') ? (
+          <button
+            type="button"
+            disabled={busy}
+            onClick={() => setConfirmOpen(true)}
+            className="ms-btn ms-btn-sm ms-btn-danger-ghost"
+            aria-label="Excluir agenda"
+          >
+            <IconTrash />
+            Excluir
+          </button>
+        ) : null}
+        {actions.includes('open') ? (
+          <Link
+            href={`/meetings/${id}`}
+            className={
+              openVariant === 'primary'
+                ? 'ms-btn ms-btn-sm ms-btn-primary'
+                : 'ms-btn ms-btn-sm ms-btn-secondary'
+            }
+          >
+            <IconOpen />
+            Abrir
+          </Link>
+        ) : null}
+      </div>
+
+      <ConfirmDialog
+        open={confirmOpen}
+        title="Excluir agenda?"
+        description="Esta ação não pode ser desfeita. A reunião e os dados vinculados serão removidos."
+        confirmLabel="Excluir"
+        cancelLabel="Cancelar"
+        danger
+        busy={busy}
+        onCancel={() => {
+          if (!busy) setConfirmOpen(false);
+        }}
+        onConfirm={() => {
+          void confirmDelete();
+        }}
+      />
+    </>
   );
 }
