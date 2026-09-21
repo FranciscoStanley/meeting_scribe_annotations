@@ -36,6 +36,23 @@ export function meetingCanModify(status: MeetingSessionStatus): boolean {
   return status === 'SCHEDULED' || status === 'AWAITING_JOIN';
 }
 
+export type MeetingRowAction = 'edit' | 'delete' | 'open';
+
+export type MeetingOpenVariant = 'primary' | 'secondary';
+
+/** Ações da linha na lista: quem vê Editar/Excluir e se Abrir é CTA primário. */
+export function meetingRowActions(status: MeetingSessionStatus): {
+  actions: MeetingRowAction[];
+  openVariant: MeetingOpenVariant;
+} {
+  const actions: MeetingRowAction[] = meetingCanModify(status)
+    ? ['edit', 'delete', 'open']
+    : ['open'];
+  const openVariant: MeetingOpenVariant =
+    status === 'LIVE' || status === 'COMPLETED' ? 'primary' : 'secondary';
+  return { actions, openVariant };
+}
+
 export interface MeetingAlertEvent {
   type: 'meeting:starting';
   payload: {
