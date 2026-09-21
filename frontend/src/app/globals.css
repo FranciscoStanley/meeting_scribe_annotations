@@ -75,3 +75,24 @@ body {
     @apply ms-btn text-danger hover:bg-danger-soft;
   }
 }
+
+/* react-day-picker — tokens Meeting Scribe */
+.ms-daypicker {
+  --rdp-accent-color: #0f766e;
+  --rdp-accent-background-color: #ccfbf1;
+  --rdp-today-color: #0a5c56;
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+.ms-daypicker .rdp-root {
+  margin: 0;
+}
+
+.ms-daypicker .rdp-day_button:hover {
+  background-color: #f0fdfa;
+}
+
+.ms-daypicker .rdp-selected .rdp-day_button {
+  background-color: #0f766e;
+  color: #fff;
+}
