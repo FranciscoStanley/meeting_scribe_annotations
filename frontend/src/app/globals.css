@@ -8,6 +8,12 @@
   --ms-panel: #ffffff;
   --ms-brand: #0f766e;
   --ms-brand-ink: #0a5c56;
+  --ms-ink: #0e1625;
+}
+
+::selection {
+  background: rgb(15 118 110 / 0.18);
+  color: var(--ms-ink);
 }
 
 body {
@@ -23,8 +29,13 @@ body {
   .ms-input {
     @apply mt-1.5 w-full rounded-xl border bg-panel px-3.5 py-2.5 text-sm text-ink
       placeholder:text-muted-soft
+      transition-[border-color,box-shadow]
       focus:outline-none focus:ring-2;
     border-color: var(--ms-hairline);
+  }
+
+  .ms-input:hover:not(:disabled):not(:focus) {
+    border-color: #cbd5e1;
   }
 
   .ms-input:focus {
@@ -38,7 +49,10 @@ body {
 
   .ms-btn {
     @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold
-      transition focus-visible:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50;
+      transition duration-150
+      focus-visible:outline-none focus-visible:ring-2
+      disabled:pointer-events-none disabled:opacity-50
+      active:scale-[0.98];
   }
 
   .ms-btn:focus-visible {
@@ -46,7 +60,7 @@ body {
   }
 
   .ms-btn-primary {
-    @apply ms-btn text-white;
+    @apply ms-btn text-white shadow-soft;
     background-color: var(--ms-brand);
   }
 
@@ -73,6 +87,18 @@ body {
 
   .ms-btn-danger-ghost {
     @apply ms-btn text-danger hover:bg-danger-soft;
+  }
+
+  .ms-nav-item {
+    @apply relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition;
+  }
+
+  .ms-nav-item-active {
+    @apply bg-brand-mist text-brand-ink;
+  }
+
+  .ms-nav-item-idle {
+    @apply text-muted hover:bg-surface hover:text-ink;
   }
 }
 

@@ -53,7 +53,7 @@ const config: Config = {
       },
       backgroundImage: {
         atmosphere:
-          'radial-gradient(1200px 600px at 10% -10%, rgba(15, 118, 110, 0.07), transparent 55%), radial-gradient(900px 500px at 100% 0%, rgba(14, 22, 37, 0.04), transparent 50%)',
+          'radial-gradient(1100px 520px at 8% -8%, rgba(15, 118, 110, 0.09), transparent 55%), radial-gradient(900px 480px at 100% 0%, rgba(14, 22, 37, 0.045), transparent 52%), linear-gradient(180deg, #f7f9fb 0%, #f3f5f7 45%, #eef2f5 100%)',
       },
     },
   },
