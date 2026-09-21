@@ -1,10 +1,10 @@
 # Desktop — Meeting Scribe
 
-Companion Electron para capturar áudio do **Microsoft Teams** (app Windows), fora do navegador.
+Companion Electron para capturar áudio do **Microsoft Teams** (app Windows).
 
 ```powershell
-copy .env.example .env
+copy ..\.env.template ..\.env
 npm run dev:desktop
 ```
 
-Requer o backend em execução (`npm run dev:backend`).
+Requer o backend em execução. Variável usada: `MEETING_SCRIBE_API_URL` (gerada a partir do `.env` da raiz).

@@ -1,22 +1,32 @@
 # Frontend — Meeting Scribe
 
-Aplicação Next.js (App Router) + Tailwind.
+Next.js (App Router) + Tailwind. Build Docker usa `output: 'standalone'`.
 
 ```
 frontend/
-├── src/
-│   ├── app/            # Rotas (dashboard, settings, captura)
-│   ├── components/     # UI
-│   ├── hooks/          # Alertas SSE, captura de áudio
-│   └── lib/            # Cliente HTTP da API
-├── .env.example
-└── package.json        # @meeting-scribe/frontend
+├── Dockerfile          # multi-stage
+├── public/
+└── src/
+    ├── app/            # rotas
+    ├── components/
+    ├── hooks/          # SSE, captura de áudio
+    └── lib/api.ts      # HTTP (SSR usa API_INTERNAL_URL no Docker)
 ```
+
+## Subir
 
 ```powershell
+copy ..\.env.template ..\.env
 npm run dev:frontend
-# ou:
-npm run dev -w @meeting-scribe/frontend
+
+# Docker
+docker compose up --build frontend
 ```
 
-Porta padrão: **3000** · API esperada em `NEXT_PUBLIC_API_URL` (padrão `http://localhost:3001`).
+- Porta: **3000**
+- Browser → `NEXT_PUBLIC_API_URL` (ex.: `http://localhost:3001`)
+- SSR no container → `API_INTERNAL_URL` (ex.: `http://backend:3001`)
+
+Env vem do `.env` na raiz (bootstrap gera `.env.local`).
+
+Ao mudar fluxo de uso ou env: atualizar este README e `.env.template`.

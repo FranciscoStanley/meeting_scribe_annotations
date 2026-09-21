@@ -1,0 +1,111 @@
+{
+  "info": {
+    "name": "Meeting Scribe API",
+    "description": "Collection HTTP do backend NestJS — manter sincronizada com Swagger (/api/docs).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3001" }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/health"
+      }
+    },
+    {
+      "name": "Meetings",
+      "item": [
+        {
+          "name": "List meetings",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/meetings"
+          }
+        },
+        {
+          "name": "Create meeting",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Daily\",\n  \"scheduledStart\": \"2026-09-21T15:00:00.000Z\",\n  \"joinUrl\": \"https://meet.google.com/abc-defg-hij\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/meetings"
+          }
+        },
+        {
+          "name": "Sync calendar",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/meetings/sync-calendar"
+          }
+        },
+        {
+          "name": "Get transcript",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/meetings/:id/transcript"
+          }
+        },
+        {
+          "name": "Start session",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/meetings/:id/start"
+          }
+        },
+        {
+          "name": "Complete session",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/v1/meetings/:id/complete"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Calendar feeds (ICS)",
+      "item": [
+        {
+          "name": "List feeds",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/calendar/feeds"
+          }
+        },
+        {
+          "name": "Add feed",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"https://calendar.google.com/calendar/ical/exemplo/private-xxx/basic.ics\",\n  \"label\": \"Trabalho\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/calendar/feeds"
+          }
+        },
+        {
+          "name": "Remove feed",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v1/calendar/feeds/:id"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Events SSE",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/v1/events/stream",
+        "description": "Server-Sent Events — alertas meeting:starting e heartbeat."
+      }
+    }
+  ]
+}
