@@ -30,7 +30,7 @@ Cole o endereço secreto iCal do Google/Outlook. OAuth Google/Microsoft continua
 
 ### Transcrição por falante
 
-Trechos salvos com **nome do falante**, horário e texto — organizados por reunião.
+Trechos salvos com **nome do falante** (cada um com cor distinta), horário e texto — organizados por reunião.
 
 ![Transcrição com falantes](docs/screenshots/04-transcricao.png)
 
