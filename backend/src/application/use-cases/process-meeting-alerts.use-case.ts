@@ -20,15 +20,17 @@ export class ProcessMeetingAlertsUseCase {
   ) {}
 
   async execute(now = new Date()): Promise<number> {
-    const leadMinutes = Number(
-      this.config.get('MEETING_ALERT_MINUTES') ?? 3,
+    const leadMinutes = Number(this.config.get('MEETING_ALERT_MINUTES') ?? 3);
+    const graceMinutes = Number(
+      this.config.get('MEETING_ALERT_GRACE_MINUTES') ?? 5,
     );
-    const horizon = new Date(now.getTime() + leadMinutes * 60_000);
-    const upcoming = await this.sessions.findUpcoming(now, horizon);
+    const from = new Date(now.getTime() - graceMinutes * 60_000);
+    const to = new Date(now.getTime() + leadMinutes * 60_000);
+    const upcoming = await this.sessions.findUpcoming(from, to);
     let alerts = 0;
 
     for (const session of upcoming) {
-      if (!session.shouldAlert(now, leadMinutes)) continue;
+      if (!session.shouldAlert(now, leadMinutes, graceMinutes)) continue;
 
       const updated = session.markAlertSent(now);
       await this.sessions.save(updated);

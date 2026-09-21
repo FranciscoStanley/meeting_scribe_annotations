@@ -81,14 +81,15 @@ export class MeetingSessionEntity {
     return { ...this.props };
   }
 
-  shouldAlert(now: Date, leadMinutes: number): boolean {
+  shouldAlert(now: Date, leadMinutes: number, graceMinutes = 2): boolean {
     if (this.props.alertSentAt) return false;
     if (this.props.status === 'COMPLETED' || this.props.status === 'CANCELLED') {
       return false;
     }
     const diffMs = this.props.scheduledStart.getTime() - now.getTime();
     const diffMin = diffMs / 60_000;
-    return diffMin >= 0 && diffMin <= leadMinutes;
+    // Janela: de (início - lead) até (início + grace) — cobre atraso do cron
+    return diffMin <= leadMinutes && diffMin >= -graceMinutes;
   }
 
   markAlertSent(at: Date): MeetingSessionEntity {

@@ -16,10 +16,11 @@ export class CreateMeetingDto {
   @IsDateString()
   scheduledEnd?: string;
 
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsUrl()
-  joinUrl?: string;
+  @ApiProperty({
+    example: 'https://teams.microsoft.com/meet/237776367551390?p=xxx',
+  })
+  @IsUrl({ require_protocol: true })
+  joinUrl!: string;
 
   @ApiPropertyOptional({ enum: ['TEAMS', 'MEET', 'ZOOM', 'OTHER'] })
   @IsOptional()
