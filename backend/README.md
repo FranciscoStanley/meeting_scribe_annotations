@@ -19,13 +19,17 @@ backend/
 ## Subir
 
 ```powershell
-# Via monorepo (env na raiz)
+# Local sem Docker (raiz do monorepo)
 copy ..\.env.template ..\.env
+npm run dev            # API + UI
+# ou só API:
 npm run dev:backend
 
 # Via Docker Compose (raiz)
 docker compose up --build backend
 ```
+
+Guia local: [docs/dev-local.md](../docs/dev-local.md)
 
 - Porta: **3001**
 - Health: `GET /health`

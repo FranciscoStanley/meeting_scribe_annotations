@@ -53,44 +53,32 @@ Só isso. O `.env` fica na raiz (não vai pro Git).
 
 OAuth e ICS são opcionais — deixe em branco no `.env` se não for usar.
 
-## Uso com Docker / servidor Linux
+## Uso local (sem Docker) — recomendado para testar
 
-```bash
-cp .env.template .env
-# No servidor: edite NEXT_PUBLIC_API_URL, NEXT_PUBLIC_WS_URL e CORS_ORIGIN com o IP/domínio
-chmod +x scripts/deploy-linux.sh
-./scripts/deploy-linux.sh
-```
-
-Guia completo: [docs/deploy-linux.md](docs/deploy-linux.md)
-
-Fluxo: **Agendar reunião** (horário + link) → deixe a aba aberta → na hora o app pede **Participar e transcrever**.
-
-Sobe **frontend** (`3000`), **backend** (`3001`) e **Whisper** (`8080`).
-
-- App: http://localhost:3000 (ou IP do servidor)  
-- API / Swagger: http://localhost:3001/api/docs  
-- Postman: [docs/postman/meeting-scribe.postman_collection.json](docs/postman/meeting-scribe.postman_collection.json)
-
-Dockerfiles multi-stage: `backend/Dockerfile` e `frontend/Dockerfile`.
-
-## Uso local (Node, sem Docker das apps)
+Guia: [docs/dev-local.md](docs/dev-local.md)
 
 ```powershell
-cd C:\Users\Stanley\Downloads\AI_ANNOTATIONS
 copy .env.template .env
 npm install
 npm run dev
+```
+
+Linux:
+
+```bash
+cp .env.template .env
+chmod +x scripts/dev-local.sh
+./scripts/dev-local.sh
 ```
 
 Isso automaticamente:
 
 1. cria `.env` do backend/frontend/desktop  
 2. aplica migrations do banco  
-3. ativa **Whisper local** (baixa o modelo na 1ª execução)  
-4. sobe backend (`3001`) + frontend (`3000`)
+3. ativa **Whisper local** no Node (baixa o modelo na 1ª transcrição)  
+4. sobe backend (`3001`) + frontend (`3000`) — **sem Docker**
 
-Abra http://localhost:3000 → **Nova reunião manual** → **Iniciar transcrição** → escolha a aba Meet/Teams com **compartilhar áudio**.
+Abra http://localhost:3000 → **Agendar reunião** (horário + link) → deixe a aba aberta → na hora **Participar e transcrever**.
 
 ### Calendário (sem OAuth)
 
@@ -111,6 +99,27 @@ Não há mensalidade: as APIs de calendário têm cota gratuita suficiente para 
 ```powershell
 npm run dev:desktop
 ```
+
+## Uso com Docker / servidor Linux
+
+```bash
+cp .env.template .env
+# No servidor: edite NEXT_PUBLIC_API_URL, NEXT_PUBLIC_WS_URL e CORS_ORIGIN com o IP/domínio
+chmod +x scripts/deploy-linux.sh
+./scripts/deploy-linux.sh
+```
+
+Guia completo: [docs/deploy-linux.md](docs/deploy-linux.md)
+
+Fluxo: **Agendar reunião** (horário + link) → deixe a aba aberta → na hora o app pede **Participar e transcrever**.
+
+Sobe **frontend** (`3000`), **backend** (`3001`) e **Whisper** (`8080`).
+
+- App: http://localhost:3000 (ou IP do servidor)  
+- API / Swagger: http://localhost:3001/api/docs  
+- Postman: [docs/postman/meeting-scribe.postman_collection.json](docs/postman/meeting-scribe.postman_collection.json)
+
+Dockerfiles multi-stage: `backend/Dockerfile` e `frontend/Dockerfile`.
 
 ## Estrutura
 
@@ -134,7 +143,7 @@ Commits semânticos atômicos; **push é manual**.
 
 | Recurso | Como |
 |---------|------|
-| Whisper via Docker (mais rápido) | `docker compose up -d whisper` e `STT_BASE_URL=http://localhost:8080/v1` |
+| Whisper via Docker (mais rápido) | `npm run dev:with-docker-stt` ou `docker compose up -d whisper` + `STT_BASE_URL=http://localhost:8080/v1` |
 | Google/Microsoft OAuth | preencher `GOOGLE_*` / `MICROSOFT_*` no `.env` da raiz |
 
 **Autor:** Francisco Stanley Rodrigues Albuquerque

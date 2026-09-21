@@ -54,10 +54,15 @@ Ver skill [keep-docs-in-sync](../keep-docs-in-sync/SKILL.md). Sem docs/testes/Sw
 ## Comandos
 
 ```bash
-copy .env.template .env
-npm run dev                 # backend + frontend
-npm run docker:up           # compose completo
+copy .env.template .env   # ou cp no Linux
+npm run dev               # local sem Docker (Whisper no Node)
+npm run dev:local         # alias de npm run dev
+./scripts/dev-local.sh    # Linux: install + dev
+npm run docker:up         # compose completo (servidor)
+npm run docker:deploy     # scripts/deploy-linux.sh
 npm run dev:desktop
 npm run db:migrate
 npm run build
 ```
+
+Docs: `docs/dev-local.md` · `docs/deploy-linux.md`
