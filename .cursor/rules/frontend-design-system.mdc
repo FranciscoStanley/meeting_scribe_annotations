@@ -1,0 +1,34 @@
+---
+description: Design system visual Meeting Scribe — UI/UX corporativa (frontend)
+globs: frontend/**/*.{tsx,ts,css}
+alwaysApply: false
+---
+
+# Frontend Design System — Meeting Scribe
+
+> Skill: `.cursor/skills/frontend-design-system/SKILL.md`
+
+**Autor:** Francisco Stanley Rodrigues Albuquerque
+
+## Direção
+
+Produto B2B de transcrição: **limpo, corporativo, moderno, sofisticado**.  
+Não parecer template genérico de IA.
+
+## Tokens (obrigatório)
+
+- Fundos claros (`surface` / `panel`), tipografia `Outfit` + `Source Sans 3`
+- Acento **teal** (`brand`) — voz/clareza; texto `ink` / `muted`
+- Sem roxo, glow, dark-mode por padrão, pills `rounded-full` em massa, sombras em camadas, emojis
+
+## UI
+
+- Hierarquia clara: título de página → subtítulo curto → ação primária única
+- Cards só para interação ou agrupamento necessário
+- Status via `StatusBadge` semântico (não texto cru)
+- Formulários: labels acima, bordas suaves, foco teal
+- Modal de alerta: uma CTA primária (**Participar e transcrever**)
+
+## Ao mudar UI
+
+Atualizar prints `docs/screenshots/` + README; seguir skill completa.

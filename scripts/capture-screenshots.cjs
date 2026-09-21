@@ -47,17 +47,17 @@ async function shot(page, name, url) {
     const wrap = document.createElement('div');
     wrap.className = 'space-y-3';
     wrap.innerHTML = `
-      <article class="rounded-xl border border-white/10 bg-ink-900 p-4" style="border-left:3px solid #38bdf8">
-        <span class="text-xs font-medium" style="color:#38bdf8">Ana Costa</span>
-        <p class="mt-1 text-slate-100">Bom dia — vamos começar a daily.</p>
+      <article class="rounded-2xl border border-line bg-panel p-5 shadow-soft" style="border-left:3px solid #0F766E">
+        <span class="text-sm font-semibold" style="color:#0F766E">Ana Costa</span>
+        <p class="mt-1.5 text-[15px] text-ink-soft">Bom dia — vamos começar a daily.</p>
       </article>
-      <article class="rounded-xl border border-white/10 bg-ink-900 p-4" style="border-left:3px solid #a78bfa">
-        <span class="text-xs font-medium" style="color:#a78bfa">Carlos Mendes</span>
-        <p class="mt-1 text-slate-100">Pode ser. Eu abri o Meet na aba do Chrome.</p>
+      <article class="rounded-2xl border border-line bg-panel p-5 shadow-soft" style="border-left:3px solid #1D4ED8">
+        <span class="text-sm font-semibold" style="color:#1D4ED8">Carlos Mendes</span>
+        <p class="mt-1.5 text-[15px] text-ink-soft">Pode ser. Eu abri o Meet na aba do Chrome.</p>
       </article>
-      <article class="rounded-xl border border-white/10 bg-ink-900 p-4" style="border-left:3px solid #34d399">
-        <span class="text-xs font-medium" style="color:#34d399">Participante</span>
-        <p class="mt-1 text-slate-100">Áudio da aba compartilhado — trechos a cada ~5s.</p>
+      <article class="rounded-2xl border border-line bg-panel p-5 shadow-soft" style="border-left:3px solid #B45309">
+        <span class="text-sm font-semibold" style="color:#B45309">Participante</span>
+        <p class="mt-1.5 text-[15px] text-ink-soft">Áudio da aba compartilhado — trechos a cada ~5s.</p>
       </article>`;
     const heading = section.querySelector('h2');
     section.innerHTML = '';
@@ -77,26 +77,26 @@ async function shot(page, name, url) {
   });
   console.log('saved captura');
 
-  // Modal alerta (texto alinhado ao MeetingAlertModal atual)
+  // Modal alerta (UI clara — alinhado ao MeetingAlertModal)
   await page.goto('http://localhost:3000/', { waitUntil: 'networkidle' });
-  await page.evaluate((sid) => {
+  await page.evaluate(() => {
     const root = document.createElement('div');
     root.innerHTML = `
-      <div style="position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5);padding:16px">
-        <div style="width:100%;max-width:32rem;border-radius:16px;border:1px solid rgba(255,255,255,.1);background:#121a2f;padding:24px;box-shadow:0 25px 50px rgba(0,0,0,.45)">
-          <p style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#8fb4ff;margin:0">Reunião detectada · MEET</p>
-          <h2 style="margin:8px 0 0;font-size:24px;color:#fff">Daily Sync — Produto</h2>
-          <p style="margin:8px 0 0;font-size:14px;color:#cbd5e1">Começa em 3 min. Deseja participar e iniciar a transcrição em tempo real?</p>
-          <div style="margin-top:24px;display:flex;flex-wrap:wrap;gap:12px">
-            <span style="border-radius:12px;background:#5b8cff;padding:8px 16px;font-size:14px;color:#fff">Participar e transcrever</span>
-            <span style="border-radius:12px;border:1px solid rgba(255,255,255,.2);padding:8px 16px;font-size:14px;color:#fff">Só transcrever</span>
-            <span style="border-radius:12px;border:1px solid rgba(255,255,255,.2);padding:8px 16px;font-size:14px;color:#fff">Só abrir reunião</span>
-            <span style="border-radius:12px;padding:8px 16px;font-size:14px;color:#94a3b8">Agora não</span>
+      <div style="position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background:rgba(14,22,37,.4);padding:16px;backdrop-filter:blur(2px)">
+        <div style="width:100%;max-width:32rem;border-radius:16px;border:1px solid #E2E8EF;background:#fff;padding:32px;box-shadow:0 12px 40px rgba(14,22,37,.1)">
+          <p style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#0F766E;margin:0;font-weight:600">Reunião detectada · MEET</p>
+          <h2 style="margin:8px 0 0;font-size:24px;color:#0E1625;font-weight:600">Daily Sync — Produto</h2>
+          <p style="margin:8px 0 0;font-size:14px;color:#5A6A7A">Começa em 3 min. Deseja participar e iniciar a transcrição em tempo real?</p>
+          <div style="margin-top:28px;display:flex;flex-wrap:wrap;gap:10px">
+            <span style="border-radius:12px;background:#0F766E;padding:10px 16px;font-size:14px;color:#fff;font-weight:600">Participar e transcrever</span>
+            <span style="border-radius:12px;border:1px solid #E2E8EF;padding:10px 16px;font-size:14px;color:#0E1625;font-weight:600">Só transcrever</span>
+            <span style="border-radius:12px;border:1px solid #E2E8EF;padding:10px 16px;font-size:14px;color:#0E1625;font-weight:600">Só abrir reunião</span>
+            <span style="border-radius:12px;padding:10px 16px;font-size:14px;color:#5A6A7A">Agora não</span>
           </div>
         </div>
       </div>`;
     document.body.appendChild(root);
-  }, scheduledId || liveId);
+  });
   await page.waitForTimeout(400);
   await page.screenshot({
     path: path.join(outDir, '06-alerta-reuniao.png'),

@@ -2,15 +2,19 @@
 
 Next.js (App Router) + Tailwind. Build Docker usa `output: 'standalone'`.
 
+**Design:** corporativo claro (teal + surface). Rule/skill:
+`.cursor/rules/frontend-design-system.mdc` ·
+`.cursor/skills/frontend-design-system/SKILL.md`
+
 ```
 frontend/
-├── Dockerfile          # multi-stage
+├── Dockerfile
 ├── public/
 └── src/
-    ├── app/            # rotas (agendar, captura, transcrição)
-    ├── components/     # alerta, speaker label, shell
-    ├── hooks/          # SSE, captura de áudio (aba/mic)
-    └── lib/            # api.ts, speaker-color (reexport shared)
+    ├── app/
+    ├── components/   # shell, modal, ui (PageHeader, Panel, StatusBadge)
+    ├── hooks/
+    └── lib/
 ```
 
 ## Subir
@@ -18,27 +22,15 @@ frontend/
 ```powershell
 copy ..\.env.template ..\.env
 npm run dev:frontend
-
-# Docker
-docker compose up --build frontend
 ```
 
 - Porta: **3000**
-- Browser → `NEXT_PUBLIC_API_URL` / `NEXT_PUBLIC_WS_URL` (ex.: `http://localhost:3001`)
-- SSR no container → `API_INTERNAL_URL` (ex.: `http://backend:3001`)
-
-Env vem do `.env` na raiz (bootstrap gera `.env.local`).
+- Swagger: **http://localhost:3001/api/docs** (redirect também em `/api/docs`)
 
 ### Captura / STT
 
-1. **Testar com microfone** na tela de captura (valida Whisper sem Meet).
-2. Ou **áudio da aba**: Chrome → aba Meet/Teams → *Compartilhar áudio da aba*.
-3. A cada ~5s um WebM completo vai ao backend via Socket.IO `/transcription`.
+1. Microfone (teste) ou áudio da aba Meet/Teams no Chrome  
+2. WebM ~5s → Socket.IO `/transcription`  
+3. Falantes com cor estável (`speakerColor` no shared)
 
-Protocolo: [docs/realtime.md](../docs/realtime.md).
-
-### Falantes
-
-Cor estável por nome: `speakerColor` em `@meeting-scribe/shared` (UI em `SpeakerLabel`).
-
-Ao mudar fluxo de uso ou env: atualizar este README, `.env.template` e Postman/Swagger se houver contrato.
+Ao mudar UI: seguir design system + regenerar `docs/screenshots/`.

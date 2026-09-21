@@ -14,6 +14,7 @@ description: >-
 | Skill | Quando carregar |
 |-------|-----------------|
 | `project-architecture` (rule) | Estrutura monorepo, pastas, portas |
+| [frontend-design-system](../frontend-design-system/SKILL.md) | **UI/UX** — visual corporativo, tokens, componentes |
 | [keep-docs-in-sync](../keep-docs-in-sync/SKILL.md) | **Sempre** ao fechar mudança (Swagger, Postman, testes, READMEs) |
 | [clean-architecture](../../../../.cursor/skills/clean-architecture/SKILL.md) | Use cases, ports |
 | [nestjs-services](../../../../.cursor/skills/nestjs-services/SKILL.md) | Backend NestJS |
@@ -37,7 +38,7 @@ description: >-
 flowchart TD
     A[1. Identificar pasta] --> B{backend / frontend / desktop?}
     B -->|API| C[clean-architecture + nestjs]
-    B -->|UI| D[nextjs-frontend]
+    B -->|UI| D[nextjs-frontend + frontend-design-system]
     B -->|Teams Windows| E[desktop Electron]
     C --> F[keep-docs-in-sync]
     D --> F

@@ -12,7 +12,13 @@
 | Env template | [../.env.template](../.env.template) | Nova variável de ambiente |
 | Rule | `.cursor/rules/keep-docs-in-sync.mdc` | Processo de documentação |
 
-### Regenerar prints
+### Visual / UI
+
+| Artefato | Caminho |
+|----------|---------|
+| Rule design | `.cursor/rules/frontend-design-system.mdc` |
+| Skill design | `.cursor/skills/frontend-design-system/SKILL.md` |
+| Screenshots | [screenshots/](screenshots/) |
 
 Com `npm run dev` no ar:
 
