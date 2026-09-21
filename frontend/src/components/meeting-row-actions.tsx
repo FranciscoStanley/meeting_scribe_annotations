@@ -3,7 +3,10 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { meetingCanModify, MeetingSessionStatus } from '@meeting-scribe/shared';
+import {
+  MeetingSessionStatus,
+  meetingRowActions,
+} from '@meeting-scribe/shared';
 import { api } from '@/lib/api';
 
 function IconEdit({ className = 'h-3.5 w-3.5' }: { className?: string }) {
@@ -68,8 +71,7 @@ export function MeetingRowActions({
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
-  const canModify = meetingCanModify(status);
-  const openPrimary = status === 'LIVE' || status === 'COMPLETED';
+  const { actions, openVariant } = meetingRowActions(status);
 
   async function onDelete() {
     if (
@@ -98,38 +100,40 @@ export function MeetingRowActions({
       role="group"
       aria-label="Ações da reunião"
     >
-      {canModify ? (
-        <>
-          <Link
-            href={`/meetings/${id}/edit`}
-            className="ms-btn ms-btn-sm ms-btn-secondary"
-          >
-            <IconEdit />
-            Editar
-          </Link>
-          <button
-            type="button"
-            disabled={busy}
-            onClick={onDelete}
-            className="ms-btn ms-btn-sm ms-btn-danger-ghost"
-            aria-label="Excluir agenda"
-          >
-            <IconTrash />
-            Excluir
-          </button>
-        </>
+      {actions.includes('edit') ? (
+        <Link
+          href={`/meetings/${id}/edit`}
+          className="ms-btn ms-btn-sm ms-btn-secondary"
+        >
+          <IconEdit />
+          Editar
+        </Link>
       ) : null}
-      <Link
-        href={`/meetings/${id}`}
-        className={
-          openPrimary
-            ? 'ms-btn ms-btn-sm ms-btn-primary'
-            : 'ms-btn ms-btn-sm ms-btn-secondary'
-        }
-      >
-        <IconOpen />
-        Abrir
-      </Link>
+      {actions.includes('delete') ? (
+        <button
+          type="button"
+          disabled={busy}
+          onClick={onDelete}
+          className="ms-btn ms-btn-sm ms-btn-danger-ghost"
+          aria-label="Excluir agenda"
+        >
+          <IconTrash />
+          Excluir
+        </button>
+      ) : null}
+      {actions.includes('open') ? (
+        <Link
+          href={`/meetings/${id}`}
+          className={
+            openVariant === 'primary'
+              ? 'ms-btn ms-btn-sm ms-btn-primary'
+              : 'ms-btn ms-btn-sm ms-btn-secondary'
+          }
+        >
+          <IconOpen />
+          Abrir
+        </Link>
+      ) : null}
     </div>
   );
 }
