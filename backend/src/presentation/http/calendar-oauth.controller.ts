@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { PrismaService } from '../../infrastructure/persistence/prisma.service';
+import { SyncCalendarMeetingsUseCase } from '../../application/use-cases/sync-calendar-meetings.use-case';
 
 @ApiTags('calendar')
 @Controller('api/v1/calendar')
@@ -10,21 +11,30 @@ export class CalendarOAuthController {
   constructor(
     private readonly config: ConfigService,
     private readonly prisma: PrismaService,
+    private readonly syncCalendar: SyncCalendarMeetingsUseCase,
   ) {}
 
   @Get('google/connect')
-  @ApiOperation({ summary: 'Inicia OAuth Google Calendar' })
+  @ApiOperation({
+    summary: 'Inicia OAuth Google Calendar (tela de permissões do Google)',
+  })
   connectGoogle(@Res() res: Response) {
-    const clientId = this.config.get<string>('GOOGLE_CLIENT_ID');
+    const clientId = this.config.get<string>('GOOGLE_CLIENT_ID')?.trim();
     const redirectUri = this.config.get<string>('GOOGLE_REDIRECT_URI');
+    const webOrigin = this.config.get('CORS_ORIGIN') ?? 'http://localhost:3000';
     if (!clientId || !redirectUri) {
-      return res.status(400).send('GOOGLE_CLIENT_ID/REDIRECT_URI não configurados');
+      return res.redirect(
+        `${webOrigin}/settings?oauth_error=google_not_configured`,
+      );
     }
     const url = new URL('https://accounts.google.com/o/oauth2/v2/auth');
     url.searchParams.set('client_id', clientId);
     url.searchParams.set('redirect_uri', redirectUri);
     url.searchParams.set('response_type', 'code');
-    url.searchParams.set('scope', 'https://www.googleapis.com/auth/calendar.readonly email');
+    url.searchParams.set(
+      'scope',
+      'https://www.googleapis.com/auth/calendar.readonly email',
+    );
     url.searchParams.set('access_type', 'offline');
     url.searchParams.set('prompt', 'consent');
     return res.redirect(url.toString());
@@ -32,11 +42,12 @@ export class CalendarOAuthController {
 
   @Get('google/callback')
   async googleCallback(@Query('code') code: string, @Res() res: Response) {
+    const webOrigin = this.config.get('CORS_ORIGIN') ?? 'http://localhost:3000';
     const clientId = this.config.get<string>('GOOGLE_CLIENT_ID');
     const clientSecret = this.config.get<string>('GOOGLE_CLIENT_SECRET');
     const redirectUri = this.config.get<string>('GOOGLE_REDIRECT_URI');
     if (!code || !clientId || !clientSecret || !redirectUri) {
-      return res.status(400).send('Callback inválido');
+      return res.redirect(`${webOrigin}/settings?oauth_error=google_callback`);
     }
 
     const body = new URLSearchParams({
@@ -59,7 +70,7 @@ export class CalendarOAuthController {
       error?: string;
     };
     if (!tokens.access_token) {
-      return res.status(400).send(tokens.error ?? 'Falha ao obter token Google');
+      return res.redirect(`${webOrigin}/settings?oauth_error=google_token`);
     }
 
     const profileRes = await fetch(
@@ -89,20 +100,25 @@ export class CalendarOAuthController {
       },
     });
 
-    const webOrigin = this.config.get('CORS_ORIGIN') ?? 'http://localhost:3000';
-    return res.redirect(`${webOrigin}/settings?connected=google`);
+    const synced = await this.runSync();
+    return res.redirect(
+      `${webOrigin}/settings?connected=google&synced=${synced}`,
+    );
   }
 
   @Get('microsoft/connect')
-  @ApiOperation({ summary: 'Inicia OAuth Microsoft Graph (Teams/Outlook)' })
+  @ApiOperation({
+    summary: 'Inicia OAuth Microsoft (Outlook / Teams) — tela de permissões',
+  })
   connectMicrosoft(@Res() res: Response) {
-    const clientId = this.config.get<string>('MICROSOFT_CLIENT_ID');
+    const clientId = this.config.get<string>('MICROSOFT_CLIENT_ID')?.trim();
     const redirectUri = this.config.get<string>('MICROSOFT_REDIRECT_URI');
     const tenant = this.config.get<string>('MICROSOFT_TENANT') ?? 'common';
+    const webOrigin = this.config.get('CORS_ORIGIN') ?? 'http://localhost:3000';
     if (!clientId || !redirectUri) {
-      return res
-        .status(400)
-        .send('MICROSOFT_CLIENT_ID/REDIRECT_URI não configurados');
+      return res.redirect(
+        `${webOrigin}/settings?oauth_error=microsoft_not_configured`,
+      );
     }
     const url = new URL(
       `https://login.microsoftonline.com/${tenant}/oauth2/v2.0/authorize`,
@@ -110,18 +126,26 @@ export class CalendarOAuthController {
     url.searchParams.set('client_id', clientId);
     url.searchParams.set('redirect_uri', redirectUri);
     url.searchParams.set('response_type', 'code');
+    url.searchParams.set(
+      'response_mode',
+      'query',
+    );
     url.searchParams.set('scope', 'offline_access Calendars.Read User.Read');
+    url.searchParams.set('prompt', 'consent');
     return res.redirect(url.toString());
   }
 
   @Get('microsoft/callback')
   async microsoftCallback(@Query('code') code: string, @Res() res: Response) {
+    const webOrigin = this.config.get('CORS_ORIGIN') ?? 'http://localhost:3000';
     const clientId = this.config.get<string>('MICROSOFT_CLIENT_ID');
     const clientSecret = this.config.get<string>('MICROSOFT_CLIENT_SECRET');
     const redirectUri = this.config.get<string>('MICROSOFT_REDIRECT_URI');
     const tenant = this.config.get<string>('MICROSOFT_TENANT') ?? 'common';
     if (!code || !clientId || !clientSecret || !redirectUri) {
-      return res.status(400).send('Callback inválido');
+      return res.redirect(
+        `${webOrigin}/settings?oauth_error=microsoft_callback`,
+      );
     }
 
     const body = new URLSearchParams({
@@ -148,9 +172,7 @@ export class CalendarOAuthController {
       error?: string;
     };
     if (!tokens.access_token) {
-      return res
-        .status(400)
-        .send(tokens.error ?? 'Falha ao obter token Microsoft');
+      return res.redirect(`${webOrigin}/settings?oauth_error=microsoft_token`);
     }
 
     const profileRes = await fetch('https://graph.microsoft.com/v1.0/me', {
@@ -182,7 +204,19 @@ export class CalendarOAuthController {
       },
     });
 
-    const webOrigin = this.config.get('CORS_ORIGIN') ?? 'http://localhost:3000';
-    return res.redirect(`${webOrigin}/settings?connected=microsoft`);
+    const synced = await this.runSync();
+    return res.redirect(
+      `${webOrigin}/settings?connected=microsoft&synced=${synced}`,
+    );
+  }
+
+  private async runSync(): Promise<number> {
+    try {
+      const now = new Date();
+      const to = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+      return await this.syncCalendar.execute(now, to);
+    } catch {
+      return 0;
+    }
   }
 }
