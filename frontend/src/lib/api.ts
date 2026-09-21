@@ -48,6 +48,17 @@ export const api = {
       method: 'POST',
       body: JSON.stringify(body),
     }),
+  listCalendarFeeds: () =>
+    request<Array<{ id: string; url: string; label: string | null }>>(
+      '/api/v1/calendar/feeds',
+    ),
+  addCalendarFeed: (body: { url: string; label?: string }) =>
+    request('/api/v1/calendar/feeds', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
+  removeCalendarFeed: (id: string) =>
+    request(`/api/v1/calendar/feeds/${id}`, { method: 'DELETE' }),
 };
 
 export function calendarConnectUrl(provider: 'google' | 'microsoft') {
