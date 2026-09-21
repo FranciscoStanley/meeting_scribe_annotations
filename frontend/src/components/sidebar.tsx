@@ -274,6 +274,18 @@ export function Sidebar() {
           <p className="px-1 text-[11px] leading-relaxed text-muted-soft">
             Teams & Meet · captura e transcrição em tempo real
           </p>
+          <button
+            type="button"
+            className="ms-btn-ghost w-full justify-start px-3 text-sm"
+            onClick={() => {
+              void (async () => {
+                await fetch('/api/auth/session', { method: 'DELETE' });
+                window.location.href = '/login';
+              })();
+            }}
+          >
+            Sair
+          </button>
         </div>
       </aside>
     </>

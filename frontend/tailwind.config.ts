@@ -54,6 +54,8 @@ const config: Config = {
       backgroundImage: {
         atmosphere:
           'radial-gradient(1100px 520px at 8% -8%, rgba(15, 118, 110, 0.09), transparent 55%), radial-gradient(900px 480px at 100% 0%, rgba(14, 22, 37, 0.045), transparent 52%), linear-gradient(180deg, #f7f9fb 0%, #f3f5f7 45%, #eef2f5 100%)',
+        'login-hero':
+          'radial-gradient(900px 520px at 12% 18%, rgba(15, 118, 110, 0.14), transparent 58%), radial-gradient(700px 420px at 88% 12%, rgba(14, 22, 37, 0.06), transparent 55%), linear-gradient(165deg, #f8fbfc 0%, #eef4f6 42%, #e8eef2 100%)',
       },
     },
   },

@@ -7,7 +7,8 @@ import {
   normalizeSpeakerKey,
   speakerColor,
 } from '@meeting-scribe/shared';
-import { api } from '@/lib/api';
+import { createApi } from '@/lib/api';
+import { resolveServerApiAccessToken } from '@/lib/auth-token.server';
 import { BackLink } from '@/components/back-link';
 import { TranscriptSegmentCard } from '@/components/transcript-segment-card';
 import {
@@ -24,6 +25,7 @@ export default async function MeetingDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  const api = createApi(await resolveServerApiAccessToken());
   let data: Awaited<ReturnType<typeof api.getTranscript>> | null = null;
   try {
     data = await api.getTranscript(id);

@@ -66,7 +66,9 @@ export function useAudioCapture(sessionId: string) {
     const socket = io(transcriptionSocketUrl(), {
       transports: ['websocket'],
       autoConnect: true,
-      auth: transcriptionSocketAuth(),
+      auth: (cb) => {
+        void transcriptionSocketAuth().then((auth) => cb(auth));
+      },
     });
     socketRef.current = socket;
     socket.on('transcript:segment', (segment: LiveSegment) => {

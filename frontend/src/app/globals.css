@@ -141,3 +141,15 @@ body {
     transform: translateY(0);
   }
 }
+
+.ms-login-brand {
+  animation: msFadeIn 0.55s ease-out both;
+}
+
+.ms-login-panel {
+  animation: msFadeIn 0.65s ease-out 0.08s both;
+}
+
+.ms-login-form .ms-input {
+  @apply py-3;
+}

@@ -1,11 +1,18 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
 import { useMeetingAlerts } from '@/hooks/use-meeting-alerts';
 import { MeetingAlertModal } from '@/components/meeting-alert-modal';
 import { Sidebar } from '@/components/sidebar';
 
 export function AppShell({ children }: { children: React.ReactNode }) {
-  const { alert, dismiss } = useMeetingAlerts();
+  const pathname = usePathname();
+  const isLogin = pathname === '/login';
+  const { alert, dismiss } = useMeetingAlerts(isLogin);
+
+  if (isLogin) {
+    return <>{children}</>;
+  }
 
   return (
     <div className="min-h-screen bg-surface bg-atmosphere text-ink lg:flex">

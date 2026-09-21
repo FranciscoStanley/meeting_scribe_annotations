@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Suspense } from 'react';
-import { api } from '@/lib/api';
+import { createApi } from '@/lib/api';
+import { resolveServerApiAccessToken } from '@/lib/auth-token.server';
 import { ScheduledBanner } from '@/components/scheduled-banner';
 import { MeetingRowActions } from '@/components/meeting-row-actions';
 import {
@@ -27,6 +28,7 @@ function PlatformChip({ platform }: { platform: string }) {
 }
 
 export default async function HomePage() {
+  const api = createApi(await resolveServerApiAccessToken());
   let meetings: Awaited<ReturnType<typeof api.listMeetings>> = [];
   let error: string | null = null;
   try {
@@ -50,7 +52,7 @@ export default async function HomePage() {
         title="Reuniões"
         description={`${countLabel}. Edite ou exclua só o que ainda não começou; depois disso, só visualizar e capturar.`}
         action={
-          <Link href="/meetings/new" className="ms-btn-primary">
+          <Link href="/meetings/new" className="ms-btn-primary shadow-soft">
             Agendar reunião
           </Link>
         }
