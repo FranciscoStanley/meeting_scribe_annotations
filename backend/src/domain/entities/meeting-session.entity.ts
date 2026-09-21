@@ -112,6 +112,34 @@ export class MeetingSessionEntity {
     });
   }
 
+  /**
+   * Fim efetivo: scheduledEnd ou início + duração padrão (minutos).
+   * Usado para encerrar agendas cujo horário já passou.
+   */
+  effectiveEnd(defaultDurationMinutes = 60): Date {
+    if (this.props.scheduledEnd) return this.props.scheduledEnd;
+    return new Date(
+      this.props.scheduledStart.getTime() + defaultDurationMinutes * 60_000,
+    );
+  }
+
+  /**
+   * Encerrar quando início e fim efetivo já passaram
+   * (e a sessão ainda não está COMPLETED/CANCELLED).
+   */
+  shouldAutoComplete(now: Date, defaultDurationMinutes = 60): boolean {
+    if (
+      this.props.status === 'COMPLETED' ||
+      this.props.status === 'CANCELLED'
+    ) {
+      return false;
+    }
+    if (now.getTime() < this.props.scheduledStart.getTime()) {
+      return false;
+    }
+    return now.getTime() >= this.effectiveEnd(defaultDurationMinutes).getTime();
+  }
+
   /** Agendas que ainda não iniciaram captura: SCHEDULED ou AWAITING_JOIN */
   canModify(): boolean {
     return (

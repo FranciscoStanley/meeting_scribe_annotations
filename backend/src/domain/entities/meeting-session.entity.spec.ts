@@ -57,3 +57,56 @@ describe('MeetingSessionEntity.shouldAlert', () => {
     expect(updated.platform).toBe('MEET');
   });
 });
+
+describe('MeetingSessionEntity.shouldAutoComplete', () => {
+  const base = {
+    title: 'Daily',
+    platform: 'TEAMS' as const,
+    scheduledStart: new Date('2026-09-22T18:00:00.000Z'),
+    scheduledEnd: new Date('2026-09-22T19:00:00.000Z'),
+    joinUrl: 'https://teams.microsoft.com/meet/123',
+  };
+
+  it('não encerra antes do início', () => {
+    const session = MeetingSessionEntity.create(base);
+    expect(
+      session.shouldAutoComplete(new Date('2026-09-22T17:59:00.000Z')),
+    ).toBe(false);
+  });
+
+  it('não encerra entre início e fim', () => {
+    const session = MeetingSessionEntity.create(base);
+    expect(
+      session.shouldAutoComplete(new Date('2026-09-22T18:30:00.000Z')),
+    ).toBe(false);
+  });
+
+  it('encerra quando início e fim já passaram', () => {
+    const session = MeetingSessionEntity.create(base);
+    expect(
+      session.shouldAutoComplete(new Date('2026-09-22T19:00:00.000Z')),
+    ).toBe(true);
+  });
+
+  it('sem fim usa duração padrão a partir do início', () => {
+    const session = MeetingSessionEntity.create({
+      ...base,
+      scheduledEnd: undefined,
+    });
+    expect(
+      session.shouldAutoComplete(new Date('2026-09-22T18:59:00.000Z'), 60),
+    ).toBe(false);
+    expect(
+      session.shouldAutoComplete(new Date('2026-09-22T19:00:00.000Z'), 60),
+    ).toBe(true);
+  });
+
+  it('não encerra COMPLETED ou CANCELLED', () => {
+    const done = MeetingSessionEntity.create(base).complete(
+      new Date('2026-09-22T19:00:00.000Z'),
+    );
+    expect(
+      done.shouldAutoComplete(new Date('2026-09-22T20:00:00.000Z')),
+    ).toBe(false);
+  });
+});
