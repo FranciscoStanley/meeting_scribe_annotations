@@ -147,11 +147,12 @@ docs/              Arquitetura, Postman, realtime, deploy, OAuth, screenshots
 
 ## Documentação e qualidade
 
+Wiki oficial: [GitHub Wiki](https://github.com/FranciscoStanley/meeting_scribe_annotations/wiki)  
 Ao mudar código, a rule **`keep-docs-in-sync`** exige atualizar Swagger, Postman, testes e READMEs.  
 Arquitetura e fluxogramas: [docs/architecture.md](docs/architecture.md).  
 UI: rule/skill `frontend-design-system`. Segurança: [docs/security.md](docs/security.md).  
 Se a UI mudar de forma relevante, atualize `docs/screenshots/`.  
-Commits: **1 alteração = 1 commit** (`organize-commits`); **push é manual**.
+Commits: **1 alteração = 1 commit** (`organize-commits`); **push é manual**. Branch `master` protegida (sem force push; CI + PR).
 
 ## Segurança
 
