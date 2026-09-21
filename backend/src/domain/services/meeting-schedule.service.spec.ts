@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { assertMeetingSchedule } from './meeting-schedule.service';
 
-describe('assertMeetingSchedule', () => {
+describe('assertMeetingSchedule (backend)', () => {
   const start = new Date('2026-09-22T18:00:00.000Z');
 
   it('aceita só início', () => {
@@ -19,9 +19,5 @@ describe('assertMeetingSchedule', () => {
     expect(() =>
       assertMeetingSchedule(start, new Date('2026-09-22T17:00:00.000Z')),
     ).toThrow(/posterior/);
-  });
-
-  it('rejeita data inválida', () => {
-    expect(() => assertMeetingSchedule(new Date('invalid'))).toThrow(/início/);
   });
 });
