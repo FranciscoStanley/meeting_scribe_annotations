@@ -6,7 +6,7 @@ Transcrição em tempo real de reuniões (Meet / Teams) — **só rode o projeto
 
 ### Lista de reuniões
 
-Dashboard com status (`SCHEDULED` / `AWAITING_JOIN` / `LIVE` / `COMPLETED`), plataforma (Teams ou Meet) e quantidade de trechos. Cada sessão abre a transcrição completa.
+Dashboard com status, plataforma e trechos. **Agendas não iniciadas** (`SCHEDULED` / `Aguardando`): Editar e Excluir. **Ao vivo ou concluídas**: só Visualizar.
 
 ![Lista de reuniões](docs/screenshots/01-reunioes.png)
 
@@ -118,7 +118,7 @@ Fluxo: **Agendar reunião** (horário + link) → deixe a aba aberta → na hora
 Sobe **frontend** (`3000`), **backend** (`3001`) e **Whisper** (`8080`).
 
 - App: http://localhost:3000 (ou IP do servidor)  
-- API / Swagger: http://localhost:3001/api/docs  
+- API / Swagger: **http://localhost:3001/api/docs** (não use a porta 3000)  
 - Postman: [docs/postman/meeting-scribe.postman_collection.json](docs/postman/meeting-scribe.postman_collection.json)
 
 Dockerfiles multi-stage: `backend/Dockerfile` e `frontend/Dockerfile`.

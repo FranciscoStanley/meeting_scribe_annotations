@@ -28,7 +28,7 @@ export class PrismaMeetingSessionRepository
         scheduledEnd: props.scheduledEnd,
         startedAt: props.startedAt,
         endedAt: props.endedAt,
-        alertSentAt: props.alertSentAt,
+        alertSentAt: props.alertSentAt ?? null,
       },
       update: {
         title: props.title,
@@ -36,10 +36,10 @@ export class PrismaMeetingSessionRepository
         status: props.status,
         joinUrl: props.joinUrl,
         scheduledStart: props.scheduledStart,
-        scheduledEnd: props.scheduledEnd,
-        startedAt: props.startedAt,
-        endedAt: props.endedAt,
-        alertSentAt: props.alertSentAt,
+        scheduledEnd: props.scheduledEnd ?? null,
+        startedAt: props.startedAt ?? null,
+        endedAt: props.endedAt ?? null,
+        alertSentAt: props.alertSentAt ?? null,
       },
     });
     return this.map(row);
@@ -84,6 +84,10 @@ export class PrismaMeetingSessionRepository
       where: { externalId },
     });
     return row ? this.map(row) : null;
+  }
+
+  async deleteById(id: string): Promise<void> {
+    await this.prisma.meetingSession.delete({ where: { id } });
   }
 
   private map(row: {

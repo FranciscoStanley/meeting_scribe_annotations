@@ -34,4 +34,26 @@ describe('MeetingSessionEntity.shouldAlert', () => {
     const now = new Date('2026-09-22T17:58:00.000Z');
     expect(session.shouldAlert(now, 3, 5)).toBe(false);
   });
+
+  it('permite editar/excluir só antes de iniciar (SCHEDULED / AWAITING_JOIN)', () => {
+    const scheduled = MeetingSessionEntity.create(base);
+    expect(scheduled.canModify()).toBe(true);
+    expect(scheduled.markAlertSent(new Date()).canModify()).toBe(true);
+    expect(scheduled.startLive(new Date()).canModify()).toBe(false);
+    expect(scheduled.complete(new Date()).canModify()).toBe(false);
+  });
+
+  it('updateSchedule limpa alerta e volta a SCHEDULED', () => {
+    const session = MeetingSessionEntity.create(base).markAlertSent(new Date());
+    const updated = session.updateSchedule({
+      title: 'Daily 2',
+      scheduledStart: new Date('2026-09-22T19:00:00.000Z'),
+      joinUrl: 'https://meet.google.com/abc-defg-hij',
+      platform: 'MEET',
+    });
+    expect(updated.title).toBe('Daily 2');
+    expect(updated.status).toBe('SCHEDULED');
+    expect(updated.alertSentAt).toBeUndefined();
+    expect(updated.platform).toBe('MEET');
+  });
 });

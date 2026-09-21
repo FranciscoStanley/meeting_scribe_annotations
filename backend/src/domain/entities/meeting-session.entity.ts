@@ -111,4 +111,36 @@ export class MeetingSessionEntity {
       endedAt: at,
     });
   }
+
+  /** Agendas que ainda não iniciaram captura: SCHEDULED ou AWAITING_JOIN */
+  canModify(): boolean {
+    return (
+      this.props.status === 'SCHEDULED' || this.props.status === 'AWAITING_JOIN'
+    );
+  }
+
+  updateSchedule(input: {
+    title: string;
+    scheduledStart: Date;
+    scheduledEnd?: Date;
+    joinUrl: string;
+    platform: MeetingPlatform;
+  }): MeetingSessionEntity {
+    if (!this.canModify()) {
+      throw new Error(
+        'Só é possível editar agendas que ainda não iniciaram (não LIVE/COMPLETED).',
+      );
+    }
+    return new MeetingSessionEntity({
+      ...this.props,
+      title: input.title,
+      scheduledStart: input.scheduledStart,
+      scheduledEnd: input.scheduledEnd,
+      joinUrl: input.joinUrl,
+      platform: input.platform,
+      // Reagenda: volta a SCHEDULED e limpa alerta para avisar de novo
+      status: 'SCHEDULED',
+      alertSentAt: undefined,
+    });
+  }
 }

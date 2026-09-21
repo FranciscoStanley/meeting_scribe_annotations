@@ -38,26 +38,36 @@ export function MeetingAlertModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-4 sm:items-center">
-      <div className="w-full max-w-lg rounded-2xl border border-white/10 bg-ink-900 p-6 shadow-2xl">
-        <p className="text-sm uppercase tracking-wide text-accent-soft">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-ink/40 p-4 backdrop-blur-[2px] sm:items-center">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="meeting-alert-title"
+        className="w-full max-w-lg rounded-2xl border border-hairline bg-panel p-6 shadow-lift sm:p-8"
+      >
+        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand">
           Reunião detectada · {platform}
         </p>
-        <h2 className="mt-2 text-2xl font-semibold text-white">{title}</h2>
-        <p className="mt-2 text-sm text-slate-300">
+        <h2
+          id="meeting-alert-title"
+          className="mt-2 font-display text-2xl font-semibold tracking-tight text-ink"
+        >
+          {title}
+        </h2>
+        <p className="mt-2 text-sm leading-relaxed text-muted">
           {timing} Deseja participar e iniciar a transcrição em tempo real?
         </p>
-        <div className="mt-6 flex flex-wrap gap-3">
+        <div className="mt-7 flex flex-wrap gap-2.5">
           <button
             type="button"
             onClick={participateAndTranscribe}
-            className="rounded-xl bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-soft"
+            className="ms-btn-primary"
           >
             Participar e transcrever
           </button>
           <Link
             href={`/sessions/${sessionId}/capture`}
-            className="rounded-xl border border-white/20 px-4 py-2 text-sm text-white hover:bg-white/5"
+            className="ms-btn-secondary"
             onClick={onDismiss}
           >
             Só transcrever
@@ -67,16 +77,12 @@ export function MeetingAlertModal({
               href={joinUrl}
               target="_blank"
               rel="noreferrer"
-              className="rounded-xl border border-white/20 px-4 py-2 text-sm text-white hover:bg-white/5"
+              className="ms-btn-secondary"
             >
               Só abrir reunião
             </a>
           ) : null}
-          <button
-            type="button"
-            onClick={onDismiss}
-            className="rounded-xl px-4 py-2 text-sm text-slate-400 hover:text-white"
-          >
+          <button type="button" onClick={onDismiss} className="ms-btn-ghost">
             Agora não
           </button>
         </div>

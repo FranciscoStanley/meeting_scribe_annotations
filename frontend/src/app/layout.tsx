@@ -1,11 +1,24 @@
 import type { Metadata } from 'next';
+import { Outfit, Source_Sans_3 } from 'next/font/google';
 import { AppShell } from '@/components/app-shell';
 import './globals.css';
+
+const display = Outfit({
+  subsets: ['latin'],
+  variable: '--font-display',
+  display: 'swap',
+});
+
+const sans = Source_Sans_3({
+  subsets: ['latin'],
+  variable: '--font-sans',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'Meeting Scribe',
   description:
-    'Transcrição em tempo real de reuniões Microsoft Teams e Google Meet',
+    'Transcrição corporativa em tempo real de reuniões Microsoft Teams e Google Meet',
 };
 
 export default function RootLayout({
@@ -14,8 +27,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-BR" suppressHydrationWarning>
-      {/* Extensões do browser (ex.: ColorZilla) injetam attrs no <body> e geram falso hydration warning */}
+    <html lang="pt-BR" className={`${display.variable} ${sans.variable}`} suppressHydrationWarning>
       <body suppressHydrationWarning>
         <AppShell>{children}</AppShell>
       </body>

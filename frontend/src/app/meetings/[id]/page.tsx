@@ -1,7 +1,9 @@
 import Link from 'next/link';
+import { meetingCanModify, MeetingSessionStatus } from '@meeting-scribe/shared';
 import { api } from '@/lib/api';
 import { SpeakerLabel } from '@/components/speaker-label';
 import { speakerColor } from '@/lib/speaker-color';
+import { AlertBanner, EmptyState, PageHeader, Panel } from '@/components/ui';
 
 export default async function MeetingDetailPage({
   params,
@@ -18,50 +20,66 @@ export default async function MeetingDetailPage({
 
   if (!data) {
     return (
-      <p className="text-red-300">Transcrição não encontrada ou API indisponível.</p>
+      <AlertBanner tone="danger">
+        Transcrição não encontrada ou API indisponível.
+      </AlertBanner>
     );
   }
 
+  const status = String(data.session.status ?? 'SCHEDULED') as MeetingSessionStatus;
+  const canModify = meetingCanModify(status);
+
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-3xl font-semibold text-white">
-            {String(data.session.title)}
-          </h1>
-          <p className="mt-1 text-sm text-slate-400">
-            {data.segments.length} trechos transcritos
-          </p>
-        </div>
-        <Link
-          href={`/sessions/${id}/capture`}
-          className="rounded-xl bg-accent px-4 py-2 text-sm font-medium text-white"
-        >
-          Continuar captura
-        </Link>
-      </div>
+    <div className="space-y-8">
+      <PageHeader
+        title={String(data.session.title)}
+        description={`${data.segments.length} trecho${data.segments.length === 1 ? '' : 's'} transcrito${data.segments.length === 1 ? '' : 's'}`}
+        action={
+          <div className="flex flex-wrap gap-2">
+            {canModify ? (
+              <Link href={`/meetings/${id}/edit`} className="ms-btn-secondary">
+                Editar agenda
+              </Link>
+            ) : null}
+            <Link href={`/sessions/${id}/capture`} className="ms-btn-primary">
+              {status === 'COMPLETED' ? 'Abrir sessão' : 'Continuar captura'}
+            </Link>
+          </div>
+        }
+      />
 
       <div className="space-y-3">
         {data.segments.map((segment) => (
           <article
             key={segment.id}
-            className="rounded-xl border border-white/10 bg-ink-900 p-4"
+            className="rounded-2xl border border-hairline bg-panel p-5 shadow-soft"
             style={{
               borderLeftColor: speakerColor(segment.speakerLabel),
               borderLeftWidth: 3,
             }}
           >
-            <header className="mb-2 flex items-center justify-between text-xs text-slate-400">
-              <SpeakerLabel name={segment.speakerLabel} />
-              <time dateTime={segment.startedAt}>
+            <header className="mb-2 flex items-center justify-between gap-3 text-xs text-muted">
+              <SpeakerLabel
+                name={segment.speakerLabel}
+                className="text-sm font-semibold"
+              />
+              <time className="tabular-nums" dateTime={segment.startedAt}>
                 {new Date(segment.startedAt).toLocaleTimeString('pt-BR')}
               </time>
             </header>
-            <p className="text-slate-100">{segment.text}</p>
+            <p className="text-[15px] leading-relaxed text-ink-soft">
+              {segment.text}
+            </p>
           </article>
         ))}
         {!data.segments.length ? (
-          <p className="text-slate-500">Ainda não há trechos para esta reunião.</p>
+          <Panel>
+            <EmptyState title="Ainda não há trechos">
+              {canModify
+                ? 'Edite a agenda ou inicie a captura quando chegar a hora.'
+                : 'Esta reunião já ocorreu — apenas visualização.'}
+            </EmptyState>
+          </Panel>
         ) : null}
       </div>
     </div>

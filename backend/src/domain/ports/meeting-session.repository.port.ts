@@ -9,4 +9,5 @@ export interface MeetingSessionRepositoryPort {
   findAwaitingOrLive(): Promise<MeetingSessionEntity[]>;
   listRecent(limit: number): Promise<MeetingSessionEntity[]>;
   findByExternalId(externalId: string): Promise<MeetingSessionEntity | null>;
+  deleteById(id: string): Promise<void>;
 }

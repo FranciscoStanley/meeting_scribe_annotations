@@ -3,9 +3,67 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
+  --ms-hairline: #e2e8ef;
+  --ms-panel: #ffffff;
+  --ms-brand: #0f766e;
+  --ms-brand-ink: #0a5c56;
 }
 
 body {
-  @apply bg-ink-950 text-slate-100 antialiased;
+  @apply bg-surface font-sans text-ink antialiased;
+}
+
+@layer components {
+  .ms-panel {
+    @apply rounded-2xl border bg-panel shadow-soft;
+    border-color: var(--ms-hairline);
+  }
+
+  .ms-input {
+    @apply mt-1.5 w-full rounded-xl border bg-panel px-3.5 py-2.5 text-sm text-ink
+      placeholder:text-muted-soft
+      focus:outline-none focus:ring-2;
+    border-color: var(--ms-hairline);
+  }
+
+  .ms-input:focus {
+    border-color: var(--ms-brand);
+    --tw-ring-color: rgb(15 118 110 / 0.2);
+  }
+
+  .ms-label {
+    @apply block text-sm font-medium text-ink-soft;
+  }
+
+  .ms-btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold
+      transition focus-visible:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .ms-btn:focus-visible {
+    --tw-ring-color: rgb(15 118 110 / 0.3);
+  }
+
+  .ms-btn-primary {
+    @apply ms-btn text-white;
+    background-color: var(--ms-brand);
+  }
+
+  .ms-btn-primary:hover {
+    background-color: var(--ms-brand-ink);
+  }
+
+  .ms-btn-secondary {
+    @apply ms-btn border bg-panel text-ink hover:bg-surface;
+    border-color: var(--ms-hairline);
+  }
+
+  .ms-btn-danger {
+    @apply ms-btn border border-danger/30 bg-danger-soft text-danger hover:bg-danger/10;
+  }
+
+  .ms-btn-ghost {
+    @apply ms-btn text-muted hover:bg-surface hover:text-ink;
+  }
 }

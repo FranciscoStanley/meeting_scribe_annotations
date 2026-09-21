@@ -62,6 +62,33 @@ export const api = {
       method: 'POST',
       body: JSON.stringify(body),
     }),
+  getMeeting: (id: string) =>
+    request<{
+      id: string;
+      title: string;
+      platform: string;
+      status: import('@meeting-scribe/shared').MeetingSessionStatus;
+      scheduledStart: string;
+      scheduledEnd?: string;
+      joinUrl?: string;
+      canModify: boolean;
+    }>(`/api/v1/meetings/${id}`),
+  updateMeeting: (
+    id: string,
+    body: {
+      title: string;
+      scheduledStart: string;
+      scheduledEnd?: string;
+      joinUrl: string;
+      platform?: string;
+    },
+  ) =>
+    request(`/api/v1/meetings/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(body),
+    }),
+  deleteMeeting: (id: string) =>
+    request<{ ok: true }>(`/api/v1/meetings/${id}`, { method: 'DELETE' }),
   listCalendarFeeds: () =>
     request<Array<{ id: string; url: string; label: string | null }>>(
       '/api/v1/calendar/feeds',

@@ -51,6 +51,9 @@ Guia local: [docs/dev-local.md](../docs/dev-local.md) · Realtime: [docs/realtim
 | POST | `/api/v1/meetings` | Agenda (horário + **joinUrl** obrigatório) |
 | POST | `/api/v1/meetings/sync-calendar` | Sync ICS/OAuth |
 | GET | `/api/v1/meetings/:id/transcript` | Transcrição |
+| GET | `/api/v1/meetings/:id` | Detalhe + `canModify` |
+| PATCH | `/api/v1/meetings/:id` | Edita agenda **não iniciada** |
+| DELETE | `/api/v1/meetings/:id` | Exclui agenda **não iniciada** |
 | POST | `/api/v1/meetings/:id/start` | Marca LIVE |
 | POST | `/api/v1/meetings/:id/complete` | Marca COMPLETED |
 | GET/POST/DELETE | `/api/v1/calendar/feeds` | Feeds ICS |

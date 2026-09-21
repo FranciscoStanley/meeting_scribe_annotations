@@ -31,6 +31,11 @@ export interface MeetingSummaryDto {
   segmentCount: number;
 }
 
+/** Agendas ainda não iniciadas (editáveis / excluíveis). */
+export function meetingCanModify(status: MeetingSessionStatus): boolean {
+  return status === 'SCHEDULED' || status === 'AWAITING_JOIN';
+}
+
 export interface MeetingAlertEvent {
   type: 'meeting:starting';
   payload: {

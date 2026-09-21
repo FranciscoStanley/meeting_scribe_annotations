@@ -63,6 +63,35 @@
           }
         },
         {
+          "name": "Get meeting",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/meetings/{{meetingId}}",
+            "description": "Detalhe da agenda com canModify (true se SCHEDULED/AWAITING_JOIN)."
+          }
+        },
+        {
+          "name": "Update meeting (só não iniciadas)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Daily Sync (editada)\",\n  \"scheduledStart\": \"2026-09-22T19:00:00.000Z\",\n  \"joinUrl\": \"https://meet.google.com/rdg-sxjm-eux\",\n  \"platform\": \"MEET\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/meetings/{{meetingId}}",
+            "description": "400 se LIVE/COMPLETED. Reagenda limpa alertSentAt."
+          }
+        },
+        {
+          "name": "Delete meeting (só não iniciadas)",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/v1/meetings/{{meetingId}}",
+            "description": "400 se já iniciou ou concluiu. Cascata em trechos/falantes."
+          }
+        },
+        {
           "name": "Get transcript",
           "request": {
             "method": "GET",

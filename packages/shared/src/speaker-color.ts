@@ -1,17 +1,17 @@
-/** Paleta legível em fundo escuro — mesma cor sempre para o mesmo nome. */
+/** Paleta legível em fundo claro — mesma cor sempre para o mesmo nome. */
 export const SPEAKER_PALETTE = [
-  '#38bdf8', // sky
-  '#a78bfa', // violet
-  '#34d399', // emerald
-  '#fbbf24', // amber
-  '#fb7185', // rose
-  '#2dd4bf', // teal
-  '#f97316', // orange
-  '#60a5fa', // blue
-  '#e879f9', // fuchsia
-  '#4ade80', // green
-  '#f472b6', // pink
-  '#22d3ee', // cyan
+  '#0F766E', // teal
+  '#1D4ED8', // blue
+  '#7C3AED', // violet (acento falante, não tema)
+  '#B45309', // amber
+  '#BE123C', // rose
+  '#0E7490', // cyan
+  '#C2410C', // orange
+  '#4338CA', // indigo
+  '#A21CAF', // fuchsia
+  '#15803D', // green
+  '#9D174D', // pink
+  '#155E75', // slate-cyan
 ] as const;
 
 function hashLabel(label: string): number {

@@ -2,6 +2,15 @@ import Link from 'next/link';
 import { Suspense } from 'react';
 import { api } from '@/lib/api';
 import { ScheduledBanner } from '@/components/scheduled-banner';
+import { MeetingRowActions } from '@/components/meeting-row-actions';
+import {
+  AlertBanner,
+  EmptyState,
+  PageHeader,
+  Panel,
+  StatusBadge,
+  TextLink,
+} from '@/components/ui';
 
 function platformLabel(platform: string) {
   if (platform === 'TEAMS') return 'Microsoft Teams';
@@ -20,77 +29,74 @@ export default async function HomePage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-semibold text-white">Suas reuniões</h1>
-          <p className="mt-2 max-w-2xl text-slate-400">
-            Agende com <strong>horário + link</strong>. Na hora, o app solicita
-            participar e transcrever. Transcrições ficam salvas com falantes e
-            texto.
-          </p>
-        </div>
-        <Link
-          href="/meetings/new"
-          className="rounded-xl bg-accent px-4 py-2 text-sm font-medium text-white"
-        >
-          Agendar reunião
-        </Link>
-      </div>
+    <div className="space-y-8">
+      <PageHeader
+        title="Reuniões"
+        description="Agende com horário e link. Agendas que ainda não iniciaram podem ser editadas ou excluídas; as que já ocorreram ficam só para visualizar."
+        action={
+          <Link href="/meetings/new" className="ms-btn-primary">
+            Agendar reunião
+          </Link>
+        }
+      />
 
       <Suspense fallback={null}>
         <ScheduledBanner />
       </Suspense>
 
-      {error ? (
-        <p className="rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-200">
-          {error}
-        </p>
-      ) : null}
+      {error ? <AlertBanner tone="danger">{error}</AlertBanner> : null}
 
-      <div className="overflow-hidden rounded-2xl border border-white/10">
-        <table className="min-w-full text-left text-sm">
-          <thead className="bg-ink-900 text-slate-400">
-            <tr>
-              <th className="px-4 py-3 font-medium">Título</th>
-              <th className="px-4 py-3 font-medium">Plataforma</th>
-              <th className="px-4 py-3 font-medium">Início</th>
-              <th className="px-4 py-3 font-medium">Status</th>
-              <th className="px-4 py-3 font-medium">Trechos</th>
-              <th className="px-4 py-3 font-medium"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {meetings.map((meeting) => (
-              <tr key={meeting.id} className="border-t border-white/5">
-                <td className="px-4 py-3 text-white">{meeting.title}</td>
-                <td className="px-4 py-3">{platformLabel(meeting.platform)}</td>
-                <td className="px-4 py-3 text-slate-300">
-                  {new Date(meeting.scheduledStart).toLocaleString('pt-BR')}
-                </td>
-                <td className="px-4 py-3">{meeting.status}</td>
-                <td className="px-4 py-3">{meeting.segmentCount}</td>
-                <td className="px-4 py-3 text-right">
-                  <Link
-                    href={`/meetings/${meeting.id}`}
-                    className="text-accent-soft hover:underline"
-                  >
-                    Ver transcrição
-                  </Link>
-                </td>
+      <Panel className="overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-left text-sm">
+            <thead>
+              <tr className="border-b border-hairline bg-surface/80 text-xs font-semibold uppercase tracking-wide text-muted">
+                <th className="px-5 py-3.5 font-semibold">Título</th>
+                <th className="px-5 py-3.5 font-semibold">Plataforma</th>
+                <th className="px-5 py-3.5 font-semibold">Início</th>
+                <th className="px-5 py-3.5 font-semibold">Status</th>
+                <th className="px-5 py-3.5 font-semibold">Trechos</th>
+                <th className="px-5 py-3.5 font-semibold text-right">Ações</th>
               </tr>
-            ))}
-            {!meetings.length && !error ? (
-              <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-slate-500">
-                  Nenhuma reunião ainda. Use <strong>Agendar reunião</strong> com
-                  horário e link do Teams/Meet.
-                </td>
-              </tr>
-            ) : null}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {meetings.map((meeting) => (
+                <tr
+                  key={meeting.id}
+                  className="border-b border-hairline/70 last:border-0 transition hover:bg-brand-mist/40"
+                >
+                  <td className="px-5 py-4 font-medium text-ink">{meeting.title}</td>
+                  <td className="px-5 py-4 text-muted">
+                    {platformLabel(meeting.platform)}
+                  </td>
+                  <td className="px-5 py-4 tabular-nums text-muted">
+                    {new Date(meeting.scheduledStart).toLocaleString('pt-BR')}
+                  </td>
+                  <td className="px-5 py-4">
+                    <StatusBadge status={meeting.status} />
+                  </td>
+                  <td className="px-5 py-4 tabular-nums text-muted">
+                    {meeting.segmentCount}
+                  </td>
+                  <td className="px-5 py-4 text-right">
+                    <MeetingRowActions id={meeting.id} status={meeting.status} />
+                  </td>
+                </tr>
+              ))}
+              {!meetings.length && !error ? (
+                <tr>
+                  <td colSpan={6}>
+                    <EmptyState title="Nenhuma reunião ainda">
+                      Use <TextLink href="/meetings/new">Agendar reunião</TextLink>{' '}
+                      com horário e link do Teams ou Meet.
+                    </EmptyState>
+                  </td>
+                </tr>
+              ) : null}
+            </tbody>
+          </table>
+        </div>
+      </Panel>
     </div>
   );
 }
