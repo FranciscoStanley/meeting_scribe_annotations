@@ -8,9 +8,9 @@ backend/
 ├── docker-entrypoint.sh    # prisma migrate + start
 ├── prisma/                 # Schema e migrations
 ├── src/
-│   ├── domain/
-│   ├── application/
-│   ├── infrastructure/     # Prisma, ICS/OAuth, Whisper local/remoto
+│   ├── domain/             # entities, ports, schedule validation
+│   ├── application/        # use cases (alerts, expire, CRUD…)
+│   ├── infrastructure/     # Prisma, ICS/OAuth, Whisper, cron
 │   ├── presentation/       # HTTP, WebSocket, SSE
 │   └── modules/
 └── package.json
@@ -19,21 +19,17 @@ backend/
 ## Subir
 
 ```powershell
-# Local sem Docker (raiz do monorepo)
 copy ..\.env.template ..\.env
 npm run dev            # API + UI
 # ou só API:
 npm run dev:backend
-
-# Via Docker Compose (raiz)
-docker compose up --build backend
 ```
 
-Guia local: [docs/dev-local.md](../docs/dev-local.md) · Realtime: [docs/realtime.md](../docs/realtime.md) · Segurança: [docs/security.md](../docs/security.md)
+Guia local: [docs/dev-local.md](../docs/dev-local.md) · Realtime: [docs/realtime.md](../docs/realtime.md) · Segurança: [docs/security.md](../docs/security.md) · Arquitetura: [docs/architecture.md](../docs/architecture.md)
 
 - Porta: **3001**
 - Health: `GET /health` (público)
-- Swagger: http://localhost:3001/api/docs (Authorize com Bearer / X-API-Key se token ativo)
+- Swagger: http://localhost:3001/api/docs (Authorize Bearer / X-API-Key se token ativo)
 - Postman: `docs/postman/meeting-scribe.postman_collection.json`
 
 ## Segurança (resumo)
@@ -57,9 +53,9 @@ Guia local: [docs/dev-local.md](../docs/dev-local.md) · Realtime: [docs/realtim
 | Método | Rota | Descrição |
 |--------|------|-----------|
 | GET | `/api/v1/meetings` | Lista (encerra agendas vencidas antes) |
-| POST | `/api/v1/meetings` | Agenda (horário + **joinUrl**; fim > início) |
+| POST | `/api/v1/meetings` | Agenda (`joinUrl`; fim > início) |
 | POST | `/api/v1/meetings/sync-calendar` | Sync ICS/OAuth |
-| GET | `/api/v1/meetings/:id/transcript` | Transcrição |
+| GET | `/api/v1/meetings/:id/transcript` | Transcrição (+ expire se vencida) |
 | GET | `/api/v1/meetings/:id` | Detalhe + `canModify` |
 | PATCH | `/api/v1/meetings/:id` | Edita agenda **não iniciada** |
 | DELETE | `/api/v1/meetings/:id` | Exclui agenda **não iniciada** |
@@ -72,10 +68,12 @@ Guia local: [docs/dev-local.md](../docs/dev-local.md) · Realtime: [docs/realtim
 
 ## Alertas e encerramento
 
-- `MEETING_ALERT_MINUTES` (lead antes do início)
-- `MEETING_ALERT_GRACE_MINUTES` (atraso do cron após o início)
-- `MEETING_DEFAULT_DURATION_MINUTES` (se não houver `scheduledEnd`, encerra N min após o início)
-- Cron a cada minuto + listagem/detalhe: agendas com início e fim efetivo passados → `COMPLETED`
+- `MEETING_ALERT_MINUTES` — lead antes do início  
+- `MEETING_ALERT_GRACE_MINUTES` — atraso do cron após o início  
+- `MEETING_DEFAULT_DURATION_MINUTES` — sem `scheduledEnd`, encerra N min após o início  
+- Cron (1 min) + listagem/detalhe/transcrição: início e fim efetivo passados → `COMPLETED` (`ExpirePastMeetingsUseCase`)
+
+Validação de horário: `assertMeetingSchedule` (shared) — fim posterior ao início.
 
 ## Testes
 
@@ -83,6 +81,6 @@ Guia local: [docs/dev-local.md](../docs/dev-local.md) · Realtime: [docs/realtim
 npm run test -w @meeting-scribe/backend
 ```
 
-Cobre domínio (`shouldAlert`), use case de alertas e detector de plataforma.
+Cobre: `shouldAlert`, `shouldAutoComplete`, `ExpirePastMeetings`, `assertMeetingSchedule`, API access guard, platform detector.
 
-Ao alterar APIs: atualizar Swagger, Postman, testes e este README (`keep-docs-in-sync`).
+Ao alterar APIs: Swagger, Postman, testes e este README (`keep-docs-in-sync`).
