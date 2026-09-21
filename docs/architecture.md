@@ -1,7 +1,7 @@
 # Arquitetura técnica — Meeting Scribe
 
 **Autor:** Francisco Stanley Rodrigues Albuquerque  
-**Versão do documento:** 1.2 · monorepo NestJS + Next.js + Electron
+**Versão do documento:** 1.3 · monorepo NestJS + Next.js + Electron
 
 ## 1. Visão geral
 
@@ -144,9 +144,15 @@ flowchart TD
 
 ## 5. Frontend — UI e formulários
 
+### 5.0 Login
+
+- Rota `/login` (sem sidebar): marca **Meeting Scribe** em destaque + formulário Entrar
+- Sessão via cookies Next (`ms_session`, `ms_access_token`); middleware redireciona visitantes
+- Backend: `GET/POST /api/v1/auth/*` (público); ver [security.md](security.md)
+
 ### 5.1 Shell
 
-- `Sidebar`: Home · Agenda · Calendário · API (Swagger)
+- `Sidebar`: Home · Agenda · Calendário · API (Swagger) · **Sair**
 - `BackLink` em editar / visualizar / agendar / captura / calendários
 - `ConfirmDialog` + `react-toastify` para exclusão e feedback
 
@@ -186,7 +192,7 @@ Ver [security.md](security.md). Token opcional em local; obrigatório em produç
 | Pacote | Specs |
 |--------|--------|
 | `packages/shared` | `meeting-schedule`, `meeting-permissions`, `speaker-color`, `teams-links` |
-| `backend` | entity auto-complete / shouldAlert, ExpirePastMeetings, schedule assert, API guard |
+| `backend` | entity auto-complete / shouldAlert, ExpirePastMeetings, schedule assert, API guard, **LoginUseCase** |
 | `frontend` | `datetime.spec.ts` (Vitest) |
 
 ```bash

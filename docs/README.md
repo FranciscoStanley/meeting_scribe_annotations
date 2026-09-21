@@ -10,6 +10,7 @@
 | Deploy Linux | [deploy-linux.md](deploy-linux.md) | Mudança em Docker / portas / env pública |
 | OAuth grátis | [oauth-setup-gratis.md](oauth-setup-gratis.md) | Mudança no fluxo Google/Microsoft |
 | Screenshots UI | [screenshots/](screenshots/) | Mudança visual relevante no frontend |
+| Login / auth UI | `frontend/src/app/login/` | Fluxo de sessão / cookies |
 | Shared README | [../packages/shared/README.md](../packages/shared/README.md) | Novos exports / regras no pacote |
 | Swagger UI | http://localhost:3001/api/docs | Sempre que mudar controllers/DTOs |
 | Env template | [../.env.template](../.env.template) | Nova variável de ambiente |
@@ -25,7 +26,8 @@
 | MeetingScheduleForm | `frontend/src/components/meeting-schedule-form.tsx` |
 | DateTimeField (portal) | `frontend/src/components/date-time-field.tsx` |
 | ConfirmDialog + Toaster | `confirm-dialog.tsx`, `app-toaster.tsx` |
-| Screenshots | [screenshots/](screenshots/) |
+| Login | `frontend/src/app/login/` · `00-login.png` |
+| Screenshots | [screenshots/](screenshots/) (`00`…`06`) |
 
 ### Pacotes
 

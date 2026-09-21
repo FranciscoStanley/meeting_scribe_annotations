@@ -31,11 +31,19 @@ npm run dev:frontend
 
 | Item | Rota / ação |
 |------|-------------|
+| Login | `/login` — entrada (middleware exige sessão) |
 | Home | `/` — lista de reuniões |
 | Agenda | `/meetings/new` — agendar |
 | Calendário | `/settings` — ICS / OAuth |
 | API | Swagger externo (`NEXT_PUBLIC_API_URL/api/docs`) |
+| Sair | limpa cookies e volta ao login |
 | Voltar | `BackLink` em visualizar, editar, agendar, captura, calendários |
+
+## Login
+
+- Marca em destaque + formulário e-mail/senha (ou chave de API)
+- `POST /api/v1/auth/login` → cookie de sessão via `POST /api/auth/session`
+- Modo local aberto: entre sem senha obrigatória
 
 ## Formulários de agenda
 

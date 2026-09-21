@@ -36,6 +36,7 @@ Guia local: [docs/dev-local.md](../docs/dev-local.md) · Realtime: [docs/realtim
 
 | Recurso | Config |
 |---------|--------|
+| Login UI | `APP_AUTH_EMAIL` + `APP_AUTH_PASSWORD` (opcional) |
 | API token | `API_ACCESS_TOKEN` + header Bearer / X-API-Key |
 | Produção | `SECURITY_REQUIRE_TOKEN=true` ou `NODE_ENV=production` |
 | Rate limit | `THROTTLE_LIMIT` / `THROTTLE_TTL_MS` |
@@ -52,6 +53,8 @@ Guia local: [docs/dev-local.md](../docs/dev-local.md) · Realtime: [docs/realtim
 
 | Método | Rota | Descrição |
 |--------|------|-----------|
+| GET | `/api/v1/auth/status` | Modo aberto / credenciais / token (público) |
+| POST | `/api/v1/auth/login` | Login UI (público, throttle) |
 | GET | `/api/v1/meetings` | Lista (encerra agendas vencidas antes) |
 | POST | `/api/v1/meetings` | Agenda (`joinUrl`; fim > início) |
 | POST | `/api/v1/meetings/sync-calendar` | Sync ICS/OAuth |

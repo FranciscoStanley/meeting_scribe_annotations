@@ -38,17 +38,44 @@ CORS_ORIGIN=http://localhost:3000
 
 Rotas **públicas:** `GET /health`, OAuth `*/connect` e `*/callback`.
 
+## Login da UI
+
+A tela `/login` autentica o operador antes do workspace:
+
+| Configuração no `.env` | Comportamento |
+|------------------------|---------------|
+| Sem `APP_AUTH_*` e sem `API_ACCESS_TOKEN` | Modo aberto local — “Entrar” cria sessão sem token |
+| Só `API_ACCESS_TOKEN` | Senha do login = a chave de API |
+| `APP_AUTH_EMAIL` + `APP_AUTH_PASSWORD` | E-mail/senha; devolve `API_ACCESS_TOKEN` (se houver) no cookie de sessão |
+
+Cookies (Next.js): `ms_session` (httpOnly), `ms_access_token` (para SSE/WS), `ms_auth_email`.  
+**Não** use `NEXT_PUBLIC_API_ACCESS_TOKEN` em repositório público / internet — o valor entra no bundle JS.
+
+Endpoints: `GET /api/v1/auth/status`, `POST /api/v1/auth/login` (públicos, com throttle no login).
+
+## Repositório público — checklist
+
+Antes de tornar o GitHub público:
+
+- [ ] `.env`, `backend/.env`, `frontend/.env.local`, `desktop/.env` **fora** do Git (gitignore)
+- [ ] Sem Client Secrets OAuth, tokens ou senhas no histórico (`git log -p` / busca)
+- [ ] `.env.template` só com placeholders vazios
+- [ ] Banco `*.db` ignorado
+- [ ] Prints em `docs/screenshots/` sem dados pessoais reais
+- [ ] Em produção: `API_ACCESS_TOKEN` + `APP_AUTH_*` + `SECURITY_REQUIRE_TOKEN=true`
+
 ## Swagger
 
 http://localhost:3001/api/docs — Authorize com Bearer ou api-key.
 
 ## Postman
 
-Collection em `docs/postman/` — variável `apiKey` + header `X-API-Key`.
+Collection em `docs/postman/` — variável `apiKey` + header `X-API-Key`; pasta **Auth** para login.
 
 ## Checklist de deploy
 
 - [ ] Token forte (≥ 32 chars aleatórios)  
+- [ ] `APP_AUTH_EMAIL` / `APP_AUTH_PASSWORD` fortes  
 - [ ] CORS só para o domínio do frontend  
 - [ ] HTTPS no proxy  
 - [ ] Não commitár `.env`  

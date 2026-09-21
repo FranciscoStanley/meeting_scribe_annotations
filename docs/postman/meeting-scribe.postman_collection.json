@@ -29,6 +29,34 @@
       }
     },
     {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Auth status",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": "{{baseUrl}}/api/v1/auth/status",
+            "description": "Público. Indica openMode / credentialsConfigured / tokenConfigured (sem revelar segredos)."
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@empresa.com\",\n  \"password\": \"troque-me\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/auth/login",
+            "description": "Público (rate limit). Valida APP_AUTH_* ou senha=API_ACCESS_TOKEN. Em modo aberto devolve accessToken null. A UI grava cookie de sessão via Next /api/auth/session."
+          }
+        }
+      ]
+    },
+    {
       "name": "Meetings",
       "item": [
         {

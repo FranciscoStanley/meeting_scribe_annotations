@@ -6,7 +6,13 @@ Transcrição em tempo real de reuniões (Meet / Teams) — **só rode o projeto
 
 ### Shell e navegação
 
-Sidebar (desktop) / menu (mobile): **Home**, **Agenda**, **Calendário**, **API** (Swagger). Em editar, visualizar, agendar e captura há **Voltar**.
+Sidebar (desktop) / menu (mobile): **Home**, **Agenda**, **Calendário**, **API** (Swagger), **Sair**. Em editar, visualizar, agendar e captura há **Voltar**.
+
+### Login
+
+Tela `/login` com marca em destaque: e-mail/senha (ou chave de API). Sessão em cookie; workspace só após entrar. Ver [docs/security.md](docs/security.md).
+
+![Tela de login](docs/screenshots/00-login.png)
 
 ### Lista de reuniões
 
@@ -149,7 +155,9 @@ Commits: **1 alteração = 1 commit** (`organize-commits`); **push é manual**.
 
 ## Segurança
 
-Ver [docs/security.md](docs/security.md). Em produção defina `API_ACCESS_TOKEN` e `SECURITY_REQUIRE_TOKEN=true`. Local pode ficar vazio.
+Ver [docs/security.md](docs/security.md). Em produção defina `API_ACCESS_TOKEN`, `APP_AUTH_EMAIL` / `APP_AUTH_PASSWORD` e `SECURITY_REQUIRE_TOKEN=true`. Local pode ficar vazio (modo aberto após a tela de login).
+
+**Repositório público:** nunca commite `.env` nem secrets; o `.gitignore` já cobre `.env*`, bancos e chaves. Use só `.env.template` com placeholders.
 
 ## Opcional
 
