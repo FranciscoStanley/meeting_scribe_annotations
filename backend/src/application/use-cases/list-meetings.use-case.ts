@@ -8,6 +8,7 @@ import {
   TranscriptRepositoryPort,
 } from '../../domain/ports/transcript.repository.port';
 import { MeetingSummaryDto } from '@meeting-scribe/shared';
+import { ExpirePastMeetingsUseCase } from './expire-past-meetings.use-case';
 
 @Injectable()
 export class ListMeetingsUseCase {
@@ -16,9 +17,11 @@ export class ListMeetingsUseCase {
     private readonly sessions: MeetingSessionRepositoryPort,
     @Inject(TRANSCRIPT_REPOSITORY)
     private readonly transcripts: TranscriptRepositoryPort,
+    private readonly expirePast: ExpirePastMeetingsUseCase,
   ) {}
 
   async execute(limit = 50): Promise<MeetingSummaryDto[]> {
+    await this.expirePast.execute();
     const items = await this.sessions.listRecent(limit);
     return Promise.all(
       items.map(async (session) => {

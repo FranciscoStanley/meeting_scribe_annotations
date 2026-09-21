@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, BadRequestException } from '@nestjs/common';
 import { MeetingPlatform } from '@meeting-scribe/shared';
 import { MeetingSessionEntity } from '../../domain/entities/meeting-session.entity';
 import {
@@ -6,6 +6,7 @@ import {
   MeetingSessionRepositoryPort,
 } from '../../domain/ports/meeting-session.repository.port';
 import { PlatformDetectorService } from '../../domain/services/platform-detector.service';
+import { assertMeetingSchedule } from '../../domain/services/meeting-schedule.service';
 
 export interface CreateManualMeetingInput {
   title: string;
@@ -24,17 +25,30 @@ export class CreateManualMeetingUseCase {
   ) {}
 
   async execute(input: CreateManualMeetingInput) {
+    try {
+      assertMeetingSchedule(input.scheduledStart, input.scheduledEnd);
+    } catch (error) {
+      throw new BadRequestException(
+        error instanceof Error ? error.message : 'Horário inválido',
+      );
+    }
+
     const platform =
       input.platform ??
       this.platformDetector.detect(input.title, input.joinUrl);
 
-    const session = MeetingSessionEntity.create({
+    let session = MeetingSessionEntity.create({
       title: input.title,
       platform,
       scheduledStart: input.scheduledStart,
       scheduledEnd: input.scheduledEnd,
       joinUrl: input.joinUrl,
     });
+
+    const now = new Date();
+    if (session.shouldAutoComplete(now)) {
+      session = session.complete(now);
+    }
 
     return this.sessions.save(session);
   }

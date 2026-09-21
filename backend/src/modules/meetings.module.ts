@@ -12,6 +12,7 @@ import { CompleteTranscriptionSessionUseCase } from '../application/use-cases/co
 import { UpdateMeetingUseCase } from '../application/use-cases/update-meeting.use-case';
 import { DeleteMeetingUseCase } from '../application/use-cases/delete-meeting.use-case';
 import { GetMeetingUseCase } from '../application/use-cases/get-meeting.use-case';
+import { ExpirePastMeetingsUseCase } from '../application/use-cases/expire-past-meetings.use-case';
 import { MeetingsController } from '../presentation/http/meetings.controller';
 
 @Module({
@@ -26,6 +27,7 @@ import { MeetingsController } from '../presentation/http/meetings.controller';
     CompleteTranscriptionSessionUseCase,
     UpdateMeetingUseCase,
     DeleteMeetingUseCase,
+    ExpirePastMeetingsUseCase,
     {
       provide: MEETING_SESSION_REPOSITORY,
       useClass: PrismaMeetingSessionRepository,
@@ -40,6 +42,7 @@ import { MeetingsController } from '../presentation/http/meetings.controller';
     TRANSCRIPT_REPOSITORY,
     StartTranscriptionSessionUseCase,
     CompleteTranscriptionSessionUseCase,
+    ExpirePastMeetingsUseCase,
   ],
 })
 export class MeetingsModule {}

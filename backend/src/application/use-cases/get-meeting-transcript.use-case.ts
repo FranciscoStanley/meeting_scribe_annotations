@@ -7,6 +7,7 @@ import {
   TRANSCRIPT_REPOSITORY,
   TranscriptRepositoryPort,
 } from '../../domain/ports/transcript.repository.port';
+import { ExpirePastMeetingsUseCase } from './expire-past-meetings.use-case';
 
 @Injectable()
 export class GetMeetingTranscriptUseCase {
@@ -15,13 +16,15 @@ export class GetMeetingTranscriptUseCase {
     private readonly sessions: MeetingSessionRepositoryPort,
     @Inject(TRANSCRIPT_REPOSITORY)
     private readonly transcripts: TranscriptRepositoryPort,
+    private readonly expirePast: ExpirePastMeetingsUseCase,
   ) {}
 
   async execute(sessionId: string) {
-    const session = await this.sessions.findById(sessionId);
-    if (!session) {
+    const found = await this.sessions.findById(sessionId);
+    if (!found) {
       throw new NotFoundException('Sessão de reunião não encontrada');
     }
+    const session = await this.expirePast.expireIfNeeded(found);
     const segments = await this.transcripts.listBySession(sessionId);
     return {
       session: session.toProps(),

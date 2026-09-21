@@ -10,6 +10,7 @@ import {
   MeetingSessionRepositoryPort,
 } from '../../domain/ports/meeting-session.repository.port';
 import { PlatformDetectorService } from '../../domain/services/platform-detector.service';
+import { assertMeetingSchedule } from '../../domain/services/meeting-schedule.service';
 
 export interface UpdateMeetingInput {
   title: string;
@@ -35,6 +36,14 @@ export class UpdateMeetingUseCase {
     if (!session.canModify()) {
       throw new BadRequestException(
         'Só é possível editar agendas que ainda não iniciaram. Reuniões ao vivo ou concluídas são somente leitura.',
+      );
+    }
+
+    try {
+      assertMeetingSchedule(input.scheduledStart, input.scheduledEnd);
+    } catch (error) {
+      throw new BadRequestException(
+        error instanceof Error ? error.message : 'Horário inválido',
       );
     }
 
