@@ -86,3 +86,9 @@ export {
   normalizeSpeakerKey,
   SPEAKER_PALETTE,
 } from './speaker-color';
+export {
+  parseScheduleDate,
+  validateMeetingSchedule,
+  assertMeetingSchedule,
+} from './meeting-schedule';
+export type { MeetingScheduleValidation } from './meeting-schedule';
