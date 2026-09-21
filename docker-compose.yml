@@ -6,4 +6,48 @@ services:
     environment:
       WHISPER__MODEL: base
       WHISPER__INFERENCE_DEVICE: cpu
-    restart unless-stopped
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - '3001:3001'
+    env_file:
+      - .env
+    environment:
+      # Overrides específicos do container (não use paths de host)
+      PORT: 3001
+      DATABASE_URL: file:./data/prod.db
+      STT_BASE_URL: http://whisper:8000/v1
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3000}
+    volumes:
+      - backend-data:/app/backend/prisma/data
+    depends_on:
+      whisper:
+        condition: service_started
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:3001}
+        NEXT_PUBLIC_WS_URL: ${NEXT_PUBLIC_WS_URL:-http://localhost:3001}
+    ports:
+      - '3000:3000'
+    env_file:
+      - .env
+    environment:
+      API_INTERNAL_URL: ${API_INTERNAL_URL:-http://backend:3001}
+      PORT: 3000
+      HOSTNAME: 0.0.0.0
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  backend-data:
