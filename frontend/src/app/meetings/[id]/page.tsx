@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import {
   buildSpeakerColorMap,
+  meetingCanCapture,
   meetingCanModify,
   MeetingSessionStatus,
   normalizeSpeakerKey,
@@ -33,27 +34,33 @@ export default async function MeetingDetailPage({
 
   const status = String(data.session.status ?? 'SCHEDULED') as MeetingSessionStatus;
   const canModify = meetingCanModify(status);
+  const canCapture = meetingCanCapture(status);
   const colorMap = buildSpeakerColorMap(
     data.segments.map((s) => s.speakerLabel),
   );
+
+  const headerActions =
+    canModify || canCapture ? (
+      <div className="flex flex-wrap gap-2">
+        {canModify ? (
+          <Link href={`/meetings/${id}/edit`} className="ms-btn-secondary">
+            Editar agenda
+          </Link>
+        ) : null}
+        {canCapture ? (
+          <Link href={`/sessions/${id}/capture`} className="ms-btn-primary">
+            {status === 'LIVE' ? 'Continuar captura' : 'Iniciar captura'}
+          </Link>
+        ) : null}
+      </div>
+    ) : undefined;
 
   return (
     <div className="space-y-8">
       <PageHeader
         title={String(data.session.title)}
         description={`${data.segments.length} trecho${data.segments.length === 1 ? '' : 's'} transcrito${data.segments.length === 1 ? '' : 's'}`}
-        action={
-          <div className="flex flex-wrap gap-2">
-            {canModify ? (
-              <Link href={`/meetings/${id}/edit`} className="ms-btn-secondary">
-                Editar agenda
-              </Link>
-            ) : null}
-            <Link href={`/sessions/${id}/capture`} className="ms-btn-primary">
-              {status === 'COMPLETED' ? 'Abrir sessão' : 'Continuar captura'}
-            </Link>
-          </div>
-        }
+        action={headerActions}
       />
 
       <div className="space-y-3">
