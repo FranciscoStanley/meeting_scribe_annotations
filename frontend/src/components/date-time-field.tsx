@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useId, useRef, useState } from 'react';
+import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { DayPicker } from 'react-day-picker';
 import { ptBR } from 'date-fns/locale';
 import { startOfDay } from 'date-fns';
@@ -21,6 +22,8 @@ type DateTimeFieldProps = {
   disabled?: boolean;
 };
 
+type PopoverPos = { top: number; left: number; width: number };
+
 export function DateTimeField({
   label,
   value,
@@ -32,19 +35,63 @@ export function DateTimeField({
 }: DateTimeFieldProps) {
   const id = useId();
   const rootRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [pos, setPos] = useState<PopoverPos | null>(null);
   const [time, setTime] = useState(timeFromDate(value));
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     setTime(timeFromDate(value));
   }, [value]);
 
+  useLayoutEffect(() => {
+    if (!open || !triggerRef.current) {
+      setPos(null);
+      return;
+    }
+
+    function place() {
+      const rect = triggerRef.current!.getBoundingClientRect();
+      const popoverWidth = Math.min(352, Math.max(rect.width, 280));
+      const gap = 8;
+      const preferredTop = rect.bottom + gap;
+      const spaceBelow = window.innerHeight - preferredTop;
+      const estimatedHeight = 380;
+      const top =
+        spaceBelow < estimatedHeight && rect.top > estimatedHeight
+          ? Math.max(12, rect.top - estimatedHeight - gap)
+          : preferredTop;
+
+      let left = rect.left;
+      if (left + popoverWidth > window.innerWidth - 12) {
+        left = Math.max(12, window.innerWidth - popoverWidth - 12);
+      }
+
+      setPos({ top, left, width: popoverWidth });
+    }
+
+    place();
+    window.addEventListener('resize', place);
+    window.addEventListener('scroll', place, true);
+    return () => {
+      window.removeEventListener('resize', place);
+      window.removeEventListener('scroll', place, true);
+    };
+  }, [open]);
+
   useEffect(() => {
     if (!open) return;
     function onDoc(event: MouseEvent) {
-      if (!rootRef.current?.contains(event.target as Node)) {
-        setOpen(false);
-      }
+      const target = event.target as Node;
+      if (rootRef.current?.contains(target)) return;
+      if (popoverRef.current?.contains(target)) return;
+      setOpen(false);
     }
     function onKey(event: KeyboardEvent) {
       if (event.key === 'Escape') setOpen(false);
@@ -77,6 +124,73 @@ export function DateTimeField({
     ? display.split(' · ')
     : ['Selecionar data', '—'];
 
+  const popover =
+    open && mounted && pos
+      ? createPortal(
+          <div
+            ref={popoverRef}
+            role="dialog"
+            aria-label={label}
+            className="z-[80] animate-[msFadeIn_160ms_ease-out] rounded-2xl border border-hairline bg-panel p-3 shadow-lift"
+            style={{
+              position: 'fixed',
+              top: pos.top,
+              left: pos.left,
+              width: pos.width,
+            }}
+          >
+            <DayPicker
+              mode="single"
+              locale={ptBR}
+              selected={value ?? undefined}
+              onSelect={applyDay}
+              disabled={minDate ? { before: startOfDay(minDate) } : undefined}
+              defaultMonth={value ?? minDate ?? new Date()}
+              className="ms-daypicker"
+            />
+            <div className="mt-3 flex items-center gap-2 border-t border-hairline pt-3">
+              <label
+                className="text-xs font-medium text-muted"
+                htmlFor={`${id}-time`}
+              >
+                Horário
+              </label>
+              <input
+                id={`${id}-time`}
+                type="time"
+                value={time}
+                onChange={(e) => applyTime(e.target.value)}
+                className="ms-input mt-0 flex-1 py-2"
+              />
+            </div>
+            <div className="mt-2 flex justify-between gap-2">
+              {!required ? (
+                <button
+                  type="button"
+                  className="ms-btn ms-btn-sm ms-btn-ghost"
+                  onClick={() => {
+                    onChange(null);
+                    setOpen(false);
+                  }}
+                >
+                  Limpar
+                </button>
+              ) : (
+                <span />
+              )}
+              <button
+                type="button"
+                className="ms-btn ms-btn-sm ms-btn-primary"
+                onClick={() => setOpen(false)}
+              >
+                Confirmar
+              </button>
+            </div>
+          </div>,
+          document.body,
+        )
+      : null;
+
   return (
     <div ref={rootRef} className="relative">
       <label className="ms-label" htmlFor={id}>
@@ -86,6 +200,7 @@ export function DateTimeField({
         ) : null}
       </label>
       <button
+        ref={triggerRef}
         id={id}
         type="button"
         disabled={disabled}
@@ -136,62 +251,7 @@ export function DateTimeField({
           aria-hidden
         />
       ) : null}
-
-      {open ? (
-        <div
-          role="dialog"
-          aria-label={label}
-          className="absolute z-30 mt-2 w-[min(100%,22rem)] origin-top animate-[msFadeIn_160ms_ease-out] rounded-2xl border border-hairline bg-panel p-3 shadow-lift"
-        >
-          <DayPicker
-            mode="single"
-            locale={ptBR}
-            selected={value ?? undefined}
-            onSelect={applyDay}
-            disabled={minDate ? { before: startOfDay(minDate) } : undefined}
-            defaultMonth={value ?? minDate ?? new Date()}
-            className="ms-daypicker"
-          />
-          <div className="mt-3 flex items-center gap-2 border-t border-hairline pt-3">
-            <label
-              className="text-xs font-medium text-muted"
-              htmlFor={`${id}-time`}
-            >
-              Horário
-            </label>
-            <input
-              id={`${id}-time`}
-              type="time"
-              value={time}
-              onChange={(e) => applyTime(e.target.value)}
-              className="ms-input mt-0 flex-1 py-2"
-            />
-          </div>
-          <div className="mt-2 flex justify-between gap-2">
-            {!required ? (
-              <button
-                type="button"
-                className="ms-btn ms-btn-sm ms-btn-ghost"
-                onClick={() => {
-                  onChange(null);
-                  setOpen(false);
-                }}
-              >
-                Limpar
-              </button>
-            ) : (
-              <span />
-            )}
-            <button
-              type="button"
-              className="ms-btn ms-btn-sm ms-btn-primary"
-              onClick={() => setOpen(false)}
-            >
-              Confirmar
-            </button>
-          </div>
-        </div>
-      ) : null}
+      {popover}
     </div>
   );
 }
