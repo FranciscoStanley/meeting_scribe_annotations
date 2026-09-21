@@ -52,3 +52,9 @@ Aplicação **self-hosted** (monorepo) que:
 ## Licença e uso
 
 Projeto pensado para uso corporativo / self-hosted. **Não** versione secrets: copie `.env.template` → `.env` e mantenha o `.env` fora do Git.
+
+## Para avaliadores (empresas)
+
+O [README](https://github.com/FranciscoStanley/meeting_scribe_annotations#readme) apresenta o projeto como portfólio **fullstack sênior**: problema, arquitetura, segurança, prints (web + Swagger), ADRs e governança (CI, branch protection, PRs).
+
+Licença MIT · [SECURITY.md](https://github.com/FranciscoStanley/meeting_scribe_annotations/blob/master/SECURITY.md) · [CONTRIBUTING](https://github.com/FranciscoStanley/meeting_scribe_annotations/blob/master/CONTRIBUTING.md)
