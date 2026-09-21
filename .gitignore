@@ -2,13 +2,37 @@ node_modules
 dist
 .next
 *.tsbuildinfo
+
+# Segredos e ambiente local (nunca commitar)
 .env
-.env.local
+.env.*
 !.env.template
+!.env.example
+!**/.env.example
+backend/.env
+frontend/.env.local
+desktop/.env
+
+# Credenciais / chaves
+*.pem
+*.p12
+*.pfx
+*.key
+!*example*.key
+credentials*.json
+**/secrets/**
+service-account*.json
+
+# Banco local
 *.db
 *.db-journal
 backend/prisma/dev.db
 backend/prisma/dev.db-journal
-backend/.env
-frontend/.env.local
-desktop/.env
+backend/data/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
