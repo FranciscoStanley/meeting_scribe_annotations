@@ -1,16 +1,16 @@
 'use client';
 
 import { FormEvent, useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { meetingCanModify, MeetingSessionStatus } from '@meeting-scribe/shared';
+import {
+  meetingCanModify,
+  MeetingSessionStatus,
+  validateMeetingSchedule,
+} from '@meeting-scribe/shared';
 import { api } from '@/lib/api';
+import { DateTimeField } from '@/components/date-time-field';
 import { AlertBanner, PageHeader, Panel } from '@/components/ui';
-
-function toLocalInput(iso: string) {
-  const d = new Date(iso);
-  const pad = (n: number) => String(n).padStart(2, '0');
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
 
 export default function EditMeetingPage() {
   const params = useParams<{ id: string }>();
@@ -18,9 +18,10 @@ export default function EditMeetingPage() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [busy, setBusy] = useState(false);
   const [title, setTitle] = useState('');
-  const [scheduledStart, setScheduledStart] = useState('');
-  const [scheduledEnd, setScheduledEnd] = useState('');
+  const [start, setStart] = useState<Date | null>(null);
+  const [end, setEnd] = useState<Date | null>(null);
   const [joinUrl, setJoinUrl] = useState('');
   const [status, setStatus] = useState<MeetingSessionStatus | null>(null);
 
@@ -33,10 +34,8 @@ export default function EditMeetingPage() {
           return;
         }
         setTitle(meeting.title);
-        setScheduledStart(toLocalInput(meeting.scheduledStart));
-        setScheduledEnd(
-          meeting.scheduledEnd ? toLocalInput(meeting.scheduledEnd) : '',
-        );
+        setStart(new Date(meeting.scheduledStart));
+        setEnd(meeting.scheduledEnd ? new Date(meeting.scheduledEnd) : null);
         setJoinUrl(meeting.joinUrl ?? '');
         setStatus(meeting.status);
       } catch {
@@ -50,21 +49,25 @@ export default function EditMeetingPage() {
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
-    if (
-      scheduledEnd &&
-      new Date(scheduledEnd).getTime() <= new Date(scheduledStart).getTime()
-    ) {
-      setError('A data/hora de fim deve ser posterior ao início.');
+
+    const validation = validateMeetingSchedule({
+      scheduledStart: start,
+      scheduledEnd: end,
+      rejectPastStart: true,
+    });
+    if (!validation.ok) {
+      setError(validation.message);
       return;
     }
+    if (!start) return;
+
+    setBusy(true);
     try {
       await api.updateMeeting(id, {
-        title,
-        scheduledStart: new Date(scheduledStart).toISOString(),
-        scheduledEnd: scheduledEnd
-          ? new Date(scheduledEnd).toISOString()
-          : undefined,
-        joinUrl,
+        title: title.trim(),
+        scheduledStart: start.toISOString(),
+        scheduledEnd: end ? end.toISOString() : undefined,
+        joinUrl: joinUrl.trim(),
       });
       router.push('/?agendada=1');
       router.refresh();
@@ -72,6 +75,8 @@ export default function EditMeetingPage() {
       setError(
         'Não foi possível salvar. Confira os dados ou se a agenda ainda não iniciou.',
       );
+    } finally {
+      setBusy(false);
     }
   }
 
@@ -91,63 +96,67 @@ export default function EditMeetingPage() {
     <div className="mx-auto max-w-xl space-y-8">
       <PageHeader
         title="Editar agenda"
-        description="Altere horário ou link. Apenas agendas que ainda não iniciaram podem ser editadas."
+        description="Altere horário ou link no calendário. Apenas agendas que ainda não iniciaram podem ser editadas."
       />
 
       <Panel className="p-6 sm:p-8">
-        <form onSubmit={onSubmit} className="space-y-5">
-          <label className="ms-label">
-            Título
-            <input
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+        {error && !start ? (
+          <AlertBanner tone="danger">{error}</AlertBanner>
+        ) : (
+          <form onSubmit={onSubmit} className="space-y-5">
+            <label className="ms-label">
+              Título
+              <input
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
+                className="ms-input"
+              />
+            </label>
+
+            <DateTimeField
+              label="Início"
+              value={start}
+              onChange={setStart}
               required
-              className="ms-input"
+              minDate={new Date()}
             />
-          </label>
-          <label className="ms-label">
-            Início
-            <input
-              type="datetime-local"
-              value={scheduledStart}
-              onChange={(e) => setScheduledStart(e.target.value)}
-              required
-              className="ms-input"
+
+            <DateTimeField
+              label="Fim"
+              value={end}
+              onChange={setEnd}
+              optionalHint
+              minDate={start ?? new Date()}
             />
-          </label>
-          <label className="ms-label">
-            Fim <span className="font-normal text-muted">(opcional)</span>
-            <input
-              type="datetime-local"
-              value={scheduledEnd}
-              onChange={(e) => setScheduledEnd(e.target.value)}
-              className="ms-input"
-            />
-          </label>
-          <label className="ms-label">
-            Link Meet / Teams
-            <input
-              type="url"
-              value={joinUrl}
-              onChange={(e) => setJoinUrl(e.target.value)}
-              required
-              className="ms-input"
-            />
-          </label>
-          {error ? <AlertBanner tone="danger">{error}</AlertBanner> : null}
-          <div className="flex flex-wrap gap-3">
-            <button type="submit" className="ms-btn-primary">
-              Salvar alterações
-            </button>
-            <button
-              type="button"
-              className="ms-btn-secondary"
-              onClick={() => router.push('/')}
-            >
-              Cancelar
-            </button>
-          </div>
-        </form>
+
+            <label className="ms-label">
+              Link Meet / Teams
+              <input
+                type="url"
+                value={joinUrl}
+                onChange={(e) => setJoinUrl(e.target.value)}
+                required
+                className="ms-input"
+              />
+            </label>
+
+            {error ? <AlertBanner tone="danger">{error}</AlertBanner> : null}
+
+            <div className="flex flex-wrap gap-3 pt-1">
+              <button
+                type="submit"
+                disabled={busy}
+                className="ms-btn-primary"
+              >
+                {busy ? 'Salvando…' : 'Salvar alterações'}
+              </button>
+              <Link href="/" className="ms-btn-secondary">
+                Cancelar
+              </Link>
+            </div>
+          </form>
+        )}
       </Panel>
     </div>
   );

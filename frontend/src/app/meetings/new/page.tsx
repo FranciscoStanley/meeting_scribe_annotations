@@ -1,36 +1,52 @@
 'use client';
 
 import { FormEvent, useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { validateMeetingSchedule } from '@meeting-scribe/shared';
 import { api } from '@/lib/api';
+import { DateTimeField } from '@/components/date-time-field';
 import { AlertBanner, PageHeader, Panel } from '@/components/ui';
 
 export default function NewMeetingPage() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [title, setTitle] = useState('');
+  const [start, setStart] = useState<Date | null>(null);
+  const [end, setEnd] = useState<Date | null>(null);
+  const [joinUrl, setJoinUrl] = useState('');
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
-    const form = new FormData(event.currentTarget);
-    const startLocal = String(form.get('scheduledStart'));
-    const endLocal = String(form.get('scheduledEnd') || '');
-    if (endLocal && new Date(endLocal).getTime() <= new Date(startLocal).getTime()) {
-      setError('A data/hora de fim deve ser posterior ao início.');
+
+    const validation = validateMeetingSchedule({
+      scheduledStart: start,
+      scheduledEnd: end,
+      rejectPastStart: true,
+    });
+    if (!validation.ok) {
+      setError(validation.message);
       return;
     }
+    if (!start) return;
+
+    setBusy(true);
     try {
       await api.createMeeting({
-        title: String(form.get('title')),
-        scheduledStart: new Date(startLocal).toISOString(),
-        scheduledEnd: endLocal
-          ? new Date(endLocal).toISOString()
-          : undefined,
-        joinUrl: String(form.get('joinUrl')),
+        title: title.trim(),
+        scheduledStart: start.toISOString(),
+        scheduledEnd: end ? end.toISOString() : undefined,
+        joinUrl: joinUrl.trim(),
       });
       router.push('/?agendada=1');
     } catch {
-      setError('Não foi possível agendar. Confira horário e link (com https://).');
+      setError(
+        'Não foi possível agendar. Confira horário e link (com https://).',
+      );
+    } finally {
+      setBusy(false);
     }
   }
 
@@ -38,7 +54,7 @@ export default function NewMeetingPage() {
     <div className="mx-auto max-w-xl space-y-8">
       <PageHeader
         title="Agendar reunião"
-        description="Informe horário e link (Teams ou Meet). Deixe a aba aberta: na hora pedimos permissão para participar e transcrever."
+        description="Escolha data e hora no calendário, informe o link do Teams ou Meet e deixe a aba aberta para o alerta na hora."
       />
 
       <Panel className="p-6 sm:p-8">
@@ -46,43 +62,56 @@ export default function NewMeetingPage() {
           <label className="ms-label">
             Título
             <input
-              name="title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
               required
               placeholder="Ex.: Daily Sync"
               className="ms-input"
             />
           </label>
-          <label className="ms-label">
-            Início
-            <input
-              name="scheduledStart"
-              type="datetime-local"
-              required
-              className="ms-input"
-            />
-          </label>
-          <label className="ms-label">
-            Fim <span className="font-normal text-muted">(opcional)</span>
-            <input
-              name="scheduledEnd"
-              type="datetime-local"
-              className="ms-input"
-            />
-          </label>
+
+          <DateTimeField
+            label="Início"
+            value={start}
+            onChange={setStart}
+            required
+            minDate={new Date()}
+          />
+
+          <DateTimeField
+            label="Fim"
+            value={end}
+            onChange={setEnd}
+            optionalHint
+            minDate={start ?? new Date()}
+          />
+
           <label className="ms-label">
             Link Meet / Teams
             <input
-              name="joinUrl"
               type="url"
+              value={joinUrl}
+              onChange={(e) => setJoinUrl(e.target.value)}
               required
               placeholder="https://meet.google.com/…"
               className="ms-input"
             />
           </label>
+
           {error ? <AlertBanner tone="danger">{error}</AlertBanner> : null}
-          <button type="submit" className="ms-btn-primary w-full sm:w-auto">
-            Agendar — avisar na hora
-          </button>
+
+          <div className="flex flex-wrap gap-3 pt-1">
+            <button
+              type="submit"
+              disabled={busy}
+              className="ms-btn-primary w-full sm:w-auto"
+            >
+              {busy ? 'Agendando…' : 'Agendar — avisar na hora'}
+            </button>
+            <Link href="/" className="ms-btn-secondary w-full sm:w-auto">
+              Cancelar
+            </Link>
+          </div>
         </form>
       </Panel>
     </div>
