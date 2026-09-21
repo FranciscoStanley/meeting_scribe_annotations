@@ -30,6 +30,7 @@ npm run dev:frontend
 ### Formulários de agenda
 
 - Shell: **sidebar** (`Sidebar`) — Home, Agenda, Calendário, API
+- Formulários de agenda: `MeetingScheduleForm` (seções + preview de duração + detecção Teams/Meet)
 - `BackLink` em visualizar, editar, agendar, captura e calendários
 - Calendário **react-day-picker** + horário (`DateTimeField`)
 - Validação: `validateMeetingSchedule` em `@meeting-scribe/shared` (fim > início; sem início no passado)
