@@ -120,6 +120,7 @@ Sobe **frontend** (`3000`), **backend** (`3001`) e **Whisper** (`8080`).
 - App: http://localhost:3000 (ou IP do servidor)  
 - API / Swagger: **http://localhost:3001/api/docs** (não use a porta 3000)  
 - Postman: [docs/postman/meeting-scribe.postman_collection.json](docs/postman/meeting-scribe.postman_collection.json)
+- Arquitetura e fluxogramas: [docs/architecture.md](docs/architecture.md)
 
 Dockerfiles multi-stage: `backend/Dockerfile` e `frontend/Dockerfile`.
 
@@ -130,7 +131,7 @@ backend/           NestJS + Whisper + Prisma
 frontend/          Next.js
 desktop/           Electron (Teams Windows)
 packages/shared/   Tipos + speakerColor + Teams links
-docs/              Postman, realtime, deploy, OAuth, screenshots
+docs/              Arquitetura, Postman, realtime, deploy, OAuth, screenshots
 .env.template      Fonte única de env
 ```
 

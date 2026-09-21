@@ -2,6 +2,7 @@
 
 | Artefato | Caminho | Quando atualizar |
 |----------|---------|------------------|
+| **Arquitetura + fluxogramas** | [architecture.md](architecture.md) | Ciclo de vida, camadas, processos |
 | Postman | [postman/meeting-scribe.postman_collection.json](postman/meeting-scribe.postman_collection.json) | Novo/alterado endpoint |
 | Segurança | [security.md](security.md) | Token, headers, rate limit, WS auth |
 | Realtime (SSE/WS) | [realtime.md](realtime.md) | Mudança em eventos Socket.IO ou SSE |
@@ -19,6 +20,7 @@
 |----------|---------|
 | Rule design | `.cursor/rules/frontend-design-system.mdc` |
 | Skill design | `.cursor/skills/frontend-design-system/SKILL.md` |
+| DateTimeField | `frontend/src/components/date-time-field.tsx` (react-day-picker) |
 | Screenshots | [screenshots/](screenshots/) |
 
 Com `npm run dev` no ar:

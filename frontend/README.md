@@ -12,9 +12,9 @@ frontend/
 ├── public/
 └── src/
     ├── app/
-    ├── components/   # shell, modal, ui (PageHeader, Panel, StatusBadge)
+    ├── components/   # shell, DateTimeField, MeetingRowActions, ui
     ├── hooks/
-    └── lib/
+    └── lib/          # api, datetime (date-fns)
 ```
 
 ## Subir
@@ -27,10 +27,21 @@ npm run dev:frontend
 - Porta: **3000**
 - Swagger: **http://localhost:3001/api/docs** (redirect também em `/api/docs`)
 
+### Formulários de agenda
+
+- Calendário **react-day-picker** + horário (`DateTimeField`)
+- Validação: `validateMeetingSchedule` em `@meeting-scribe/shared` (fim > início; sem início no passado)
+
 ### Captura / STT
 
 1. Microfone (teste) ou áudio da aba Meet/Teams no Chrome  
 2. WebM ~5s → Socket.IO `/transcription`  
-3. Falantes com cor estável (`speakerColor` no shared)
+3. Falantes com cor por ordem de aparição (`buildSpeakerColorMap`)
 
-Ao mudar UI: seguir design system + regenerar `docs/screenshots/`.
+### Testes
+
+```bash
+npm run test -w @meeting-scribe/frontend
+```
+
+Ao mudar UI: seguir design system + regenerar `docs/screenshots/`. Arquitetura: [docs/architecture.md](../docs/architecture.md).

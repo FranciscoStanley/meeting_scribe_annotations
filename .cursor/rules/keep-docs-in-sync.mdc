@@ -16,8 +16,8 @@ alwaysApply: true
 | Endpoint / DTO / contrato | Swagger (`@Api*`), `docs/postman/`, testes |
 | Comportamento de domínio | Testes unitários + README do pacote |
 | Env / Docker / scripts | `.env.template`, `README.md` raiz, README do pacote |
+| Arquitetura / pastas | `.cursor/rules/project-architecture.mdc` + skill orquestradora + `docs/architecture.md` |
 | UI / fluxo | README frontend/desktop + `docs/screenshots/` se a tela mudou |
-| Arquitetura / pastas | `.cursor/rules/project-architecture.mdc` + skill orquestradora |
 
 ## Definition of Done (DoD)
 

@@ -54,7 +54,7 @@ Ferramenta **corporativa** de transcrição (Teams/Meet): confiança, clareza, f
 1. **Shell:** header fino com marca à esquerda, nav textual à direita, `max-w-6xl`
 2. **Page header:** `h1` (Outfit) + 1 linha de apoio + no máximo 1 CTA primária
 3. **Listas:** tabela ou lista densa em `panel`, hover de linha, status com badge
-4. **Formulários:** largura `max-w-xl`, campos com `focus:ring-brand/30`
+4. **Formulários:** largura `max-w-xl`, campos com `focus:ring-brand/30`; datas com `DateTimeField` (react-day-picker + date-fns pt-BR), nunca `datetime-local` nativo
 5. **Captura:** instruções em lista numerada curta; status de gravação discreto (ponto + texto)
 6. **Transcrição:** cores por falante via `buildSpeakerColorMap` (ordem de aparição) + `TranscriptSegmentCard` (nome + borda esquerda). Não depender só do hash — colisões perto do brand teal confundem.
 
@@ -68,6 +68,8 @@ Ferramenta **corporativa** de transcrição (Teams/Meet): confiança, clareza, f
 | `Panel` | superfície branca com borda |
 | `MeetingAlertModal` | alerta SSE |
 | `SpeakerLabel` | nomes na transcrição |
+| `DateTimeField` | início/fim com calendário + horário |
+| `TranscriptSegmentCard` | trecho com cor do falante |
 
 Botões:
 
