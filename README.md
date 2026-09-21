@@ -53,16 +53,22 @@ Só isso. O `.env` fica na raiz (não vai pro Git).
 
 OAuth e ICS são opcionais — deixe em branco no `.env` se não for usar.
 
-## Uso com Docker (recomendado em produção/local completo)
+## Uso com Docker / servidor Linux
 
-```powershell
-copy .env.template .env
-docker compose up --build
+```bash
+cp .env.template .env
+# No servidor: edite NEXT_PUBLIC_API_URL, NEXT_PUBLIC_WS_URL e CORS_ORIGIN com o IP/domínio
+chmod +x scripts/deploy-linux.sh
+./scripts/deploy-linux.sh
 ```
+
+Guia completo: [docs/deploy-linux.md](docs/deploy-linux.md)
+
+Fluxo: **Agendar reunião** (horário + link) → deixe a aba aberta → na hora o app pede **Participar e transcrever**.
 
 Sobe **frontend** (`3000`), **backend** (`3001`) e **Whisper** (`8080`).
 
-- App: http://localhost:3000  
+- App: http://localhost:3000 (ou IP do servidor)  
 - API / Swagger: http://localhost:3001/api/docs  
 - Postman: [docs/postman/meeting-scribe.postman_collection.json](docs/postman/meeting-scribe.postman_collection.json)
 
