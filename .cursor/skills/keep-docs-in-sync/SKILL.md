@@ -30,6 +30,7 @@ description: >-
 
 - [ ] `frontend/README.md` ou `desktop/README.md` se o fluxo de uso mudou
 - [ ] Variáveis `NEXT_PUBLIC_*` / desktop documentadas no `.env.template`
+- [ ] Prints em `docs/screenshots/` se a UI mudou de forma relevante (script `scripts/capture-screenshots.cjs`)
 
 ### Infra / Env / Docker
 
