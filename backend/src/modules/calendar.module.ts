@@ -11,11 +11,16 @@ import { PlatformDetectorService } from '../domain/services/platform-detector.se
 import { SyncCalendarMeetingsUseCase } from '../application/use-cases/sync-calendar-meetings.use-case';
 import { CalendarOAuthController } from '../presentation/http/calendar-oauth.controller';
 import { CalendarFeedsController } from '../presentation/http/calendar-feeds.controller';
+import { CalendarSyncController } from '../presentation/http/calendar-sync.controller';
 import { MeetingsModule } from './meetings.module';
 
 @Module({
   imports: [MeetingsModule],
-  controllers: [CalendarOAuthController, CalendarFeedsController],
+  controllers: [
+    CalendarOAuthController,
+    CalendarFeedsController,
+    CalendarSyncController,
+  ],
   providers: [
     PlatformDetectorService,
     GoogleCalendarAdapter,

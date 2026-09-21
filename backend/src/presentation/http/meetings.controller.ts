@@ -5,7 +5,6 @@ import { ListMeetingsUseCase } from '../../application/use-cases/list-meetings.u
 import { GetMeetingTranscriptUseCase } from '../../application/use-cases/get-meeting-transcript.use-case';
 import { StartTranscriptionSessionUseCase } from '../../application/use-cases/start-transcription-session.use-case';
 import { CompleteTranscriptionSessionUseCase } from '../../application/use-cases/complete-transcription-session.use-case';
-import { SyncCalendarMeetingsUseCase } from '../../application/use-cases/sync-calendar-meetings.use-case';
 import { CreateMeetingDto } from './dto/create-meeting.dto';
 
 @ApiTags('meetings')
@@ -17,22 +16,12 @@ export class MeetingsController {
     private readonly getTranscript: GetMeetingTranscriptUseCase,
     private readonly startSession: StartTranscriptionSessionUseCase,
     private readonly completeSession: CompleteTranscriptionSessionUseCase,
-    private readonly syncCalendar: SyncCalendarMeetingsUseCase,
   ) {}
 
   @Get()
   @ApiOperation({ summary: 'Lista reuniões e transcrições salvas' })
   list() {
     return this.listMeetings.execute();
-  }
-
-  @Post('sync-calendar')
-  @ApiOperation({ summary: 'Sincroniza calendários conectados (Google/Microsoft)' })
-  async sync() {
-    const now = new Date();
-    const to = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
-    const synced = await this.syncCalendar.execute(now, to);
-    return { synced };
   }
 
   @Get(':id/transcript')
