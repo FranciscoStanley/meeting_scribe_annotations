@@ -22,7 +22,7 @@ async function bootstrap() {
   SwaggerModule.setup('api/docs', app, SwaggerModule.createDocument(app, swagger));
 
   const port = Number(process.env.PORT ?? 3001);
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
 }
 
 bootstrap();
