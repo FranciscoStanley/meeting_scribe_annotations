@@ -8,6 +8,7 @@ import {
   speakerColor,
 } from '@meeting-scribe/shared';
 import { useAudioCapture } from '@/hooks/use-audio-capture';
+import { BackLink } from '@/components/back-link';
 import { TranscriptSegmentCard } from '@/components/transcript-segment-card';
 import { AlertBanner, EmptyState, PageHeader, Panel } from '@/components/ui';
 
@@ -24,6 +25,7 @@ export default function CaptureSessionPage() {
 
   return (
     <div className="space-y-8">
+      <BackLink href={`/meetings/${sessionId}`} label="Voltar à reunião" />
       <PageHeader
         title="Captura ao vivo"
         description="Para Google Meet ou Teams na web: compartilhe a aba no Chrome com áudio. Para validar o STT rapidamente, use o microfone."

@@ -3,6 +3,7 @@
 import { FormEvent, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { calendarConnectUrl, api } from '@/lib/api';
+import { BackLink } from '@/components/back-link';
 import { AlertBanner, PageHeader, Panel } from '@/components/ui';
 
 type CalendarAccount = {
@@ -106,6 +107,7 @@ export default function SettingsPage() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-8">
+      <BackLink href="/" label="Voltar para home" />
       <PageHeader
         title="Calendários"
         description="Conecte Google ou Outlook uma vez. O Meeting Scribe detecta Meet/Teams automaticamente — sem mensalidade (cota gratuita das APIs)."

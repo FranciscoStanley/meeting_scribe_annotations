@@ -9,6 +9,7 @@ import {
   validateMeetingSchedule,
 } from '@meeting-scribe/shared';
 import { api } from '@/lib/api';
+import { BackLink } from '@/components/back-link';
 import { DateTimeField } from '@/components/date-time-field';
 import { AlertBanner, PageHeader, Panel } from '@/components/ui';
 
@@ -94,6 +95,7 @@ export default function EditMeetingPage() {
 
   return (
     <div className="mx-auto max-w-xl space-y-8">
+      <BackLink href={`/meetings/${id}`} label="Voltar" />
       <PageHeader
         title="Editar agenda"
         description="Altere horário ou link no calendário. Apenas agendas que ainda não iniciaram podem ser editadas."

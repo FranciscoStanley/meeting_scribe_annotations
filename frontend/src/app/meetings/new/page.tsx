@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { validateMeetingSchedule } from '@meeting-scribe/shared';
 import { api } from '@/lib/api';
+import { BackLink } from '@/components/back-link';
 import { DateTimeField } from '@/components/date-time-field';
 import { AlertBanner, PageHeader, Panel } from '@/components/ui';
 
@@ -52,6 +53,7 @@ export default function NewMeetingPage() {
 
   return (
     <div className="mx-auto max-w-xl space-y-8">
+      <BackLink href="/" label="Voltar para reuniões" />
       <PageHeader
         title="Agendar reunião"
         description="Escolha data e hora no calendário, informe o link do Teams ou Meet e deixe a aba aberta para o alerta na hora."

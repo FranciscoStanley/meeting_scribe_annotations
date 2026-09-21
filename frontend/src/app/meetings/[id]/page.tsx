@@ -8,6 +8,7 @@ import {
   speakerColor,
 } from '@meeting-scribe/shared';
 import { api } from '@/lib/api';
+import { BackLink } from '@/components/back-link';
 import { TranscriptSegmentCard } from '@/components/transcript-segment-card';
 import { AlertBanner, EmptyState, PageHeader, Panel } from '@/components/ui';
 
@@ -57,6 +58,7 @@ export default async function MeetingDetailPage({
 
   return (
     <div className="space-y-8">
+      <BackLink href="/" label="Voltar para reuniões" />
       <PageHeader
         title={String(data.session.title)}
         description={`${data.segments.length} trecho${data.segments.length === 1 ? '' : 's'} transcrito${data.segments.length === 1 ? '' : 's'}`}
