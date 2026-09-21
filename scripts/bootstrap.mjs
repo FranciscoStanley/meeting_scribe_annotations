@@ -83,7 +83,7 @@ if (!fs.existsSync(rootEnvPath)) {
 
 const env = parseEnv(fs.readFileSync(rootEnvPath, 'utf8'));
 
-writeEnvFile('backend/.env', [
+const backendEnvKeys = [
   'DATABASE_URL',
   'PORT',
   'CORS_ORIGIN',
@@ -93,6 +93,7 @@ writeEnvFile('backend/.env', [
   'STT_API_KEY',
   'STT_MODEL',
   'MEETING_ALERT_MINUTES',
+  'MEETING_ALERT_GRACE_MINUTES',
   'CALENDAR_ICS_URLS',
   'GOOGLE_CLIENT_ID',
   'GOOGLE_CLIENT_SECRET',
@@ -101,7 +102,9 @@ writeEnvFile('backend/.env', [
   'MICROSOFT_CLIENT_SECRET',
   'MICROSOFT_REDIRECT_URI',
   'MICROSOFT_TENANT',
-], env);
+];
+
+writeEnvFile('backend/.env', backendEnvKeys, env);
 
 writeEnvFile('frontend/.env.local', [
   'NEXT_PUBLIC_API_URL',
@@ -124,29 +127,7 @@ if (dockerOk && !env.STT_BASE_URL) {
       'STT_BASE_URL=http://localhost:8080/v1',
     );
     fs.writeFileSync(rootEnvPath, content);
-    writeEnvFile(
-      'backend/.env',
-      [
-        'DATABASE_URL',
-        'PORT',
-        'CORS_ORIGIN',
-        'STT_PROVIDER',
-        'STT_LOCAL_MODEL',
-        'STT_BASE_URL',
-        'STT_API_KEY',
-        'STT_MODEL',
-        'MEETING_ALERT_MINUTES',
-        'CALENDAR_ICS_URLS',
-        'GOOGLE_CLIENT_ID',
-        'GOOGLE_CLIENT_SECRET',
-        'GOOGLE_REDIRECT_URI',
-        'MICROSOFT_CLIENT_ID',
-        'MICROSOFT_CLIENT_SECRET',
-        'MICROSOFT_REDIRECT_URI',
-        'MICROSOFT_TENANT',
-      ],
-      parseEnv(content),
-    );
+    writeEnvFile('backend/.env', backendEnvKeys, parseEnv(content));
     console.log('[bootstrap] STT_BASE_URL → Whisper Docker (localhost:8080).');
   }
 }
@@ -155,4 +136,6 @@ run('npm', ['run', 'build', '-w', '@meeting-scribe/shared']);
 run('npm', ['run', 'prisma:generate', '-w', '@meeting-scribe/backend']);
 run('npm', ['run', 'prisma:migrate:deploy', '-w', '@meeting-scribe/backend']);
 
-console.log('[bootstrap] Pronto. Use: npm run dev  |  docker compose up --build');
+console.log(
+  '[bootstrap] Pronto. Local: npm run dev  |  Docker: npm run docker:up',
+);
