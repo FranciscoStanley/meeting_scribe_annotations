@@ -130,6 +130,40 @@ async function shot(page, name, url) {
   });
   console.log('saved alerta');
 
+  // Swagger OpenAPI (backend)
+  await page.goto('http://localhost:3001/api/docs', {
+    waitUntil: 'networkidle',
+    timeout: 60_000,
+  });
+  await page.waitForTimeout(1200);
+  const tagSections = page.locator('.opblock-tag-section');
+  const tagCount = await tagSections.count();
+  for (let i = 0; i < Math.min(tagCount, 4); i++) {
+    const btn = tagSections.nth(i).locator('h3.opblock-tag, button').first();
+    try {
+      await btn.click({ timeout: 2000 });
+      await page.waitForTimeout(200);
+    } catch {
+      /* ignore */
+    }
+  }
+  await page.screenshot({
+    path: path.join(outDir, '07-swagger-api.png'),
+    fullPage: true,
+  });
+  console.log('saved swagger api');
+
+  const authBtn = page.locator('button.authorize, .btn.authorize').first();
+  if (await authBtn.count()) {
+    await authBtn.click();
+    await page.waitForTimeout(500);
+    await page.screenshot({
+      path: path.join(outDir, '08-swagger-authorize.png'),
+      fullPage: false,
+    });
+    console.log('saved swagger authorize');
+  }
+
   await browser.close();
   console.log('done →', outDir);
 })().catch((err) => {
