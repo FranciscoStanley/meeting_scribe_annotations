@@ -1,9 +1,22 @@
 import { MeetingSummaryDto } from '@meeting-scribe/shared';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
+function resolveApiBaseUrl(): string {
+  if (typeof window === 'undefined') {
+    return (
+      process.env.API_INTERNAL_URL ??
+      process.env.NEXT_PUBLIC_API_URL ??
+      'http://localhost:3001'
+    );
+  }
+  return process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
+}
+
+function publicApiBaseUrl(): string {
+  return process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
+}
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(`${API_URL}${path}`, {
+  const response = await fetch(`${resolveApiBaseUrl()}${path}`, {
     ...init,
     headers: {
       'Content-Type': 'application/json',
@@ -62,14 +75,14 @@ export const api = {
 };
 
 export function calendarConnectUrl(provider: 'google' | 'microsoft') {
-  return `${API_URL}/api/v1/calendar/${provider}/connect`;
+  return `${publicApiBaseUrl()}/api/v1/calendar/${provider}/connect`;
 }
 
 export function eventsStreamUrl() {
-  return `${API_URL}/api/v1/events/stream`;
+  return `${publicApiBaseUrl()}/api/v1/events/stream`;
 }
 
 export function transcriptionSocketUrl() {
-  const base = process.env.NEXT_PUBLIC_WS_URL ?? API_URL;
+  const base = process.env.NEXT_PUBLIC_WS_URL ?? publicApiBaseUrl();
   return `${base}/transcription`;
 }
