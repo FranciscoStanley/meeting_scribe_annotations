@@ -109,6 +109,7 @@ export default function SettingsPage() {
     <div className="mx-auto max-w-3xl space-y-8">
       <BackLink href="/" label="Voltar para home" />
       <PageHeader
+        eyebrow="Integrações"
         title="Calendários"
         description="Conecte Google ou Outlook uma vez. O Meeting Scribe detecta Meet/Teams automaticamente — sem mensalidade (cota gratuita das APIs)."
       />

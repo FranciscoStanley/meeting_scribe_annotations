@@ -122,6 +122,7 @@ export default function EditMeetingPage() {
     <div className="mx-auto max-w-2xl">
       <BackLink href={`/meetings/${id}`} label="Voltar à reunião" />
       <PageHeader
+        eyebrow="Agenda"
         title="Editar agenda"
         description="Ajuste título, janela de horário e o link de entrada. Só agendas ainda não iniciadas podem ser alteradas."
       />

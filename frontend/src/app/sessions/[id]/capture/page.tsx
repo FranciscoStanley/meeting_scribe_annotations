@@ -27,74 +27,90 @@ export default function CaptureSessionPage() {
     <div className="space-y-8">
       <BackLink href={`/meetings/${sessionId}`} label="Voltar à reunião" />
       <PageHeader
+        eyebrow="Sessão"
         title="Captura ao vivo"
         description="Para Google Meet ou Teams na web: compartilhe a aba no Chrome com áudio. Para validar o STT rapidamente, use o microfone."
       />
 
-      <Panel className="p-6 sm:p-8">
-        <ol className="list-decimal space-y-2 pl-5 text-sm leading-relaxed text-muted">
-          <li>Entre na reunião numa aba do Chrome</li>
-          <li>Volte aqui e escolha capturar áudio da aba</li>
-          <li>Selecione a aba da reunião (não janela nem tela inteira)</li>
-          <li>Marque “Compartilhar áudio da aba”</li>
-          <li>Fale ~10s — a primeira vez o Whisper pode demorar</li>
-        </ol>
-
-        <div className="mt-6 flex flex-wrap items-center gap-3">
-          {!active ? (
-            <>
-              <button
-                type="button"
-                onClick={() => start('tab')}
-                className="ms-btn-primary"
-              >
-                Capturar áudio da aba
-              </button>
-              <button
-                type="button"
-                onClick={() => start('mic')}
-                className="ms-btn-secondary"
-              >
-                Testar com microfone
-              </button>
-            </>
-          ) : (
-            <button type="button" onClick={stop} className="ms-btn-danger">
-              Encerrar captura
-            </button>
-          )}
-          <span
-            className={`inline-flex items-center gap-2 rounded-md px-2.5 py-1 text-xs font-semibold ${
-              active
-                ? 'bg-brand-soft text-brand-ink'
-                : 'bg-surface-muted text-muted'
-            }`}
-          >
-            <span
-              className={`h-1.5 w-1.5 rounded-sm ${
-                active ? 'bg-brand' : 'bg-muted-soft'
-              }`}
-              aria-hidden
-            />
-            {active ? 'Gravando' : 'Inativo'}
-          </span>
-          <span className="text-xs text-muted">
-            {status}
-            {chunksSent > 0 ? ` · ${chunksSent} envios` : ''}
-          </span>
+      <Panel className="overflow-hidden">
+        <div className="border-b border-hairline bg-gradient-to-br from-brand-mist/70 via-panel to-panel px-6 py-5 sm:px-8">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand">
+            Como capturar
+          </p>
+          <p className="mt-1 text-sm text-muted">
+            Preferência: áudio da aba da reunião no Chrome.
+          </p>
         </div>
+        <div className="px-6 py-6 sm:px-8">
+          <ol className="list-decimal space-y-2.5 pl-5 text-sm leading-relaxed text-muted">
+            <li>Entre na reunião numa aba do Chrome</li>
+            <li>Volte aqui e escolha capturar áudio da aba</li>
+            <li>Selecione a aba da reunião (não janela nem tela inteira)</li>
+            <li>Marque “Compartilhar áudio da aba”</li>
+            <li>Fale ~10s — a primeira vez o Whisper pode demorar</li>
+          </ol>
 
-        {error ? (
-          <div className="mt-4">
-            <AlertBanner tone="danger">{error}</AlertBanner>
+          <div className="mt-7 flex flex-wrap items-center gap-3">
+            {!active ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => start('tab')}
+                  className="ms-btn-primary"
+                >
+                  Capturar áudio da aba
+                </button>
+                <button
+                  type="button"
+                  onClick={() => start('mic')}
+                  className="ms-btn-secondary"
+                >
+                  Testar com microfone
+                </button>
+              </>
+            ) : (
+              <button type="button" onClick={stop} className="ms-btn-danger">
+                Encerrar captura
+              </button>
+            )}
+            <span
+              className={`inline-flex items-center gap-2 rounded-md px-2.5 py-1 text-xs font-semibold ${
+                active
+                  ? 'bg-brand-soft text-brand-ink'
+                  : 'bg-surface-muted text-muted'
+              }`}
+            >
+              <span
+                className={`h-1.5 w-1.5 rounded-sm ${
+                  active ? 'bg-brand animate-pulse' : 'bg-muted-soft'
+                }`}
+                aria-hidden
+              />
+              {active ? 'Gravando' : 'Inativo'}
+            </span>
+            <span className="text-xs text-muted">
+              {status}
+              {chunksSent > 0 ? ` · ${chunksSent} envios` : ''}
+            </span>
           </div>
-        ) : null}
+
+          {error ? (
+            <div className="mt-4">
+              <AlertBanner tone="danger">{error}</AlertBanner>
+            </div>
+          ) : null}
+        </div>
       </Panel>
 
       <section className="space-y-3">
-        <h2 className="font-display text-lg font-semibold text-ink">
-          Transcrição em tempo real
-        </h2>
+        <div className="flex items-end justify-between gap-3">
+          <h2 className="font-display text-lg font-semibold text-ink">
+            Transcrição em tempo real
+          </h2>
+          <p className="text-xs tabular-nums text-muted">
+            {segments.length} trecho{segments.length === 1 ? '' : 's'}
+          </p>
+        </div>
         {segments.map((segment) => (
           <TranscriptSegmentCard
             key={segment.id}

@@ -10,7 +10,13 @@ import {
 import { api } from '@/lib/api';
 import { BackLink } from '@/components/back-link';
 import { TranscriptSegmentCard } from '@/components/transcript-segment-card';
-import { AlertBanner, EmptyState, PageHeader, Panel } from '@/components/ui';
+import {
+  AlertBanner,
+  EmptyState,
+  PageHeader,
+  Panel,
+  StatusBadge,
+} from '@/components/ui';
 
 export default async function MeetingDetailPage({
   params,
@@ -27,13 +33,18 @@ export default async function MeetingDetailPage({
 
   if (!data) {
     return (
-      <AlertBanner tone="danger">
-        Transcrição não encontrada ou API indisponível.
-      </AlertBanner>
+      <div className="space-y-6">
+        <BackLink href="/" label="Voltar para reuniões" />
+        <AlertBanner tone="danger">
+          Transcrição não encontrada ou API indisponível.
+        </AlertBanner>
+      </div>
     );
   }
 
-  const status = String(data.session.status ?? 'SCHEDULED') as MeetingSessionStatus;
+  const status = String(
+    data.session.status ?? 'SCHEDULED',
+  ) as MeetingSessionStatus;
   const canModify = meetingCanModify(status);
   const canCapture = meetingCanCapture(status);
   const colorMap = buildSpeakerColorMap(
@@ -60,10 +71,18 @@ export default async function MeetingDetailPage({
     <div className="space-y-8">
       <BackLink href="/" label="Voltar para reuniões" />
       <PageHeader
+        eyebrow="Transcrição"
         title={String(data.session.title)}
         description={`${data.segments.length} trecho${data.segments.length === 1 ? '' : 's'} transcrito${data.segments.length === 1 ? '' : 's'}`}
         action={headerActions}
       />
+
+      <div className="flex flex-wrap items-center gap-2">
+        <StatusBadge status={status} />
+        <span className="text-xs text-muted">
+          {String(data.session.platform ?? '')}
+        </span>
+      </div>
 
       <div className="space-y-3">
         {data.segments.map((segment) => (

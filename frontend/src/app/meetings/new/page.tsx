@@ -61,6 +61,7 @@ export default function NewMeetingPage() {
     <div className="mx-auto max-w-2xl">
       <BackLink href="/" label="Voltar para reuniões" />
       <PageHeader
+        eyebrow="Agenda"
         title="Agendar reunião"
         description="Defina o horário no calendário, cole o link do Teams ou Meet e deixe a aba aberta para o alerta na hora."
       />
