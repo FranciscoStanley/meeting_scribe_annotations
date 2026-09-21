@@ -1,29 +1,27 @@
 ---
-description: Commits atômicos com Conventional Commits (feat/fix/refactor/docs/…)
+description: Uma alteração = um commit Conventional (obrigatório)
 globs: "**/*"
-alwaysApply: false
+alwaysApply: true
 ---
 
 # Organize Commits
 
-> Skill: `~/.cursor/skills/organize-commits/SKILL.md`  
-> Também: `.cursor/skills/keep-docs-in-sync/SKILL.md` (DoD antes de commit)
+> Skill: `.cursor/skills/organize-commits/SKILL.md`
 
-## Tipos permitidos
+**Autor:** Francisco Stanley Rodrigues Albuquerque
 
-`feat` · `fix` · `refactor` · `perf` · `docs` · `test` · `build` · `ci` · `chore` · `style`
+## Obrigatório
 
-- Preferir `perf` / `refactor` / `feat` em vez de “improvement”
-- Um commit = uma intenção
+- **Uma alteração lógica = um commit** (código ≠ testes ≠ docs ≠ deps ≠ cursor)
 - Formato: `tipo(escopo): descrição imperativa`
+- Tipos: `feat` · `fix` · `refactor` · `perf` · `docs` · `test` · `build` · `ci` · `chore` · `style`
+- Ordem: deps → refactor → feat/fix → **test** → docs → chore/cursor
 - **Nunca** `git add .` com mudanças misturadas
-- Ordem: deps → refactor → feat/fix → test → docs → build/ci → chore
-- **Push manual** (não executar `git push` sem pedido explícito)
+- **Push manual** — sem `git push` sem pedido explícito
 
-## Fluxo
+## Ao fechar trabalho
 
-1. Inventariar (`status` / `diff` / `log`)
-2. Garantir docs/testes/Swagger atualizados (keep-docs-in-sync)
-3. Plano de commits
-4. Um `git commit` por grupo
-5. Antes de push → skill `review-code`
+1. Inventariar diff  
+2. Plano de N commits  
+3. Executar um a um  
+4. Specs no commit `test` (ou junto só se inseparáveis)
