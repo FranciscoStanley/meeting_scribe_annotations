@@ -4,21 +4,25 @@ Transcrição em tempo real de reuniões (Meet / Teams) — **só rode o projeto
 
 ## Interface e funcionalidades
 
+### Shell e navegação
+
+Sidebar (desktop) / menu (mobile): **Home**, **Agenda**, **Calendário**, **API** (Swagger). Em editar, visualizar, agendar e captura há **Voltar**.
+
 ### Lista de reuniões
 
-Dashboard com status, plataforma e trechos. **Agendas não iniciadas** (`SCHEDULED` / `Aguardando`): botões Editar, Excluir e Abrir. **Ao vivo ou concluídas**: Abrir (primário).
+Dashboard com status, plataforma e trechos. **Agendas não iniciadas**: Editar, Excluir (modal + toast) e Abrir. **Ao vivo ou concluídas**: Abrir (primário). Horários vencidos viram **Concluída** automaticamente.
 
 ![Lista de reuniões](docs/screenshots/01-reunioes.png)
 
 ### Alerta ao iniciar
 
-Perto do horário agendado (calendário ou manual), o app pede **Participar e transcrever** — abre o link Meet/Teams e a tela de captura.
+Perto do horário agendado, o app pede **Participar e transcrever** — abre o link Meet/Teams e a tela de captura.
 
 ![Alerta de reunião detectada](docs/screenshots/06-alerta-reuniao.png)
 
-### Agendar reunião (horário + link)
+### Agendar / editar reunião
 
-Informe título, início e **link obrigatório** Meet/Teams. Na hora o Meeting Scribe avisa — deixe a aba aberta.
+Calendário (**react-day-picker**) + horário, validação fim > início e sem início no passado. Formulário em seções com preview de duração.
 
 ![Agendar reunião](docs/screenshots/02-nova-reuniao.png)
 
@@ -30,13 +34,13 @@ Cole o endereço secreto iCal do Google/Outlook, ou conecte Google/Microsoft (Cl
 
 ### Transcrição por falante
 
-Trechos com **nome colorido por participante**, horário e texto.
+Trechos com **cor distinta por participante** (ordem de aparição), horário e texto. Sem botão de captura se a reunião já estiver concluída.
 
 ![Transcrição com falantes](docs/screenshots/04-transcricao.png)
 
 ### Captura ao vivo
 
-**Áudio da aba** (Meet/Teams no Chrome com “Compartilhar áudio”) ou **Testar com microfone**. Whisper local processa a cada ~5s.
+**Áudio da aba** (Meet/Teams no Chrome) ou **microfone**. Whisper local processa a cada ~5s.
 
 ![Captura ao vivo](docs/screenshots/05-captura-ao-vivo.png)
 
@@ -128,9 +132,9 @@ Dockerfiles multi-stage: `backend/Dockerfile` e `frontend/Dockerfile`.
 
 ```
 backend/           NestJS + Whisper + Prisma
-frontend/          Next.js
+frontend/          Next.js (sidebar, formulários, captura)
 desktop/           Electron (Teams Windows)
-packages/shared/   Tipos + speakerColor + Teams links
+packages/shared/   Tipos, permissões, schedule, cores, Teams links
 docs/              Arquitetura, Postman, realtime, deploy, OAuth, screenshots
 .env.template      Fonte única de env
 ```
@@ -138,8 +142,10 @@ docs/              Arquitetura, Postman, realtime, deploy, OAuth, screenshots
 ## Documentação e qualidade
 
 Ao mudar código, a rule **`keep-docs-in-sync`** exige atualizar Swagger, Postman, testes e READMEs.  
-Se a UI mudar de forma relevante, atualize também `docs/screenshots/` (`node scripts/capture-screenshots.cjs`).  
-Commits semânticos atômicos; **push é manual**.
+Arquitetura e fluxogramas: [docs/architecture.md](docs/architecture.md).  
+UI: rule/skill `frontend-design-system`. Segurança: [docs/security.md](docs/security.md).  
+Se a UI mudar de forma relevante, atualize `docs/screenshots/`.  
+Commits: **1 alteração = 1 commit** (`organize-commits`); **push é manual**.
 
 ## Segurança
 

@@ -1,7 +1,7 @@
 # Arquitetura técnica — Meeting Scribe
 
 **Autor:** Francisco Stanley Rodrigues Albuquerque  
-**Versão do documento:** 1.0 · alinhado ao monorepo NestJS + Next.js + Electron
+**Versão do documento:** 1.2 · monorepo NestJS + Next.js + Electron
 
 ## 1. Visão geral
 
@@ -26,10 +26,12 @@ flowchart LR
 
 | Pacote | Papel |
 |--------|--------|
-| `frontend/` | UI corporativa, captura aba/mic, SSE alertas |
-| `backend/` | Domínio, use cases, cron, REST, WS, SSE |
+| `frontend/` | UI corporativa (sidebar), captura aba/mic, SSE alertas, toasts/modais |
+| `backend/` | Domínio, use cases, cron (alerta + expire), REST, WS, SSE |
 | `desktop/` | Companion Teams Windows |
 | `packages/shared/` | Tipos, permissões, cores, validação de horário |
+
+Docs de referência: [security.md](security.md) · [realtime.md](realtime.md) · Postman em `docs/postman/`.
 
 ## 2. Clean Architecture (backend)
 
@@ -140,12 +142,25 @@ flowchart TD
   D -->|COMPLETED / CANCELLED| G[Sem botão de captura no detalhe]
 ```
 
-## 5. Frontend — formulários de data
+## 5. Frontend — UI e formulários
 
-- Lib: **react-day-picker** + **date-fns** (locale `pt-BR`)
-- Componente: `DateTimeField` (calendário + `input type="time"`)
-- Helpers: `frontend/src/lib/datetime.ts`
-- Validação: `@meeting-scribe/shared` → `validateMeetingSchedule`
+### 5.1 Shell
+
+- `Sidebar`: Home · Agenda · Calendário · API (Swagger)
+- `BackLink` em editar / visualizar / agendar / captura / calendários
+- `ConfirmDialog` + `react-toastify` para exclusão e feedback
+
+### 5.2 Datas
+
+- Lib: **react-day-picker** + **date-fns** (`pt-BR`)
+- `DateTimeField`: calendário + horário; popover via **portal** no `document.body` (evita corte por `overflow`)
+- `MeetingScheduleForm`: seções Identidade / Horário / Link + duração
+- Validação: `validateMeetingSchedule` (shared)
+
+### 5.3 Transcrição
+
+- Cores: `buildSpeakerColorMap` (ordem de aparição)
+- Sem botão de captura se `meetingCanCapture` for false (`COMPLETED` / `CANCELLED`)
 
 ## 6. Segurança (resumo)
 
@@ -170,6 +185,12 @@ Ver [security.md](security.md). Token opcional em local; obrigatório em produç
 
 | Pacote | Specs |
 |--------|--------|
-| `packages/shared` | `meeting-schedule`, permissões, cores |
-| `backend` | entity auto-complete, ExpirePastMeetings, schedule assert |
+| `packages/shared` | `meeting-schedule`, `meeting-permissions`, `speaker-color`, `teams-links` |
+| `backend` | entity auto-complete / shouldAlert, ExpirePastMeetings, schedule assert, API guard |
 | `frontend` | `datetime.spec.ts` (Vitest) |
+
+```bash
+npm run test -w @meeting-scribe/shared
+npm run test -w @meeting-scribe/backend
+npm run test -w @meeting-scribe/frontend
+```
