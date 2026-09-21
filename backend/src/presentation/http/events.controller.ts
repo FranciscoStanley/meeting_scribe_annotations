@@ -17,7 +17,9 @@ export class EventsController {
 
   @Sse('stream')
   @ApiOperation({
-    summary: 'Stream SSE — alertas de reunião e trechos em tempo real',
+    summary: 'Stream SSE — alertas de reunião',
+    description:
+      'Eventos: `meeting:starting` (sessionId, title, platform, joinUrl, startsInMinutes), `heartbeat` a cada ~25s. Janela configurável via MEETING_ALERT_MINUTES e MEETING_ALERT_GRACE_MINUTES.',
   })
   stream(): Observable<MessageEvent> {
     return new Observable((subscriber) => {

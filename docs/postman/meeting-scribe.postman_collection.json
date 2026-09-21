@@ -1,11 +1,12 @@
 {
   "info": {
     "name": "Meeting Scribe API",
-    "description": "Collection HTTP do backend NestJS — manter sincronizada com Swagger (/api/docs).",
+    "description": "Collection HTTP do backend NestJS — manter sincronizada com Swagger (/api/docs) e docs/realtime.md (WebSocket).",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
-    { "key": "baseUrl", "value": "http://localhost:3001" }
+    { "key": "baseUrl", "value": "http://localhost:3001" },
+    { "key": "meetingId", "value": "" }
   ],
   "item": [
     {
@@ -13,7 +14,8 @@
       "request": {
         "method": "GET",
         "header": [],
-        "url": "{{baseUrl}}/health"
+        "url": "{{baseUrl}}/health",
+        "description": "Healthcheck do NestJS."
       }
     },
     {
@@ -23,17 +25,31 @@
           "name": "List meetings",
           "request": {
             "method": "GET",
-            "url": "{{baseUrl}}/api/v1/meetings"
+            "url": "{{baseUrl}}/api/v1/meetings",
+            "description": "Lista sessões com segmentCount."
           }
         },
         {
-          "name": "Create meeting",
+          "name": "Create meeting (Meet)",
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"title\": \"Daily\",\n  \"scheduledStart\": \"2026-09-21T15:00:00.000Z\",\n  \"joinUrl\": \"https://meet.google.com/abc-defg-hij\"\n}"
+              "raw": "{\n  \"title\": \"Teste Google Meet\",\n  \"scheduledStart\": \"2026-09-22T18:00:00.000Z\",\n  \"scheduledEnd\": \"2026-09-22T18:30:00.000Z\",\n  \"joinUrl\": \"https://meet.google.com/rdg-sxjm-eux\",\n  \"platform\": \"MEET\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/meetings",
+            "description": "Agenda reunião. joinUrl é obrigatório. Alerta SSE na janela MEETING_ALERT_MINUTES / MEETING_ALERT_GRACE_MINUTES."
+          }
+        },
+        {
+          "name": "Create meeting (Teams)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Daily Teams\",\n  \"scheduledStart\": \"2026-09-22T18:00:00.000Z\",\n  \"joinUrl\": \"https://teams.microsoft.com/meet/237776367551390?p=xxx\",\n  \"platform\": \"TEAMS\"\n}"
             },
             "url": "{{baseUrl}}/api/v1/meetings"
           }
@@ -42,28 +58,31 @@
           "name": "Sync calendar",
           "request": {
             "method": "POST",
-            "url": "{{baseUrl}}/api/v1/meetings/sync-calendar"
+            "url": "{{baseUrl}}/api/v1/meetings/sync-calendar",
+            "description": "Sincroniza feeds ICS + contas OAuth conectadas."
           }
         },
         {
           "name": "Get transcript",
           "request": {
             "method": "GET",
-            "url": "{{baseUrl}}/api/v1/meetings/:id/transcript"
+            "url": "{{baseUrl}}/api/v1/meetings/{{meetingId}}/transcript",
+            "description": "Trechos salvos com speakerLabel."
           }
         },
         {
           "name": "Start session",
           "request": {
             "method": "POST",
-            "url": "{{baseUrl}}/api/v1/meetings/:id/start"
+            "url": "{{baseUrl}}/api/v1/meetings/{{meetingId}}/start",
+            "description": "Marca sessão LIVE antes/durante a captura WebSocket."
           }
         },
         {
           "name": "Complete session",
           "request": {
             "method": "POST",
-            "url": "{{baseUrl}}/api/v1/meetings/:id/complete"
+            "url": "{{baseUrl}}/api/v1/meetings/{{meetingId}}/complete"
           }
         }
       ]
@@ -96,7 +115,7 @@
           "name": "Disconnect account",
           "request": {
             "method": "DELETE",
-            "url": "{{baseUrl}}/api/v1/calendar/accounts/:id"
+            "url": "{{baseUrl}}/api/v1/calendar/accounts/{{accountId}}"
           }
         }
       ]
@@ -127,7 +146,7 @@
           "name": "Remove feed",
           "request": {
             "method": "DELETE",
-            "url": "{{baseUrl}}/api/v1/calendar/feeds/:id"
+            "url": "{{baseUrl}}/api/v1/calendar/feeds/{{feedId}}"
           }
         }
       ]
@@ -137,8 +156,21 @@
       "request": {
         "method": "GET",
         "url": "{{baseUrl}}/api/v1/events/stream",
-        "description": "Server-Sent Events — alertas meeting:starting e heartbeat."
+        "description": "Server-Sent Events.\n\nTipos:\n- meeting:starting — { sessionId, title, platform, joinUrl, startsInMinutes }\n- heartbeat — { at }\n\nEnv: MEETING_ALERT_MINUTES (lead), MEETING_ALERT_GRACE_MINUTES (atraso do cron)."
       }
+    },
+    {
+      "name": "WebSocket /transcription (docs)",
+      "item": [
+        {
+          "name": "Protocolo Socket.IO",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/docs",
+            "description": "Não é HTTP — use Socket.IO no namespace /transcription (NEXT_PUBLIC_WS_URL).\n\nClient → Server:\n- session:start | session:subscribe { sessionId }\n- audio:chunk { sessionId, mimeType, data base64 }\n- session:complete { sessionId }\n\nServer → Client:\n- transcript:segment { id, speakerLabel, text, startedAt, confidence }\n\nRoom: session:{sessionId}. Ver docs/realtime.md."
+          }
+        }
+      ]
     }
   ]
 }
