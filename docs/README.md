@@ -3,6 +3,7 @@
 | Artefato | Caminho | Quando atualizar |
 |----------|---------|------------------|
 | **Arquitetura + fluxogramas** | [architecture.md](architecture.md) | Ciclo de vida, camadas, UI, processos |
+| **ADRs** | [decisions.md](decisions.md) | Decisões de engenharia (review sênior) |
 | Postman | [postman/meeting-scribe.postman_collection.json](postman/meeting-scribe.postman_collection.json) | Novo/alterado endpoint |
 | Segurança | [security.md](security.md) | Token, headers, rate limit, WS auth |
 | Realtime (SSE/WS) | [realtime.md](realtime.md) | Mudança em eventos Socket.IO ou SSE |
@@ -27,7 +28,7 @@
 | DateTimeField (portal) | `frontend/src/components/date-time-field.tsx` |
 | ConfirmDialog + Toaster | `confirm-dialog.tsx`, `app-toaster.tsx` |
 | Login | `frontend/src/app/login/` · `00-login.png` |
-| Screenshots | [screenshots/](screenshots/) (`00`…`06`) |
+| Screenshots | [screenshots/](screenshots/) (`00`…`08`, incl. Swagger) |
 
 ### Pacotes
 
@@ -49,4 +50,4 @@ node scripts/seed-demo-transcript.cjs <meetingIdLive>
 node scripts/capture-screenshots.cjs <meetingIdLive> <meetingIdScheduled?>
 ```
 
-Gera `01`…`06` em [screenshots/](screenshots/). Atualize também o texto de “Interface e funcionalidades” no README raiz.
+Gera `00`…`08` em [screenshots/](screenshots/) (UI + Swagger). Atualize também o texto de “Interface e funcionalidades” no README raiz.

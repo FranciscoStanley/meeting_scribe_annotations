@@ -3,7 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "author": "Francisco Stanley Rodrigues Albuquerque",
-  "description": "Transcrição em tempo real de reuniões Teams/Meet com detecção por calendário",
+  "license": "MIT",
+  "description": "Self-hosted real-time meeting transcription (Teams/Meet) — NestJS, Next.js, Electron, Whisper",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FranciscoStanley/meeting_scribe_annotations.git"
+  },
+  "homepage": "https://github.com/FranciscoStanley/meeting_scribe_annotations#readme",
+  "bugs": {
+    "url": "https://github.com/FranciscoStanley/meeting_scribe_annotations/issues"
+  },
   "scripts": {
     "dev:docker": "docker compose up --build",
     "docker:up": "docker compose up --build -d",
@@ -22,7 +31,7 @@
     "build:backend": "npm run build -w @meeting-scribe/shared && npm run build -w @meeting-scribe/backend",
     "build:frontend": "npm run build -w @meeting-scribe/shared && npm run build -w @meeting-scribe/frontend",
     "lint": "npm run lint -w @meeting-scribe/backend && npm run lint -w @meeting-scribe/frontend && npm run lint -w @meeting-scribe/desktop",
-    "test": "npm run test -w @meeting-scribe/backend && npm run test -w @meeting-scribe/shared",
+    "test": "npm run test -w @meeting-scribe/shared && npm run test -w @meeting-scribe/backend && npm run test -w @meeting-scribe/frontend",
     "db:generate": "npm run prisma:generate -w @meeting-scribe/backend",
     "db:migrate": "npm run prisma:migrate:deploy -w @meeting-scribe/backend",
     "db:studio": "npm run prisma:studio -w @meeting-scribe/backend"
