@@ -1,27 +1,50 @@
 # Arquitetura técnica — Meeting Scribe
 
 **Autor:** Francisco Stanley Rodrigues Albuquerque  
-**Versão do documento:** 1.3 · monorepo NestJS + Next.js + Electron
+**Versão do documento:** 1.4 · monorepo NestJS + Next.js + Electron
 
 ## 1. Visão geral
 
 Meeting Scribe agenda reuniões (Teams/Meet), alerta perto do horário, captura áudio no browser/desktop e transcreve via Whisper (local ou Docker). Persistência em SQLite (Prisma).
 
 ```mermaid
-flowchart LR
-  subgraph Clients
-    FE[Next.js :3000]
-    Desk[Electron Desktop]
+flowchart TB
+  subgraph Actors[" "]
+    U([Operador])
   end
-  subgraph Server
-    API[NestJS :3001]
-    DB[(SQLite Prisma)]
-    STT[Whisper local / :8080]
+
+  subgraph Clients["Clientes"]
+    FE["Next.js :3000<br/>Login · Agenda · Captura"]
+    Desk["Electron<br/>Companion Teams"]
   end
-  FE -->|HTTP + SSE + Socket.IO| API
-  Desk -->|HTTP + Socket.IO| API
+
+  subgraph Edge["Backend NestJS :3001"]
+    API["REST + Swagger"]
+    SSE["SSE · alertas"]
+    WS["Socket.IO · /transcription"]
+  end
+
+  subgraph Data["Persistência & STT"]
+    DB[("SQLite · Prisma")]
+    STT["Whisper<br/>local ou :8080"]
+  end
+
+  subgraph SharedPkg["@meeting-scribe/shared"]
+    Rules["Schedule · permissões · cores"]
+  end
+
+  U --> FE
+  U --> Desk
+  FE -->|"HTTPS · SSE · WS"| API
+  FE --> SSE
+  FE --> WS
+  Desk --> API
+  Desk --> WS
   API --> DB
-  API --> STT
+  WS --> STT
+  FE -.-> Rules
+  API -.-> Rules
+  Desk -.-> Rules
 ```
 
 | Pacote | Papel |
@@ -37,10 +60,37 @@ Docs de referência: [security.md](security.md) · [realtime.md](realtime.md) ·
 
 ```mermaid
 flowchart TB
-  P[presentation — HTTP / WS / SSE] --> A[application — use cases]
-  A --> D[domain — entities / ports]
-  I[infrastructure — Prisma / STT / calendar / cron] -.implements.-> D
-  I --> A
+  subgraph Presentation["presentation"]
+    HTTP["Controllers HTTP"]
+    Gateway["WS Gateway"]
+    Stream["SSE stream"]
+  end
+
+  subgraph Application["application"]
+    UC["Use cases<br/>alerts · expire · CRUD · login · STT"]
+  end
+
+  subgraph Domain["domain"]
+    ENT["Entities · policies"]
+    PORTS["Ports / interfaces"]
+  end
+
+  subgraph Infra["infrastructure"]
+    PRISMA["Prisma"]
+    WHISPER["Whisper adapter"]
+    CAL["ICS / OAuth"]
+    CRON["Schedulers"]
+  end
+
+  HTTP --> UC
+  Gateway --> UC
+  Stream --> UC
+  UC --> ENT
+  UC --> PORTS
+  PRISMA -.implements.-> PORTS
+  WHISPER -.implements.-> PORTS
+  CAL -.implements.-> PORTS
+  CRON --> UC
 ```
 
 Regras: domínio sem Nest; use cases orquestram ports; adapters em infrastructure.

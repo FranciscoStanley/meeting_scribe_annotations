@@ -53,25 +53,149 @@ http://localhost:3001/api/docs · Authorize com Bearer ou `X-API-Key`.
 
 ---
 
-## Arquitetura (decisões)
+## Arquitetura
 
-Monorepo com fronteiras explícitas:
+Visão em camadas do monorepo — o mesmo desenho aparece na [Wiki · Architecture](https://github.com/FranciscoStanley/meeting_scribe_annotations/wiki/Architecture) e em [`docs/architecture.md`](docs/architecture.md).
 
+### Visão de contexto (C4 leve)
+
+```mermaid
+flowchart TB
+  subgraph Actors[" "]
+    U([Operador])
+  end
+
+  subgraph Clients["Clientes"]
+    FE["Next.js :3000<br/>Login · Agenda · Captura"]
+    Desk["Electron<br/>Companion Teams"]
+  end
+
+  subgraph Edge["Backend NestJS :3001"]
+    API["REST + Swagger"]
+    SSE["SSE · alertas"]
+    WS["Socket.IO · /transcription"]
+  end
+
+  subgraph Data["Persistência & STT"]
+    DB[("SQLite · Prisma")]
+    STT["Whisper<br/>local ou :8080"]
+  end
+
+  subgraph SharedPkg["@meeting-scribe/shared"]
+    Rules["Schedule · permissões · cores"]
+  end
+
+  U --> FE
+  U --> Desk
+  FE -->|"HTTPS · SSE · WS"| API
+  FE --> SSE
+  FE --> WS
+  Desk --> API
+  Desk --> WS
+  API --> DB
+  WS --> STT
+  FE -.-> Rules
+  API -.-> Rules
+  Desk -.-> Rules
 ```
-frontend/     Next.js 15 — login, shell, agenda, captura, SSE
-backend/      NestJS — Clean Architecture (domain → application → infrastructure → presentation)
-desktop/      Electron — companion Teams (Windows)
-packages/shared/  Tipos, schedule, permissões, cores de falante
-docs/         Architecture, security, realtime, Postman, screenshots, wiki source
+
+### Clean Architecture (backend)
+
+```mermaid
+flowchart TB
+  subgraph Presentation["presentation"]
+    HTTP["Controllers HTTP"]
+    Gateway["WS Gateway"]
+    Stream["SSE stream"]
+  end
+
+  subgraph Application["application"]
+    UC["Use cases<br/>alerts · expire · CRUD · login · STT"]
+  end
+
+  subgraph Domain["domain"]
+    ENT["Entities · policies"]
+    PORTS["Ports / interfaces"]
+  end
+
+  subgraph Infra["infrastructure"]
+    PRISMA["Prisma"]
+    WHISPER["Whisper adapter"]
+    CAL["ICS / OAuth"]
+    CRON["Schedulers"]
+  end
+
+  HTTP --> UC
+  Gateway --> UC
+  Stream --> UC
+  UC --> ENT
+  UC --> PORTS
+  PRISMA -.implements.-> PORTS
+  WHISPER -.implements.-> PORTS
+  CAL -.implements.-> PORTS
+  CRON --> UC
 ```
 
-**Por que Clean Architecture no backend:** domínio e use cases testáveis sem Nest; adapters (Prisma, Whisper, ICS/OAuth, cron) trocáveis; controllers finos.
+### Fluxo ponta a ponta
 
-**Por que shared package:** uma única fonte para regras de UI/API (ex.: `meetingCanCapture`, `validateMeetingSchedule`, `buildSpeakerColorMap`).
+```mermaid
+sequenceDiagram
+  autonumber
+  actor U as Operador
+  participant FE as Next.js
+  participant API as NestJS
+  participant Cron as Scheduler
+  participant SSE as EventSource
+  participant WS as Socket.IO
+  participant STT as Whisper
 
-**Realtime:** SSE para alertas (EventSource) + Socket.IO `/transcription` para chunks ~5s.
+  U->>FE: Login + agendar reunião
+  FE->>FE: validateMeetingSchedule
+  FE->>API: POST /meetings
+  API-->>FE: SCHEDULED
 
-Diagrama e fluxos: [`docs/architecture.md`](docs/architecture.md) · decisões: [`docs/decisions.md`](docs/decisions.md)
+  loop a cada minuto
+    Cron->>API: ExpirePastMeetings
+    Cron->>API: ProcessMeetingAlerts
+  end
+  API-->>SSE: meeting:starting
+  SSE-->>FE: Modal Participar e transcrever
+
+  U->>FE: Inicia captura (aba / mic)
+  FE->>WS: session:start + audio:chunk (~5s)
+  WS->>API: TranscribeAudioChunk
+  API->>STT: áudio
+  STT-->>API: texto + falante
+  API-->>WS: transcript:segment
+  WS-->>FE: trechos coloridos
+```
+
+### Ciclo de vida da agenda
+
+```mermaid
+stateDiagram-v2
+  [*] --> SCHEDULED: criar / reagendar
+  SCHEDULED --> AWAITING_JOIN: alerta SSE
+  AWAITING_JOIN --> LIVE: start / captura
+  SCHEDULED --> LIVE: start direto
+  LIVE --> COMPLETED: complete
+  SCHEDULED --> COMPLETED: horário vencido
+  AWAITING_JOIN --> COMPLETED: horário vencido
+  LIVE --> COMPLETED: horário vencido
+  SCHEDULED --> CANCELLED: cancelar
+  COMPLETED --> [*]
+  CANCELLED --> [*]
+```
+
+| Pacote | Responsabilidade |
+|--------|------------------|
+| `frontend/` | UX corporativa, login, captura, SSE |
+| `backend/` | Domínio, use cases, cron, REST, WS, SSE |
+| `desktop/` | Companion Teams (Windows) |
+| `packages/shared/` | Contratos e regras compartilhadas |
+
+**Decisões:** shared evita drift UI/API · SSE para alerta leve · Socket.IO para áudio · Whisper local por default.  
+ADRs: [`docs/decisions.md`](docs/decisions.md)
 
 ---
 
