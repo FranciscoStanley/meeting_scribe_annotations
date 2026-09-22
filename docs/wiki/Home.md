@@ -7,13 +7,38 @@ Documentação oficial do **Meeting Scribe**: transcrição corporativa em tempo
 
 ## O que é
 
-Aplicação **self-hosted** (monorepo) que:
+Aplicação **self-hosted** (monorepo) que agenda, alerta, captura e transcreve — com auth, Swagger e Whisper local ou Docker.
 
-1. Agenda reuniões (horário + link)
-2. Alerta perto do horário (SSE)
-3. Captura áudio da aba ou microfone
-4. Transcreve com Whisper (local ou Docker)
-5. Exibe trechos coloridos por falante
+```mermaid
+flowchart LR
+  A[Agendar] --> B[Alerta SSE]
+  B --> C[Capturar áudio]
+  C --> D[Whisper STT]
+  D --> E[Trechos por falante]
+```
+
+## Visão de arquitetura
+
+```mermaid
+flowchart TB
+  subgraph Clients
+    FE[Next.js :3000]
+    Desk[Electron]
+  end
+  subgraph Backend
+    API[NestJS :3001]
+  end
+  subgraph Data
+    DB[(SQLite)]
+    STT[Whisper]
+  end
+  FE <-->|HTTP · SSE · WS| API
+  Desk <-->|HTTP · WS| API
+  API --> DB
+  API --> STT
+```
+
+Detalhes com Clean Architecture, sequência e estados: **[Architecture](Architecture)**.
 
 ## Comece por aqui
 
@@ -21,9 +46,9 @@ Aplicação **self-hosted** (monorepo) que:
 |--------|----------|
 | [Getting Started](Getting-Started) | Setup em minutos |
 | [Local Development](Local-Development) | Sem Docker, no seu PC |
-| [Architecture](Architecture) | Monorepo, camadas e fluxos |
-| [Authentication and Login](Authentication-and-Login) | Tela `/login`, tokens e sessão |
-| [Security](Security) | Hardening e checklist de repo público |
+| [Architecture](Architecture) | Diagramas Mermaid · camadas · fluxos |
+| [Authentication and Login](Authentication-and-Login) | `/login`, tokens e sessão |
+| [Security](Security) | Hardening e checklist |
 | [Realtime](Realtime-SSE-and-WebSocket) | SSE e Socket.IO |
 | [API and Postman](API-and-Postman) | HTTP, Swagger e collection |
 | [OAuth Calendar](OAuth-Calendar) | Google / Microsoft grátis |
@@ -31,30 +56,19 @@ Aplicação **self-hosted** (monorepo) que:
 | [Frontend UI](Frontend-UI) | Design system e telas |
 | [Contributing](Contributing) | Commits, CI e branch protegida |
 
-## Stack
+## Stack e portas
 
-| Camada | Tecnologia |
-|--------|------------|
-| Frontend | Next.js 15 · Tailwind · react-day-picker |
-| Backend | NestJS · Prisma · SQLite |
-| Desktop | Electron (Teams Windows) |
-| Shared | Tipos TS, permissões, cores, schedule |
-| STT | Whisper local (`@xenova/transformers`) ou Docker |
-
-## Portas
-
-| Serviço | Porta |
-|---------|-------|
-| Frontend | `3000` |
-| Backend / Swagger | `3001` (`/api/docs`) |
-| Whisper Docker | `8080` |
-
-## Licença e uso
-
-Projeto pensado para uso corporativo / self-hosted. **Não** versione secrets: copie `.env.template` → `.env` e mantenha o `.env` fora do Git.
+| Camada | Tecnologia | Porta |
+|--------|------------|-------|
+| Frontend | Next.js 15 · Tailwind | `3000` |
+| Backend / Swagger | NestJS · Prisma | `3001` |
+| Whisper Docker | opcional | `8080` |
+| Desktop | Electron | — |
 
 ## Para avaliadores (empresas)
 
-O [README](https://github.com/FranciscoStanley/meeting_scribe_annotations#readme) apresenta o projeto como portfólio **fullstack sênior**: problema, arquitetura, segurança, prints (web + Swagger), ADRs e governança (CI, branch protection, PRs).
+O [README](https://github.com/FranciscoStanley/meeting_scribe_annotations#readme) apresenta o projeto como portfólio **fullstack sênior**: problema, arquitetura (Mermaid), segurança, prints (web + Swagger), ADRs e governança.
 
 Licença MIT · [SECURITY.md](https://github.com/FranciscoStanley/meeting_scribe_annotations/blob/master/SECURITY.md) · [CONTRIBUTING](https://github.com/FranciscoStanley/meeting_scribe_annotations/blob/master/CONTRIBUTING.md)
+
+**Não** versione secrets: `.env.template` → `.env` (fora do Git).
