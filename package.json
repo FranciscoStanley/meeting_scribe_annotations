@@ -43,7 +43,7 @@
     "packages/*"
   ],
   "devDependencies": {
-    "concurrently": "^9.1.2"
+    "concurrently": "^9.2.5"
   },
   "engines": {
     "node": ">=20"
